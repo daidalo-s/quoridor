@@ -52,7 +52,7 @@ void draw_board(void)
  * @param y -> a board column index
  * @param player
  */
-void draw_player_token(ui8 x, ui8 y, active_player player)
+void draw_player_token(ui8 x, ui8 y)
 {
     screen_point point;
     int i, j;
@@ -64,7 +64,7 @@ void draw_player_token(ui8 x, ui8 y, active_player player)
         point.x = point.x = 5 + ((y / 2) * ITERATION_OFFSET) + 1;
         for (j = 0; j < SQUARE_SIDE - 1; j++)
         {
-            if (player == PLAYER_1)
+            if (game.player_turn == PLAYER_1)
             {
                 LCD_SetPoint(point.x, point.y, RGB565CONVERT(the_pirate.pixel_data[offset], the_pirate.pixel_data[offset + 1], the_pirate.pixel_data[offset + 2]));
             }
@@ -81,12 +81,11 @@ void draw_player_token(ui8 x, ui8 y, active_player player)
 
 /**
  * @brief With this function we simply un-draw the player token given the two coordinates as input
- * TODO: the problem is that we are clearing the cell drawing the background as black
  * @param x
  * @param y
  * @param player
  */
-void delete_player_token(ui8 x, ui8 y, active_player player)
+void delete_player_token(ui8 x, ui8 y)
 {
     screen_point point;
     int i, j;
@@ -104,98 +103,26 @@ void delete_player_token(ui8 x, ui8 y, active_player player)
     }
 }
 
-void update_player_token_pos(uint8_t old_x, uint8_t old_y, uint8_t x, uint8_t y, active_player player)
+/**
+ * @brief Given the new coordinates of the active_player, this function deletes
+ * the player token from the board by showing again the possible moves and then
+ * draws the token again in the new position
+ * @param x -> the new x matrix coordinate
+ * @param y -> the new y matrix coordinate
+ * @param player -> the player interested by the move
+ */
+void update_player_token_pos(ui8 x, ui8 y)
 {
-    delete_player_token(old_x, old_y, player);
-    draw_player_token(x, y, player);
-    // int i;
-    // int j;
-    // screen_point point;
-    // int offset = 0;
-
-    // // When updating we need to undraw the previous drawn token
-    // if (player == PLAYER_1)
-    // {
-    //     // White
-    //     // Erasing the old position
-    //     point.y = 5 + ((old_x / 2) * ITERATION_OFFSET) + 1;
-    //     for (i = 0; i < SQUARE_SIDE - 1; i++)
-    //     {
-    //         // era + 1 una volta
-    //         // Its on the horizontal axes so we need to give the y
-    //         point.x = point.x = 5 + ((old_y / 2) * ITERATION_OFFSET) + 1;
-    //         for (j = 0; j < SQUARE_SIDE - 1; j++)
-    //         {
-    //             if (old_x == game.player_1.x_matrix_coordinate && old_y == game.player_1.y_matrix_coordinate)
-    //             {
-    //                 LCD_SetPoint(point.x, point.y, RGB565CONVERT(0, 0, 0));
-    //                 point.x++;
-    //             }
-    //             else
-    //             {
-    //                 LCD_SetPoint(point.x, point.y, RGB565CONVERT(251, 241, 167));
-    //                 point.x++;
-    //             }
-    //         }
-    //         point.y++;
-    //     }
-    //     // Drawing the new position
-    //     // The y is the vertical axes so we need to give the x
-    //     point.y = 5 + ((x / 2) * ITERATION_OFFSET) + 1;
-    //     for (i = 0; i < SQUARE_SIDE - 1; i++)
-    //     {
-    //         // Its on the horizontal axes so we need to give the y
-    //         point.x = point.x = 5 + ((y / 2) * ITERATION_OFFSET) + 1;
-    //         for (j = 0; j < SQUARE_SIDE - 1; j++)
-    //         {
-    //             LCD_SetPoint(point.x, point.y, RGB565CONVERT(the_pirate.pixel_data[offset], the_pirate.pixel_data[offset + 1], the_pirate.pixel_data[offset + 2]));
-    //             point.x++;
-    //             offset += 3;
-    //         }
-    //         point.y++;
-    //     }
-    // }
-    // else
-    // {
-    //     // Erasing the old position
-    //     point.y = 5 + ((old_x / 2) * ITERATION_OFFSET) + 1;
-    //     for (i = 0; i < SQUARE_SIDE - 1; i++)
-    //     {
-    //         // era + 1 una volta
-    //         // Its on the horizontal axes so we need to give the y
-    //         point.x = point.x = 5 + ((old_y / 2) * ITERATION_OFFSET) + 1;
-    //         for (j = 0; j < SQUARE_SIDE - 1; j++)
-    //         {
-    //             if (old_x == game.player_2.x_matrix_coordinate && old_y == game.player_2.y_matrix_coordinate)
-    //             {
-    //                 LCD_SetPoint(point.x, point.y, RGB565CONVERT(0, 0, 0));
-    //                 point.x++;
-    //             }
-    //             else
-    //             {
-    //                 LCD_SetPoint(point.x, point.y, RGB565CONVERT(251, 241, 167));
-    //                 point.x++;
-    //             }
-    //         }
-    //         point.y++;
-    //     }
-    //     // Drawing the new position
-    //     point.y = 5 + ((x / 2) * ITERATION_OFFSET) + 1;
-    //     for (i = 0; i < SQUARE_SIDE - 1; i++)
-    //     {
-    //         // era + 1 una volta
-    //         point.x = point.x = 5 + ((y / 2) * ITERATION_OFFSET) + 1;
-    //         for (j = 0; j < SQUARE_SIDE - 1; j++)
-    //         {
-    //             LCD_SetPoint(point.x, point.y, RGB565CONVERT(disco_dance.pixel_data[offset], disco_dance.pixel_data[offset + 1], disco_dance.pixel_data[offset + 2]));
-    //             point.x++;
-    //             offset += 3;
-    //         }
-    //         point.y++;
-    //     }
-    // }
+    show_available_moves(&game);
+    draw_player_token(x, y);
 }
 
+/**
+ * @brief Given board matrix coordinates, this function draws it as an available
+ * move cell
+ * @param x
+ * @param y
+ */
 void draw_available_move(ui8 x, ui8 y)
 {
     int i;
@@ -241,6 +168,33 @@ void clear_available_move(ui8 x, ui8 y)
     }
 }
 
+/**
+ * @brief Based on the current player turn, we simply show the available moves
+ */
+void show_available_moves(void)
+{
+    ui8 i;
+    if (game.player_turn == PLAYER_1)
+    {
+        for (i = 0; i < game.player_1.num_of_possible_moves; i++)
+        {
+            draw_available_move(game.player_1.possible_moves[i].x, game.player_1.possible_moves[i].y);
+        }
+    }
+    else
+    {
+        for (i = 0; i < game.player_2.num_of_possible_moves; i++)
+        {
+            draw_available_move(game.player_2.possible_moves[i].x, game.player_2.possible_moves[i].y);
+        }
+    }
+    return;
+}
+
+/**
+ * @brief Given a value counter, it writes it inside the remaining seconds area
+ * @param counter
+ */
 void ticks_counter_update(ui8 counter)
 {
     char buffer[3] = {0};
@@ -261,6 +215,11 @@ void ticks_counter_update(ui8 counter)
     }
 }
 
+/**
+ * @brief Given the number of residual walls for the player_1, it updates the number
+ * in the data area in the lower part of the screen
+ * @param walls_residual_number
+ */
 void p1_walls_update(ui8 walls_residual_number)
 {
     char buffer[1] = {0};
@@ -268,6 +227,11 @@ void p1_walls_update(ui8 walls_residual_number)
     GUI_Text(P1_WALLS_NUMBER_X, P1_WALLS_NUMBER_Y, (uint8_t *)buffer, White, Black);
 }
 
+/**
+ * @brief Given the number of residual walls for the player_2, it updates the number
+ * in the data area in the lower part of the screen
+ * @param walls_residual_number
+ */
 void p2_walls_update(ui8 walls_residual_number)
 {
     char buffer[1] = {0};
@@ -275,7 +239,9 @@ void p2_walls_update(ui8 walls_residual_number)
     GUI_Text(P2_WALLS_NUMBER_X, P2_WALLS_NUMBER_Y, (uint8_t *)buffer, Red, Black);
 }
 
-// TODO: draw a black box on top
+/**
+ * @brief This function clears the text_area below the board and before the data area
+ */
 void clear_text_area(void)
 {
     int i;
@@ -285,6 +251,27 @@ void clear_text_area(void)
         LCD_DrawLine(0, Y_MESSAGE_AREA + i, 240, Y_MESSAGE_AREA + i, Black);
     }
 }
+
+/**
+ * @brief Given a player, this function shows on the screen the winner message
+ * @param winner
+ */
+void show_winner_message(player winner)
+{
+    char winner_string[13] = {0};
+    if (winner.player_color == WHITE)
+    {
+        sprintf(winner_string, "Player 1 won!");
+        GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)winner_string, White, Black);
+    }
+    else
+    {
+        sprintf(winner_string, "Player 2 won!");
+        GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)winner_string, Red, Black);
+    }
+}
+
+/********************************* BELOW HERE IT'S ALL RADIOACTIVE **************************/
 
 // Se cancellando finisco per cancellare un muro già tracciato lo devo ridisegnare -> uso middle per questo
 void draw_walls(void)
@@ -636,45 +623,4 @@ void clear_wall(screen_point point_to_clear, wall_orientation wall_orientation)
             LCD_DrawLine(screen_coordinates.x - 2, screen_coordinates.y + 2, screen_coordinates.x + (SQUARE_SIDE + 2), screen_coordinates.y + 2, Black);
         }
     }
-}
-
-void show_winner_message(player winner)
-{
-    char winner_string[13] = {0};
-    if (winner.player_color == WHITE)
-    {
-        sprintf(winner_string, "Player 1 won!");
-        GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)winner_string, White, Black);
-    }
-    else
-    {
-        sprintf(winner_string, "Player 2 won!");
-        GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)winner_string, Red, Black);
-    }
-}
-
-/**
- * @brief Based on the current player turn, we simply show the available moves
- *
- * @param game
- * @param show
- */
-void show_available_moves(game_data *game)
-{
-    ui8 i;
-    if (game->player_turn == PLAYER_1)
-    {
-        for (i = 0; i < game->player_1.num_of_possible_moves; i++)
-        {
-            draw_available_move(game->player_1.possible_moves[i].x, game->player_1.possible_moves[i].y);
-        }
-    }
-    else
-    {
-        for (i = 0; i < game->player_2.num_of_possible_moves; i++)
-        {
-            draw_available_move(game->player_2.possible_moves[i].x, game->player_2.possible_moves[i].y);
-        }
-    }
-    return;
 }

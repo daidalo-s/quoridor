@@ -60,20 +60,80 @@ typedef enum wall_orientation
     HORIZONTAL
 } wall_orientation;
 
+/**
+ * @brief This function simply draws the game board
+ * OK
+ */
 void draw_board(void);
-void update_player_token_pos(uint8_t, uint8_t, uint8_t, uint8_t, active_player);
-void draw_available_move(ui8, ui8);
-void clear_available_move(uint8_t, uint8_t);
-void ticks_counter_update(uint8_t);
-void p1_walls_update(uint8_t);
-void p2_walls_update(uint8_t);
-void draw_player_token(ui8, ui8, active_player);
+
+/**
+ * @brief Given the active_player from game->player_turn, it draws
+ * the corresponding token at the x-y passed as input
+ */
+void draw_player_token(ui8, ui8);
+
+/**
+ * @brief Given the two coordinates, clears the cell background with
+ * black (== empty cell)
+ */
 void delete_player_token(ui8, ui8, active_player);
+
+/**
+ * @brief This function given the two new coordinates of the
+ * active_player player, it draws the right token in the new
+ * position
+ */
+void update_player_token_pos(ui8, ui8);
+
+/**
+ * @brief This function draws the cell at the coordinates x-y as
+ * an available move cell
+ */
+void draw_available_move(ui8, ui8);
+
+/**
+ * @brief This function clears the cell at the coordinates x-y passed
+ * in input with a black background
+ */
+void clear_available_move(ui8, ui8);
+
+/**
+ * @brief show_available_moves loops in the possible_moves array and
+ * draws all of them using draw_available_move
+ */
+void show_available_moves();
+
+/**
+ * @brief This function updates the number of seconds remaining for
+ * the move on screen
+ */
+void ticks_counter_update(ui8);
+
+/**
+ * @brief This function updates the number of residual walls for
+ * player_1
+ */
+void p1_walls_update(ui8);
+
+/**
+ * @brief This function updates the number of residual walls for
+ * player_2
+ */
+void p2_walls_update(ui8);
+
+/**
+ * @brief This function clears the text_area below the board
+ */
+void clear_text_area(void);
+
+/**
+ * @brief When the game ends, this function shows the winner message
+ */
+void show_winner_message(player);
+
 // TODO: da qua in poi da fixare
 void draw_walls(void);
 void update_wall_drawing(wall_move_type);
 void clear_wall(screen_point, wall_orientation);
-void show_winner_message(player);
-void clear_text_area(void);
-void show_available_moves(game_data *);
+
 #endif
