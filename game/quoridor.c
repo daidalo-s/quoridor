@@ -14,6 +14,9 @@
 #include "../graphics/graphics.h"
 #include "../GLCD/GLCD.h"
 #include "./player.h"
+
+extern game_data game;
+
 /**
  * @brief This function initializes the board with the cell type and the
  * players position and color
@@ -48,7 +51,8 @@ void game_start(game_data *game)
         return;
     draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
     draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
-    turn_manager(game);
+    // 0 since the time is not over
+    turn_manager(game, 0);
 }
 
 void game_over(game_data *game, player winner)
@@ -61,7 +65,6 @@ void game_over(game_data *game, player winner)
 /**
  * @brief This function initializes each cell of the board setting the right
  * cell type depending from the position
- *
  * @param game
  */
 void board_cell_type_init(game_data *game)
@@ -103,279 +106,237 @@ void board_cell_type_init(game_data *game)
 }
 
 /**
- * @brief This function is called by the RIT handler when a joystick input
- * is received.
- * The only check previously made about the incoming data is that the game must be running.
- * We need to check if the move is legal or not and in case modify the tmp x/y coordinates.
- * The final modification will be done inside the select button handler.
- * Remember that:
- * - when going UP the x is decreasing
- * - when going DOWN the x is increasing
- * - when going LEFT the y is decreasing
- * - when going RIGHT the y is increasing
- * - when moving, we need to skip the wall cell (so +/- 2)
- * The conditions that make a move illegal are:
- * - going out of the board
- * - we need to cross a wall cell
- * - in the landing cell there is the opponent
- * @param move
+ * @brief In here we manage the turns.
+ * @param game -> the game instance
+ * @param time_over -> a flag, 0 if it's a move, 1 if the time is over
  */
-void move_player(move_type move, game_data *game)
+void turn_manager(game_data *game, ui8 time_over)
 {
-    int x;
-    int y;
-    uint8_t old_tmp_x;
-    uint8_t old_tmp_y;
-    if (game->player_turn == PLAYER_1)
+    if (game->game_status == WAIT_MODE)
     {
-        x = game->player_1.x_matrix_coordinate;
-        y = game->player_1.y_matrix_coordinate;
-        old_tmp_x = game->player_1.tmp_x_matrix_coordinate;
-        old_tmp_y = game->player_1.tmp_y_matrix_coordinate;
-        game->player_1.tmp_x_matrix_coordinate = x;
-        game->player_1.tmp_y_matrix_coordinate = y;
+        game->game_status = RUNNING;
+        enable_timer(0);
+        // The game starts with p1 playing
+        p1_turn(game);
+    }
+    else if (game->game_status == RUNNING)
+    {
+        // we need to swap turns
+        if (time_over)
+        {
+            // here we must reset the state, we don't have a confirmation
+            if (game->input_mode == PLAYER_MOVEMENT)
+            {
+                // the player was trying to move itself
+                if (game->player_turn == PLAYER_1)
+                {
+                    // player_1 stuff
+                    delete_available_moves();
+                    delete_player_token(game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate);
+                    draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                    p2_turn(game);
+                    return;
+                }
+                else
+                {
+                    // player_2 stuff
+                    delete_available_moves();
+                    delete_player_token(game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate);
+                    draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                    p1_turn(game);
+                    return;
+                }
+            }
+            else
+            {
+                // the player was trying to place a wall
+                // TODO: this still needs to be implemented
+                if (game->player_turn == PLAYER_1)
+                {
+                    // player_1 stuff
+                }
+                else
+                {
+                    // player_2 stuff
+                }
+            }
+        }
+        else
+        {
+            // we consolidate the move
+            if (game->input_mode == PLAYER_MOVEMENT)
+            {
+                // the player moved itself
+                if (game->player_turn == PLAYER_1)
+                {
+                    // player_1 stuff
+                    confirm_player_move(game);
+                    delete_available_moves();
+                    draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                }
+                else
+                {
+                    // player_2 stuff
+                    confirm_player_move(game);
+                    delete_available_moves();
+                    draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                }
+            }
+            else
+            {
+                // the player placed a wall
+                if (game->player_turn == PLAYER_1)
+                {
+                    // player_1 stuff
+                }
+                else
+                {
+                    // player_2 stuff
+                }
+            }
+        }
+        return;
     }
     else
     {
-        x = game->player_2.x_matrix_coordinate;
-        y = game->player_2.y_matrix_coordinate;
-        old_tmp_x = game->player_2.tmp_x_matrix_coordinate;
-        old_tmp_y = game->player_2.tmp_y_matrix_coordinate;
-        game->player_2.tmp_x_matrix_coordinate = x;
-        game->player_2.tmp_y_matrix_coordinate = y;
+        // the game is in progress we shouldn't be here
+        return;
     }
+}
 
-    // checking if the move is legal or not
-    if (move == UP)
-    {
-        if (x - 2 < 0 || game->board[x - 1][y].availability == OCCUPIED)
-        {
-            show_available_moves(game);
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            goto illegal_move;
-        }
-        // We are not over, we still need to check for the presence of the opponent
-        if (game->board[x - 2][y].availability == OCCUPIED)
-        {
-            // The opponent is facing us, we need to check if we can jump him
-            // Two cases: there is a wall in between or the landing cell is out of the board
-            /**
-             * If we enter here the opponent is facing us, we need to check if we can jump him
-             * Two things can go wrong:
-             * - there is a wall behind him
-             * - the landing position is out of the board
-             */
-            if (x - 4 < 0 || game->board[x - 3][y].availability == OCCUPIED)
-                goto illegal_move;
-            // If we are still here the opponent is facing us but the landing cell is legal
-            game->player_turn == PLAYER_1 ? (game->player_1.tmp_x_matrix_coordinate = x - 4) : (game->player_2.tmp_x_matrix_coordinate = x - 4);
-            // updating the Interface
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            // Before moving we need to clear the starting cell
-            // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-            return;
-        }
-        // If we are here the move is legal and the opponent is not facing us
-        game->player_turn == PLAYER_1 ? (game->player_1.tmp_x_matrix_coordinate = x - 2) : (game->player_2.tmp_x_matrix_coordinate = x - 2);
-        // updating the Interface
-        game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                      : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-        // Before moving we need to clear the starting cell
-        // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-    }
-    else if (move == DOWN)
-    {
-        // checking that the move is legal, now we are moving down so increasing X
-        if (x + 2 > 12 || game->board[x + 1][y].availability == OCCUPIED)
-        {
-            show_available_moves(game);
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            goto illegal_move;
-        }
-        if (game->board[x + 2][y].availability == OCCUPIED)
-        {
-            if (x + 4 > 12 || game->board[x + 3][y].availability == OCCUPIED)
-                goto illegal_move;
-            game->player_turn == PLAYER_1 ? (game->player_1.tmp_x_matrix_coordinate = x + 4) : (game->player_2.tmp_x_matrix_coordinate = x + 4);
-            // updating the Interface
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            // Before moving we need to clear the starting cell
-            // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-            return;
-        }
-        game->player_turn == PLAYER_1 ? (game->player_1.tmp_x_matrix_coordinate = x + 2) : (game->player_2.tmp_x_matrix_coordinate = x + 2);
-        // updating the Interface
-        game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                      : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-        // Before moving we need to clear the starting cell
-        // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-    }
-    else if (move == LEFT)
-    {
-        // checking that the move is legal, we are decrementing y
-        if (y - 2 < 0 || game->board[x][y - 1].availability == OCCUPIED)
-        {
-            show_available_moves(game);
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            goto illegal_move;
-        }
-        if (game->board[x][y - 2].availability == OCCUPIED)
-        {
-            if (y - 4 < 0 || game->board[x][y - 3].availability == OCCUPIED)
-                goto illegal_move;
-            game->player_turn == PLAYER_1 ? (game->player_1.tmp_y_matrix_coordinate = y - 4) : (game->player_2.tmp_y_matrix_coordinate = y - 4);
-            // updating the Interface
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            // Before moving we need to clear the starting cell
-            // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-            return;
-        }
-        game->player_turn == PLAYER_1 ? (game->player_1.tmp_y_matrix_coordinate = y - 2) : (game->player_2.tmp_y_matrix_coordinate = y - 2);
-        // updating the Interface
-        game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                      : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-        // Before moving we need to clear the starting cell
-        // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-    }
-    else if (move == RIGHT)
-    {
-        // checking that the move is legal, we are incrementing y
-        if (y + 2 > 12 || game->board[x][y + 1].availability == OCCUPIED)
-        {
-            show_available_moves(game);
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            goto illegal_move;
-        }
-        if (game->board[x][y + 2].availability == OCCUPIED)
-        {
-            if (y + 4 > 12 || game->board[x][y + 3].availability == OCCUPIED)
-                goto illegal_move;
-            game->player_turn == PLAYER_1 ? (game->player_1.tmp_y_matrix_coordinate = y + 4) : (game->player_2.tmp_y_matrix_coordinate = y + 4);
-            // updating the Interface
-            game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                          : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-            // Before moving we need to clear the starting cell
-            // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-            return;
-        }
-        game->player_turn == PLAYER_1 ? (game->player_1.tmp_y_matrix_coordinate = y + 2) : (game->player_2.tmp_y_matrix_coordinate = y + 2);
-        // updating the Interface
-        game->player_turn == PLAYER_1 ? (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate, PLAYER_1))
-                                      : (update_player_token_pos(old_tmp_x, old_tmp_y, game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate, PLAYER_2));
-        // Before moving we need to clear the starting cell
-        // game->player_turn == PLAYER_1 ? (clear_moves(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate)) : (clear_moves(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate));
-    }
-
-illegal_move:
+void p1_turn(game_data *game)
+{
+    game->input_mode = PLAYER_MOVEMENT;
+    game->player_turn = PLAYER_1;
+    game->game_tick = 20;
+    reset_timer(0);
+    enable_timer(0);
+    find_available_moves(game);
+    show_available_moves();
     return;
 }
 
-/**
- * TODO: be sure that when we change turn we don't have to reset everything
- * We also need to check if it's the last move of the game
- * @param game
- */
-void swap_turn(game_data *game, uint8_t select)
+void p2_turn(game_data *game)
 {
-    matrix_point point;
-    if (select)
-    {
-        //     if (game->player_turn == PLAYER_1 && game->input_mode == PLAYER_MOVEMENT)
-        //     {
-        //         show_available_moves(game, HIDE);
-        //         clear_text_area();
-        //         save_last_move(game);
-        //         game->board[game->player_1.x_matrix_coordinate][game->player_1.y_matrix_coordinate].availability = FREE;
-        //         game->player_1.x_matrix_coordinate = game->player_1.tmp_x_matrix_coordinate;
-        //         game->player_1.y_matrix_coordinate = game->player_1.tmp_y_matrix_coordinate;
-        //         game->board[game->player_1.x_matrix_coordinate][game->player_1.y_matrix_coordinate].availability = OCCUPIED;
-        //         if (game->player_1.x_matrix_coordinate == 12)
-        //         {
-        //             game_over(game, game->player_1);
-        //             return;
-        //         }
-        //     }
-        //     else if (game->player_turn == PLAYER_2 && game->input_mode == PLAYER_MOVEMENT)
-        //     {
-        //         show_available_moves(game, HIDE);
-        //         clear_text_area();
-        //         save_last_move(game);
-        //         game->board[game->player_2.x_matrix_coordinate][game->player_2.y_matrix_coordinate].availability = FREE;
-        //         game->player_2.x_matrix_coordinate = game->player_2.tmp_x_matrix_coordinate;
-        //         game->player_2.y_matrix_coordinate = game->player_2.tmp_y_matrix_coordinate;
-        //         game->board[game->player_2.x_matrix_coordinate][game->player_2.y_matrix_coordinate].availability = OCCUPIED;
-        //         if (game->player_2.x_matrix_coordinate == 0)
-        //         {
-        //             game_over(game, game->player_2);
-        //             return;
-        //         }
-        //     }
-        //     else
-        //     {
-        //         // we are in the wall mode
-        //         // devo cancellare current_wall se non è definitivo
-        //         if (game->board[game->current_wall.top.x][game->current_wall.top.y].availability == FREE)
-        //         {
-        //             point.x = game->current_wall.top.x;
-        //             point.y = game->current_wall.top.y;
-        //             game->current_wall.top.x == game->current_wall.bottom.x ? (clear_wall(point, HORIZONTAL)) : (clear_wall(point, VERTICAL));
-        //         }
-        //         if (game->board[game->current_wall.middle.x][game->current_wall.middle.y].availability == FREE)
-        //         {
-        //             point.x = game->current_wall.middle.x;
-        //             point.y = game->current_wall.middle.y;
-        //             game->current_wall.top.x == game->current_wall.top.x ? (clear_wall(point, HORIZONTAL)) : (clear_wall(point, VERTICAL));
-        //         }
-        //         if (game->board[game->current_wall.bottom.x][game->current_wall.bottom.y].availability == FREE)
-        //         {
-        //             point.x = game->current_wall.bottom.x;
-        //             point.y = game->current_wall.bottom.y;
-        //             game->current_wall.top.x == game->current_wall.bottom.x ? (clear_wall(point, HORIZONTAL)) : (clear_wall(point, VERTICAL));
-        //         }
-        //         clear_text_area();
-        //         save_last_move(game);
-        //     }
-        // }
-        // else
-        // {
-        //     if (game->input_mode == PLAYER_MOVEMENT)
-        //     {
-        //         game->player_turn == PLAYER_1 ? (game->player_1.tmp_x_matrix_coordinate = game->player_1.x_matrix_coordinate) : (game->player_2.tmp_x_matrix_coordinate = game->player_2.x_matrix_coordinate);
-        //         game->player_turn == PLAYER_1 ? (game->player_1.tmp_y_matrix_coordinate = game->player_1.y_matrix_coordinate) : (game->player_2.tmp_y_matrix_coordinate = game->player_2.y_matrix_coordinate);
-        //         show_available_moves(game, HIDE);
-        //         clear_text_area();
-        //         save_last_move(game);
-        //         game->player_turn == PLAYER_1 ? (update_player_token_pos(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1))
-        //                                       : (update_player_token_pos(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2));
-        //     }
-        //     else
-        //     {
-        //         game->current_wall.top.x == game->current_wall.bottom.x ? (clear_wall(game->current_wall.top, HORIZONTAL)) : (clear_wall(game->current_wall.top, VERTICAL));
-        //         game->current_wall.top.x == game->current_wall.bottom.x ? (clear_wall(game->current_wall.middle, HORIZONTAL)) : (clear_wall(game->current_wall.middle, VERTICAL));
-        //         game->current_wall.top.x == game->current_wall.bottom.x ? (clear_wall(game->current_wall.bottom, HORIZONTAL)) : (clear_wall(game->current_wall.bottom, VERTICAL));
-        //         clear_text_area();
-        //         save_last_move(game);
-        //     }
-    }
-    // We also need to clear any residual wall from the screen
-    // We need to swap player turn
-    game->player_turn == PLAYER_1 ? (game->player_turn = PLAYER_2) : (game->player_turn = PLAYER_1);
-    // And to reset the game mode
     game->input_mode = PLAYER_MOVEMENT;
-    // And reset the game ticks
+    game->player_turn = PLAYER_2;
     game->game_tick = 20;
-    // And reset && enable the timer
     reset_timer(0);
     enable_timer(0);
-    // And show the new moves
-    show_available_moves(game);
+    find_available_moves(game);
+    show_available_moves();
+    return;
+}
+
+void confirm_player_move(game_data *game)
+{
+    if (game->player_turn == PLAYER_1)
+    {
+        // we need to confirm the player_1 move
+        game->board[game->player_1.x_matrix_coordinate][game->player_1.y_matrix_coordinate].availability = FREE;
+        game->player_1.x_matrix_coordinate = game->player_1.tmp_x_matrix_coordinate;
+        game->player_1.y_matrix_coordinate = game->player_1.tmp_y_matrix_coordinate;
+        game->board[game->player_1.x_matrix_coordinate][game->player_1.y_matrix_coordinate].availability = OCCUPIED;
+        if (game->player_1.x_matrix_coordinate == 12)
+        {
+            game_over(game, game->player_1);
+            return;
+        }
+    }
+    else
+    {
+        game->board[game->player_2.x_matrix_coordinate][game->player_2.y_matrix_coordinate].availability = FREE;
+        game->player_2.x_matrix_coordinate = game->player_2.tmp_x_matrix_coordinate;
+        game->player_2.y_matrix_coordinate = game->player_2.tmp_y_matrix_coordinate;
+        game->board[game->player_2.x_matrix_coordinate][game->player_2.y_matrix_coordinate].availability = OCCUPIED;
+        if (game->player_2.x_matrix_coordinate == 0)
+        {
+            game_over(game, game->player_2);
+            return;
+        }
+    }
+}
+
+void move_dispatcher(move_type direction, game_data *game)
+{
+    if (game->game_status == RUNNING)
+    {
+        if (game->input_mode == PLAYER_MOVEMENT)
+        {
+            if (direction == UP)
+            {
+                move_player(UP, game, game->player_turn);
+            }
+            else if (direction == LEFT)
+            {
+                move_player(LEFT, game, game->player_turn);
+            }
+            else if (direction == RIGHT)
+            {
+                move_player(RIGHT, game, game->player_turn);
+            }
+            else if (direction == DOWN)
+            {
+                move_player(DOWN, game, game->player_turn);
+            }
+        }
+        else
+        {
+            // Wall mode
+            if (direction == UP)
+            {
+                move_wall(UP);
+            }
+            else if (direction == LEFT)
+            {
+                move_wall(LEFT);
+            }
+            else if (direction == RIGHT)
+            {
+                move_wall(RIGHT);
+            }
+            else if (direction == DOWN)
+            {
+                // down
+                move_wall(DOWN);
+            }
+            else
+            {
+                // rotation
+                move_wall(ROTATION);
+            }
+        }
+    }
+}
+
+/**
+ * @brief We need to distinguish between wall mode and player mode and simply
+ * call the function that handles it
+ */
+void select_button_pressed()
+{
+    if (game.input_mode == PLAYER_MOVEMENT)
+    {
+        // call the appropriate function
+    }
+    else
+    {
+        // call the wall function
+    }
+}
+void key1_button_pressed()
+{
+    if (game.input_mode == PLAYER_MOVEMENT)
+    {
+        // call an appropriate function, we need to enter in wall mode
+    }
+}
+void key2_button_pressed()
+{
+    if (game.input_mode == WAIT_MODE)
+    {
+        // it's a wall rotation
+    }
 }
 
 /**
@@ -409,35 +370,4 @@ void save_last_move(game_data *game)
     game->last_move |= tmp << 8;
     game->player_turn == PLAYER_1 ? (tmp = game->player_1.y_matrix_coordinate) : (tmp = game->player_2.y_matrix_coordinate);
     game->last_move |= tmp << 8;
-}
-
-/**
- * @brief In here we manage the turns
- *
- * @param game
- */
-void turn_manager(game_data *game)
-{
-    if (game->game_status == WAIT_MODE)
-    {
-        game->game_status = RUNNING;
-        // we need to start the timer
-        enable_timer(0);
-        // The game starts with player 1 playing, we need to show the possible moves
-        find_available_moves(game);
-        // TODO: remove the show
-        show_available_moves(game);
-    }
-    else if (game->game_status == RUNNING)
-    {
-        // we need to swap turns
-        // TODO: why do we need the select?
-        swap_turn(game, 0);
-        return;
-    }
-    else
-    {
-        // the game is in progress we shouldn't be here
-        return;
-    }
 }

@@ -39,7 +39,7 @@ void TIMER0_IRQHandler(void)
 	{
 		// this is the last turn, we need to change_turn
 		ticks_counter_update(game.game_tick);
-		swap_turn(&game, select);
+		turn_manager(&game, 1);
 		game.game_tick = 20;
 	}
 

@@ -53,48 +53,49 @@ void RIT_IRQHandler(void)
 				break;
 			// If we end up here the game is in progress and we have a move
 			// Select is used also for the walls, we need to know if we are in wall mode or move_mode
-			if (game.input_mode == PLAYER_MOVEMENT)
-			{
-				// This will solidify whatever move
-				swap_turn(&game, select);
-			}
-			else
-			{
-				// we need to confirm the wall placement
-				// TODO: you can simplify this, simply solidify the placement based on the game mode (wtf? were you drunk?)
-				// We need to do the validity checks here before solidifying the placement
-				if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == OCCUPIED ||
-					game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == OCCUPIED ||
-					game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == OCCUPIED)
-				{
-					game.player_turn == PLAYER_1 ? (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-															 (uint8_t *)"Cannot place wall here!", White, Black))
-												 : (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-															 (uint8_t *)"Cannot place wall here!", Red, Black));
-					break;
-				}
-				// If we are here we can finalize the move
-				// We first need to simulate the move
-				game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
-				game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
-				game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
-				if (legal_wall_placement(&game))
-				{
-					game.player_turn == PLAYER_1 ? (game.player_1.available_walls--) : (game.player_2.available_walls--);
-					game.player_turn == PLAYER_1 ? (p1_walls_update(game.player_1.available_walls)) : (p2_walls_update(game.player_2.available_walls));
-					swap_turn(&game, select);
-				}
-				else
-				{
-					game.player_turn == PLAYER_1 ? (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-															 (uint8_t *)"Cannot place wall here!", White, Black))
-												 : (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-															 (uint8_t *)"Cannot place wall here!", Red, Black));
-					game.board[game.current_wall.top.x][game.current_wall.top.y].availability = FREE;
-					game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = FREE;
-					game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = FREE;
-				}
-			}
+			select_button_pressed();
+			// if (game.input_mode == PLAYER_MOVEMENT)
+			// {
+			// 	// This will solidify whatever move
+			// 	swap_turn(&game, select);
+			// }
+			// else
+			// {
+			// 	// we need to confirm the wall placement
+			// 	// TODO: you can simplify this, simply solidify the placement based on the game mode (wtf? were you drunk?)
+			// 	// We need to do the validity checks here before solidifying the placement
+			// 	if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == OCCUPIED ||
+			// 		game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == OCCUPIED ||
+			// 		game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == OCCUPIED)
+			// 	{
+			// 		game.player_turn == PLAYER_1 ? (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
+			// 												 (uint8_t *)"Cannot place wall here!", White, Black))
+			// 									 : (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
+			// 												 (uint8_t *)"Cannot place wall here!", Red, Black));
+			// 		break;
+			// 	}
+			// 	// If we are here we can finalize the move
+			// 	// We first need to simulate the move
+			// 	game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+			// 	game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+			// 	game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
+			// 	if (legal_wall_placement(&game))
+			// 	{
+			// 		game.player_turn == PLAYER_1 ? (game.player_1.available_walls--) : (game.player_2.available_walls--);
+			// 		game.player_turn == PLAYER_1 ? (p1_walls_update(game.player_1.available_walls)) : (p2_walls_update(game.player_2.available_walls));
+			// 		swap_turn(&game, select);
+			// 	}
+			// 	else
+			// 	{
+			// 		game.player_turn == PLAYER_1 ? (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
+			// 												 (uint8_t *)"Cannot place wall here!", White, Black))
+			// 									 : (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
+			// 												 (uint8_t *)"Cannot place wall here!", Red, Black));
+			// 		game.board[game.current_wall.top.x][game.current_wall.top.y].availability = FREE;
+			// 		game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = FREE;
+			// 		game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = FREE;
+			// 	}
+			// }
 			break;
 		default:
 			break;
@@ -115,16 +116,7 @@ void RIT_IRQHandler(void)
 			if (game.game_status == OVER)
 				break;
 			// If we end up here the game is in progress and we have a move
-			if (game.input_mode == PLAYER_MOVEMENT)
-			{
-				move_player(DOWN, &game);
-			}
-			else
-			{
-				// it's a wall placement
-				move_wall(WALL_DOWN, &game);
-			}
-
+			move_dispatcher(DOWN, &game);
 			break;
 		default:
 			break;
@@ -145,15 +137,7 @@ void RIT_IRQHandler(void)
 			if (game.game_status == OVER)
 				break;
 			// If we end up here the game is in progress and we have a move
-			if (game.input_mode == PLAYER_MOVEMENT)
-			{
-				move_player(LEFT, &game);
-			}
-			else
-			{
-				// it's a wall placement
-				move_wall(WALL_LEFT, &game);
-			}
+			move_dispatcher(LEFT, &game);
 			break;
 		default:
 			break;
@@ -174,15 +158,7 @@ void RIT_IRQHandler(void)
 			if (game.game_status == OVER)
 				break;
 			// If we end up here the game is in progress and we have a move
-			if (game.input_mode == PLAYER_MOVEMENT)
-			{
-				move_player(RIGHT, &game);
-			}
-			else
-			{
-				// it's a wall placement
-				move_wall(WALL_RIGHT, &game);
-			}
+			move_dispatcher(RIGHT, &game);
 			break;
 		default:
 			break;
@@ -202,15 +178,7 @@ void RIT_IRQHandler(void)
 			if (game.game_status == OVER)
 				break;
 			// If we end up here the game is in progress and we have a move
-			if (game.input_mode == PLAYER_MOVEMENT)
-			{
-				move_player(UP, &game);
-			}
-			else
-			{
-				// it's a wall placement
-				move_wall(WALL_UP, &game);
-			}
+			move_dispatcher(UP, &game);
 			break;
 		default:
 			break;
@@ -260,55 +228,56 @@ void RIT_IRQHandler(void)
 			{
 			case 2:
 				// we have to enable the wall mode
-				if (game.game_status == RUNNING)
-				{
-					if (game.input_mode == PLAYER_MOVEMENT)
-					{
-						if (game.player_turn == PLAYER_1)
-						{
-							if (game.player_1.available_walls == 0)
-							{
-								GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", White, Black);
-								GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", White, Black);
-								break;
-							}
-						}
-						else
-						{
-							if (game.player_2.available_walls == 0)
-							{
-								GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", Red, Black);
-								GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", Red, Black);
-								break;
-							}
-						}
-						// game.player_turn == PLAYER_1 ? (update_player_token_pos(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate,
-						// 														game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_1))
-						// 							 : (update_player_token_pos(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate,
-						// 														game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate, PLAYER_2));
-						// game.player_turn == PLAYER_1 ? (game.player_1.tmp_x_matrix_coordinate = game.player_1.x_matrix_coordinate) : (game.player_2.tmp_x_matrix_coordinate = game.player_2.x_matrix_coordinate);
-						// game.player_turn == PLAYER_1 ? (game.player_1.tmp_y_matrix_coordinate = game.player_1.y_matrix_coordinate) : (game.player_2.tmp_y_matrix_coordinate = game.player_2.y_matrix_coordinate);
-						// show_available_moves(&game, HIDE);
-						// game.input_mode = WALL_MODE;
-						// // We also need to initialize the wall struct
-						// // initial position: [5][4]|[5][5|[5][6]
-						// game.current_wall.top.x = 5;
-						// game.current_wall.top.y = 4;
-						// game.current_wall.middle.x = 5;
-						// game.current_wall.middle.y = 5;
-						// game.current_wall.bottom.x = 5;
-						// game.current_wall.bottom.y = 6;
-						// draw_walls();
-					}
-					else
-					{
-						// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.top, HORIZONTAL)) : (clear_wall(game.current_wall.top, VERTICAL));
-						// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.middle, HORIZONTAL)) : (clear_wall(game.current_wall.middle, VERTICAL));
-						// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.bottom, HORIZONTAL)) : (clear_wall(game.current_wall.bottom, VERTICAL));
-						// game.input_mode = PLAYER_MOVEMENT;
-						// show_available_moves(&game, SHOW);
-					}
-				}
+				// if (game.game_status == RUNNING)
+				// {
+				// 	if (game.input_mode == PLAYER_MOVEMENT)
+				// 	{
+				// 		if (game.player_turn == PLAYER_1)
+				// 		{
+				// 			if (game.player_1.available_walls == 0)
+				// 			{
+				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", White, Black);
+				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", White, Black);
+				// 				break;
+				// 			}
+				// 		}
+				// 		else
+				// 		{
+				// 			if (game.player_2.available_walls == 0)
+				// 			{
+				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", Red, Black);
+				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", Red, Black);
+				// 				break;
+				// 			}
+				// 		}
+				// game.player_turn == PLAYER_1 ? (update_player_token_pos(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate,
+				// 														game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_1))
+				// 							 : (update_player_token_pos(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate,
+				// 														game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate, PLAYER_2));
+				// game.player_turn == PLAYER_1 ? (game.player_1.tmp_x_matrix_coordinate = game.player_1.x_matrix_coordinate) : (game.player_2.tmp_x_matrix_coordinate = game.player_2.x_matrix_coordinate);
+				// game.player_turn == PLAYER_1 ? (game.player_1.tmp_y_matrix_coordinate = game.player_1.y_matrix_coordinate) : (game.player_2.tmp_y_matrix_coordinate = game.player_2.y_matrix_coordinate);
+				// show_available_moves(&game, HIDE);
+				// game.input_mode = WALL_MODE;
+				// // We also need to initialize the wall struct
+				// // initial position: [5][4]|[5][5|[5][6]
+				// game.current_wall.top.x = 5;
+				// game.current_wall.top.y = 4;
+				// game.current_wall.middle.x = 5;
+				// game.current_wall.middle.y = 5;
+				// game.current_wall.bottom.x = 5;
+				// game.current_wall.bottom.y = 6;
+				// draw_walls();
+				// 	}
+				// 	else
+				// 	{
+				// 		// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.top, HORIZONTAL)) : (clear_wall(game.current_wall.top, VERTICAL));
+				// 		// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.middle, HORIZONTAL)) : (clear_wall(game.current_wall.middle, VERTICAL));
+				// 		// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.bottom, HORIZONTAL)) : (clear_wall(game.current_wall.bottom, VERTICAL));
+				// 		// game.input_mode = PLAYER_MOVEMENT;
+				// 		// show_available_moves(&game, SHOW);
+				// 	}
+				// }
+				key1_button_pressed();
 				break;
 			default:
 				// se voglio gestire il button on X click
@@ -335,12 +304,13 @@ void RIT_IRQHandler(void)
 			{
 			case 2:
 				// We need to rotate the wall by 90 degrees
-				if (game.game_status == RUNNING && game.input_mode == WALL_MODE)
-				{
-					// we need to do something
-					move_wall(WALL_ROTATION, &game);
-					draw_walls();
-				}
+				// if (game.game_status == RUNNING && game.input_mode == WALL_MODE)
+				// {
+				// 	// we need to do something
+				// 	move_wall(WALL_ROTATION, &game);
+				// 	draw_walls();
+				// }
+				key2_button_pressed();
 				break;
 			default:
 				// se voglio gestire il button on X click

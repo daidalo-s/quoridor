@@ -27,13 +27,33 @@ Project File Date:  01/17/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling graphics.c...
-graphics\graphics.c(680): warning:  #1-D: last line of file ends without a newline
-  }
-graphics\graphics.c: 1 warning, 0 errors
+compiling quoridor.c...
+game\./player.h(16): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\quoridor.c(288): warning:  #223-D: function "move_wall" declared implicitly
+                  move_wall(UP);
+game\quoridor.c(292): warning:  #223-D: function "move_wall" declared implicitly
+                  move_wall(LEFT);
+game\quoridor.c(296): warning:  #223-D: function "move_wall" declared implicitly
+                  move_wall(RIGHT);
+game\quoridor.c(301): warning:  #223-D: function "move_wall" declared implicitly
+                  move_wall(DOWN);
+game\quoridor.c(306): warning:  #223-D: function "move_wall" declared implicitly
+                  move_wall(ROTATION);
+game\quoridor.c: 6 warnings, 0 errors
+compiling player.c...
+game\./player.h(16): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\player.c(51): warning:  #177-D: variable "destination"  was declared but never referenced
+      matrix_point destination;
+game\player.c(172): warning:  #550-D: variable "old_tmp_x"  was set but never used
+      uint8_t old_tmp_x, old_tmp_y;
+game\player.c(172): warning:  #550-D: variable "old_tmp_y"  was set but never used
+      uint8_t old_tmp_x, old_tmp_y;
+game\player.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=29880 RO-data=5548 RW-data=44 ZI-data=4852  
-".\sample.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=29240 RO-data=5548 RW-data=44 ZI-data=4852  
+".\sample.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 

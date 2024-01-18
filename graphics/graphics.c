@@ -52,7 +52,7 @@ void draw_board(void)
  * @param y -> a board column index
  * @param player
  */
-void draw_player_token(ui8 x, ui8 y)
+void draw_player_token(ui8 x, ui8 y, active_player player)
 {
     screen_point point;
     int i, j;
@@ -64,7 +64,7 @@ void draw_player_token(ui8 x, ui8 y)
         point.x = point.x = 5 + ((y / 2) * ITERATION_OFFSET) + 1;
         for (j = 0; j < SQUARE_SIDE - 1; j++)
         {
-            if (game.player_turn == PLAYER_1)
+            if (player == PLAYER_1)
             {
                 LCD_SetPoint(point.x, point.y, RGB565CONVERT(the_pirate.pixel_data[offset], the_pirate.pixel_data[offset + 1], the_pirate.pixel_data[offset + 2]));
             }
@@ -109,12 +109,14 @@ void delete_player_token(ui8 x, ui8 y)
  * draws the token again in the new position
  * @param x -> the new x matrix coordinate
  * @param y -> the new y matrix coordinate
- * @param player -> the player interested by the move
  */
 void update_player_token_pos(ui8 x, ui8 y)
 {
-    show_available_moves(&game);
-    draw_player_token(x, y);
+    player current_player;
+    game.player_turn == PLAYER_1 ? (current_player = game.player_1) : (current_player = game.player_2);
+    delete_player_token(current_player.x_matrix_coordinate, current_player.y_matrix_coordinate);
+    show_available_moves();
+    draw_player_token(x, y, game.player_turn);
 }
 
 /**
@@ -186,6 +188,29 @@ void show_available_moves(void)
         for (i = 0; i < game.player_2.num_of_possible_moves; i++)
         {
             draw_available_move(game.player_2.possible_moves[i].x, game.player_2.possible_moves[i].y);
+        }
+    }
+    return;
+}
+
+/**
+ * @brief This function deletes all the available moves given an active_player
+ */
+void delete_available_moves(void)
+{
+    ui8 i;
+    if (game.player_turn == PLAYER_1)
+    {
+        for (i = 0; i < game.player_1.num_of_possible_moves; i++)
+        {
+            clear_available_move(game.player_1.possible_moves[i].x, game.player_1.possible_moves[i].y);
+        }
+    }
+    else
+    {
+        for (i = 0; i < game.player_2.num_of_possible_moves; i++)
+        {
+            clear_available_move(game.player_2.possible_moves[i].x, game.player_2.possible_moves[i].y);
         }
     }
     return;

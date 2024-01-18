@@ -11,6 +11,15 @@
 #define ui16 uint16_t
 #define NUM_MOVES 4
 
+typedef enum move_type
+{
+    UP,
+    DOWN,
+    LEFT,
+    RIGHT,
+    ROTATION
+} move_type;
+
 typedef enum show_or_hide
 {
     SHOW,
@@ -48,13 +57,13 @@ typedef enum game_status
     OVER
 } game_status;
 
-typedef enum move_type
-{
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT
-} move_type;
+// typedef enum move_type
+// {
+//     UP,
+//     DOWN,
+//     LEFT,
+//     RIGHT
+// } move_type;
 
 typedef enum wall_move_type
 {
@@ -144,10 +153,16 @@ void game_init(game_data *);
 void game_run(void);
 void init_players(game_data *);
 void game_start(game_data *);
-void move_player(move_type move, game_data *);
 void swap_turn(game_data *, uint8_t);
 void game_over(game_data *, player);
 void save_last_move(game_data *);
 void board_cell_type_init(game_data *);
-void turn_manager(game_data *);
+void turn_manager(game_data *, ui8);
+void p1_turn(game_data *);
+void p2_turn(game_data *);
+void confirm_player_move(game_data *);
+void move_dispatcher(move_type, game_data *);
+void select_button_pressed(void);
+void key1_button_pressed(void);
+void key2_button_pressed(void);
 #endif

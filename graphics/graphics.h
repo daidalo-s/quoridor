@@ -70,13 +70,13 @@ void draw_board(void);
  * @brief Given the active_player from game->player_turn, it draws
  * the corresponding token at the x-y passed as input
  */
-void draw_player_token(ui8, ui8);
+void draw_player_token(ui8, ui8, active_player);
 
 /**
  * @brief Given the two coordinates, clears the cell background with
  * black (== empty cell)
  */
-void delete_player_token(ui8, ui8, active_player);
+void delete_player_token(ui8, ui8);
 
 /**
  * @brief This function given the two new coordinates of the
@@ -101,7 +101,13 @@ void clear_available_move(ui8, ui8);
  * @brief show_available_moves loops in the possible_moves array and
  * draws all of them using draw_available_move
  */
-void show_available_moves();
+void show_available_moves(void);
+
+/**
+ * @brief This function deletes all the available moves drawn on the
+ * board given an active_player
+ */
+void delete_available_moves(void);
 
 /**
  * @brief This function updates the number of seconds remaining for
