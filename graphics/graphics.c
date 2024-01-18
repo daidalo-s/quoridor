@@ -161,8 +161,8 @@ void clear_available_move(ui8 x, ui8 y)
         point.x = point.x = 5 + ((y / 2) * ITERATION_OFFSET) + 1;
         for (j = 0; j < SQUARE_SIDE - 1; j++)
         {
-            if (((x == game.player_1.tmp_x_matrix_coordinate && y == game.player_1.tmp_y_matrix_coordinate) || (x == game.player_2.tmp_x_matrix_coordinate && y == game.player_2.tmp_y_matrix_coordinate)) && game.game_status == RUNNING)
-                return;
+            // if (((x == game.player_1.tmp_x_matrix_coordinate && y == game.player_1.tmp_y_matrix_coordinate) || (x == game.player_2.tmp_x_matrix_coordinate && y == game.player_2.tmp_y_matrix_coordinate)) && game.game_status == RUNNING)
+            //     return;
             LCD_SetPoint(point.x, point.y, RGB565CONVERT(0, 0, 0));
             point.x++;
         }

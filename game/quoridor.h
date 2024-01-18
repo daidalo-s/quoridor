@@ -165,4 +165,6 @@ void move_dispatcher(move_type, game_data *);
 void select_button_pressed(void);
 void key1_button_pressed(void);
 void key2_button_pressed(void);
+void reset_p1_token(void);
+void reset_p2_token(void);
 #endif

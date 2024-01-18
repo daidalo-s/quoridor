@@ -131,18 +131,14 @@ void turn_manager(game_data *game, ui8 time_over)
                 if (game->player_turn == PLAYER_1)
                 {
                     // player_1 stuff
-                    delete_available_moves();
-                    delete_player_token(game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate);
-                    draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                    reset_p1_token();
                     p2_turn(game);
                     return;
                 }
                 else
                 {
                     // player_2 stuff
-                    delete_available_moves();
-                    delete_player_token(game->player_2.tmp_x_matrix_coordinate, game->player_2.tmp_y_matrix_coordinate);
-                    draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                    reset_p2_token();
                     p1_turn(game);
                     return;
                 }
@@ -171,15 +167,23 @@ void turn_manager(game_data *game, ui8 time_over)
                 {
                     // player_1 stuff
                     confirm_player_move(game);
-                    delete_available_moves();
-                    draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                    if (game->game_status != OVER)
+                    {
+                        delete_available_moves();
+                        draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                        p2_turn(game);
+                    }
                 }
                 else
                 {
                     // player_2 stuff
                     confirm_player_move(game);
-                    delete_available_moves();
-                    draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                    if (game->game_status != OVER)
+                    {
+                        delete_available_moves();
+                        draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                        p1_turn(game);
+                    }
                 }
             }
             else
@@ -226,6 +230,20 @@ void p2_turn(game_data *game)
     find_available_moves(game);
     show_available_moves();
     return;
+}
+
+void reset_p1_token(void)
+{
+    delete_available_moves();
+    delete_player_token(game.player_1.tmp_x_matrix_coordinate, game.player_1.tmp_y_matrix_coordinate);
+    draw_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_2);
+}
+
+void reset_p2_token(void)
+{
+    delete_available_moves();
+    delete_player_token(game.player_2.tmp_x_matrix_coordinate, game.player_2.tmp_y_matrix_coordinate);
+    draw_player_token(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate, PLAYER_2);
 }
 
 void confirm_player_move(game_data *game)
@@ -313,17 +331,21 @@ void move_dispatcher(move_type direction, game_data *game)
  * @brief We need to distinguish between wall mode and player mode and simply
  * call the function that handles it
  */
+// TODO
 void select_button_pressed()
 {
     if (game.input_mode == PLAYER_MOVEMENT)
     {
         // call the appropriate function
+        turn_manager(&game, 0);
     }
     else
     {
         // call the wall function
     }
 }
+
+// TODO
 void key1_button_pressed()
 {
     if (game.input_mode == PLAYER_MOVEMENT)
@@ -331,6 +353,8 @@ void key1_button_pressed()
         // call an appropriate function, we need to enter in wall mode
     }
 }
+
+// TODO
 void key2_button_pressed()
 {
     if (game.input_mode == WAIT_MODE)
