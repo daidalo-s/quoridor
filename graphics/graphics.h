@@ -54,11 +54,24 @@
 #define X_MESSAGE_AREA 5
 #define Y_MESSAGE_AREA 240
 
-typedef enum wall_orientation
+// In theory we should be in the starting point
+
+// x -> top.y
+#define HORIZONTAL_WALL_X_OFFSET(x) (5 + ((SQUARE_SIDE + WALL_SIZE) * (x / 2)))
+// x -> top.x
+#define HORIZONTAL_WALL_Y_OFFSET(x) ((5 + SQUARE_SIDE + 3) * ((x / 2) + 1))
+// x -> top.y
+#define VERTICAL_WALL_X_OFFSET(x) ((5 + SQUARE_SIDE + 3) * ((x / 2) + 1))
+// x -> top.x
+#define VERTICAL_WALL_Y_OFFSET(x) (5 + ((SQUARE_SIDE + WALL_SIZE) * (x / 2)))
+
+#define WALL_LENGTH ((SQUARE_SIDE * 2) + 8)
+
+typedef struct screen_point
 {
-    VERTICAL,
-    HORIZONTAL
-} wall_orientation;
+    ui16 x;
+    ui16 y;
+} screen_point;
 
 /**
  * @brief This function simply draws the game board
@@ -140,6 +153,9 @@ void show_winner_message(player);
 // TODO: da qua in poi da fixare
 void draw_walls(void);
 void update_wall_drawing(wall_move_type);
-void clear_wall(screen_point, wall_orientation);
+void clear_wall(screen_point);
+
+void draw_current_wall(void);
+screen_point get_current_wall_screen_coordinates(void);
 
 #endif

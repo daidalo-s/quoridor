@@ -1,7 +1,34 @@
 #include "./walls.h"
 #include "../graphics/graphics.h"
 
+extern game_data game;
+
 // inside here all the functions related to the walls management
+
+/**
+ * @brief In here we init the current wall with the position and the orientation
+ * and we draw it
+ * TODO: this needs to be completed
+ */
+void current_wall_init(void)
+{
+    game.current_wall.wall_orientation = HORIZONTAL;
+    game.current_wall.top.x = 5;
+    game.current_wall.top.y = 4;
+    game.current_wall.middle.x = 5;
+    game.current_wall.middle.y = 5;
+    game.current_wall.bottom.x = 5;
+    game.current_wall.bottom.y = 6;
+    draw_current_wall();
+}
+
+/**
+ * @brief In this function we simply delete the current wall at
+ * whatever coordinates
+ */
+void delete_current_wall(void)
+{
+}
 
 // Inside of each move we have to check if it's feasible
 // The only check we need to do is on the middle cell

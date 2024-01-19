@@ -323,18 +323,6 @@ void draw_walls(void)
         // Ora mi devo spostare verso il basso, aumenta la y -> 3 in teoria ci mette in mezzo
         screen_coordinates.y += SQUARE_SIDE + 2;
         // Possiamo disegnare 3 linee
-        // game.player_turn == PLAYER_1 ? (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y,
-        //                                              screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y, White))
-        //                              : (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y,
-        //                                              screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y, Red));
-        // game.player_turn == PLAYER_1 ? (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 1,
-        //                                              screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 1, White))
-        //                              : (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 1,
-        //                                              screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 1, Red));
-        // game.player_turn == PLAYER_1 ? (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 2,
-        //                                              screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 2, White))
-        //                              : (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 2,
-        //                                              screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 2, Red));
         LCD_DrawLine(screen_coordinates.x, screen_coordinates.y, screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y, Cyan);
         LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 1, screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 1, Cyan);
         LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 2, screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 2, Cyan);
@@ -349,18 +337,6 @@ void draw_walls(void)
         screen_coordinates.y = 5 + ((nearest_playable_cell.x / 2) * ITERATION_OFFSET);
         // Ora mi devo spostare a destra
         screen_coordinates.x += SQUARE_SIDE + 2;
-        // game.player_turn == PLAYER_1 ? (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y,
-        //                                              screen_coordinates.x, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), White))
-        //                              : (LCD_DrawLine(screen_coordinates.x, screen_coordinates.y,
-        //                                              screen_coordinates.x, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Red));
-        // game.player_turn == PLAYER_1 ? (LCD_DrawLine(screen_coordinates.x + 1, screen_coordinates.y,
-        //                                              screen_coordinates.x + 1, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), White))
-        //                              : (LCD_DrawLine(screen_coordinates.x + 1, screen_coordinates.y,
-        //                                              screen_coordinates.x + 1, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Red));
-        // game.player_turn == PLAYER_1 ? (LCD_DrawLine(screen_coordinates.x + 2, screen_coordinates.y,
-        //                                              screen_coordinates.x + 2, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), White))
-        //                              : (LCD_DrawLine(screen_coordinates.x + 2, screen_coordinates.y,
-        //                                              screen_coordinates.x + 2, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Red));
         LCD_DrawLine(screen_coordinates.x, screen_coordinates.y, screen_coordinates.x, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Cyan);
         LCD_DrawLine(screen_coordinates.x + 1, screen_coordinates.y, screen_coordinates.x + 1, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Cyan);
         LCD_DrawLine(screen_coordinates.x + 2, screen_coordinates.y, screen_coordinates.x + 2, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Cyan);
@@ -383,14 +359,14 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.middle.x - 1;
                 point.y = game.current_wall.middle.y;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             // under middle
             if (game.board[game.current_wall.middle.x + 1][game.current_wall.middle.y].availability == FREE)
             {
                 point.x = game.current_wall.middle.x + 1;
                 point.y = game.current_wall.middle.y;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
         }
         else
@@ -401,14 +377,14 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.middle.x;
                 point.y = game.current_wall.middle.y - 1;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             // checking right
             if (game.board[game.current_wall.middle.x][game.current_wall.middle.y + 1].availability == FREE)
             {
                 point.x = game.current_wall.middle.x;
                 point.y = game.current_wall.middle.y + 1;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
         }
         draw_walls();
@@ -423,19 +399,19 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.top.x + 2;
                 point.y = game.current_wall.top.y;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             if (game.board[game.current_wall.middle.x + 2][game.current_wall.middle.y].availability == FREE)
             {
                 point.x = game.current_wall.middle.x + 2;
                 point.y = game.current_wall.middle.y;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             if (game.board[game.current_wall.bottom.x + 2][game.current_wall.bottom.y].availability == FREE)
             {
                 point.x = game.current_wall.bottom.x + 2;
                 point.y = game.current_wall.bottom.y;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
         }
         else
@@ -445,13 +421,13 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.bottom.x + 2;
                 point.y = game.current_wall.bottom.y;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             if (game.board[game.current_wall.bottom.x + 1][game.current_wall.top.y].availability == FREE)
             {
                 point.x = game.current_wall.bottom.x + 1;
                 point.y = game.current_wall.bottom.y;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
         }
         draw_walls();
@@ -466,19 +442,19 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.top.x - 2;
                 point.y = game.current_wall.top.y;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             if (game.board[game.current_wall.middle.x - 2][game.current_wall.middle.y].availability == FREE)
             {
                 point.x = game.current_wall.middle.x - 2;
                 point.y = game.current_wall.middle.y;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             if (game.board[game.current_wall.bottom.x - 2][game.current_wall.bottom.y].availability == FREE)
             {
                 point.x = game.current_wall.bottom.x - 2;
                 point.y = game.current_wall.bottom.y;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
         }
         else
@@ -488,13 +464,13 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.top.x - 2;
                 point.y = game.current_wall.top.y;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             if (game.board[game.current_wall.top.x - 1][game.current_wall.top.y].availability == FREE)
             {
                 point.x = game.current_wall.top.x - 1;
                 point.y = game.current_wall.top.y;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
         }
         draw_walls();
@@ -509,13 +485,13 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.bottom.x;
                 point.y = game.current_wall.bottom.y + 1;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y + 2].availability == FREE)
             {
                 point.x = game.current_wall.bottom.x;
                 point.y = game.current_wall.bottom.y + 2;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
         }
         else
@@ -525,19 +501,19 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.top.x;
                 point.y = game.current_wall.top.y + 2;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             if (game.board[game.current_wall.middle.x][game.current_wall.middle.y + 2].availability == FREE)
             {
                 point.x = game.current_wall.middle.x;
                 point.y = game.current_wall.middle.y + 2;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y + 2].availability == FREE)
             {
                 point.x = game.current_wall.bottom.x;
                 point.y = game.current_wall.bottom.y + 2;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
         }
         draw_walls();
@@ -552,13 +528,13 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.top.x;
                 point.y = game.current_wall.top.y - 2;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
             if (game.board[game.current_wall.top.x][game.current_wall.top.y - 1].availability == FREE)
             {
                 point.x = game.current_wall.top.x;
                 point.y = game.current_wall.top.y - 1;
-                clear_wall(point, HORIZONTAL);
+                // clear_wall(point, HORIZONTAL);
             }
         }
         else
@@ -568,19 +544,19 @@ void update_wall_drawing(wall_move_type move)
             {
                 point.x = game.current_wall.top.x;
                 point.y = game.current_wall.top.y - 2;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             if (game.board[game.current_wall.middle.x][game.current_wall.middle.y - 2].availability == FREE)
             {
                 point.x = game.current_wall.middle.x;
                 point.y = game.current_wall.middle.y - 2;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
             if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y - 2].availability == FREE)
             {
                 point.x = game.current_wall.bottom.x;
                 point.y = game.current_wall.bottom.y - 2;
-                clear_wall(point, VERTICAL);
+                // clear_wall(point, VERTICAL);
             }
         }
         draw_walls();
@@ -588,7 +564,7 @@ void update_wall_drawing(wall_move_type move)
     }
 }
 
-void clear_wall(screen_point point_to_clear, wall_orientation wall_orientation)
+void clear_wall(screen_point point_to_clear)
 {
     screen_point nearest_playable_cell;
     screen_point screen_coordinates;
@@ -615,7 +591,7 @@ void clear_wall(screen_point point_to_clear, wall_orientation wall_orientation)
     }
     else
     {
-        if (wall_orientation == VERTICAL)
+        if (game.current_wall.wall_orientation == VERTICAL)
         {
             // we need to clear right
             // è verticale, dobbiamo disegnare a destra
@@ -648,4 +624,51 @@ void clear_wall(screen_point point_to_clear, wall_orientation wall_orientation)
             LCD_DrawLine(screen_coordinates.x - 2, screen_coordinates.y + 2, screen_coordinates.x + (SQUARE_SIDE + 2), screen_coordinates.y + 2, Black);
         }
     }
+}
+
+/**
+ * @brief This function simply draws the current wall in whatever position.
+ * 1. understand the rotation and find the nearest_playable_cell
+ * 2. draw the wall
+ */
+void draw_current_wall(void)
+{
+    screen_point coordinates = get_current_wall_screen_coordinates();
+    // 4 drawline
+    if (game.current_wall.wall_orientation == VERTICAL)
+    {
+        LCD_DrawLine(coordinates.x, coordinates.y, coordinates.x, coordinates.y + WALL_LENGTH, Cyan);
+        LCD_DrawLine(coordinates.x + 1, coordinates.y, coordinates.x + 1, coordinates.y + WALL_LENGTH, Cyan);
+        LCD_DrawLine(coordinates.x + 2, coordinates.y, coordinates.x + 2, coordinates.y + WALL_LENGTH, Cyan);
+        // LCD_DrawLine(coordinates.x + 3, coordinates.y, coordinates.x + 3, coordinates.y + WALL_LENGTH, Cyan);
+    }
+    else
+    {
+        LCD_DrawLine(coordinates.x, coordinates.y, coordinates.x + WALL_LENGTH, coordinates.y, Cyan);
+        LCD_DrawLine(coordinates.x, coordinates.y + 1, coordinates.x + WALL_LENGTH, coordinates.y + 1, Cyan);
+        LCD_DrawLine(coordinates.x, coordinates.y + 2, coordinates.x + WALL_LENGTH, coordinates.y + 2, Cyan);
+        // LCD_DrawLine(coordinates.x, coordinates.y + 3, coordinates.x + WALL_LENGTH, coordinates.y + 3, Cyan);
+    }
+}
+
+/**
+ * @brief Get the current wall screen coordinates.
+ * We always return the top coordinates
+ * @return screen_point
+ */
+screen_point get_current_wall_screen_coordinates(void)
+{
+    screen_point starting_coordinates;
+    if (game.current_wall.wall_orientation == VERTICAL)
+    {
+        starting_coordinates.x = VERTICAL_WALL_X_OFFSET(game.current_wall.top.y);
+        starting_coordinates.y = VERTICAL_WALL_Y_OFFSET(game.current_wall.top.x);
+    }
+    else
+    {
+        // the wall is horizontal, the y has to increase of the offset
+        starting_coordinates.x = HORIZONTAL_WALL_X_OFFSET(game.current_wall.top.y);
+        starting_coordinates.y = HORIZONTAL_WALL_Y_OFFSET(game.current_wall.top.x);
+    }
+    return starting_coordinates;
 }

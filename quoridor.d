@@ -12,3 +12,4 @@
 .\quoridor.o: game\../graphics/graphics.h
 .\quoridor.o: game\../GLCD/GLCD.h
 .\quoridor.o: game\./player.h
+.\quoridor.o: game\./walls.h

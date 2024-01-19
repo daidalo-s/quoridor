@@ -14,6 +14,7 @@
 #include "../graphics/graphics.h"
 #include "../GLCD/GLCD.h"
 #include "./player.h"
+#include "./walls.h"
 
 extern game_data game;
 
@@ -147,14 +148,7 @@ void turn_manager(game_data *game, ui8 time_over)
             {
                 // the player was trying to place a wall
                 // TODO: this still needs to be implemented
-                if (game->player_turn == PLAYER_1)
-                {
-                    // player_1 stuff
-                }
-                else
-                {
-                    // player_2 stuff
-                }
+                delete_current_wall();
             }
         }
         else
@@ -236,7 +230,7 @@ void reset_p1_token(void)
 {
     delete_available_moves();
     delete_player_token(game.player_1.tmp_x_matrix_coordinate, game.player_1.tmp_y_matrix_coordinate);
-    draw_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_2);
+    draw_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_1);
 }
 
 void reset_p2_token(void)
@@ -303,25 +297,25 @@ void move_dispatcher(move_type direction, game_data *game)
             // Wall mode
             if (direction == UP)
             {
-                move_wall(UP);
+                // move_wall(UP);
             }
             else if (direction == LEFT)
             {
-                move_wall(LEFT);
+                // move_wall(LEFT);
             }
             else if (direction == RIGHT)
             {
-                move_wall(RIGHT);
+                // move_wall(RIGHT);
             }
             else if (direction == DOWN)
             {
                 // down
-                move_wall(DOWN);
+                // move_wall(DOWN);
             }
             else
             {
                 // rotation
-                move_wall(ROTATION);
+                // move_wall(ROTATION);
             }
         }
     }
@@ -331,18 +325,9 @@ void move_dispatcher(move_type direction, game_data *game)
  * @brief We need to distinguish between wall mode and player mode and simply
  * call the function that handles it
  */
-// TODO
 void select_button_pressed()
 {
-    if (game.input_mode == PLAYER_MOVEMENT)
-    {
-        // call the appropriate function
-        turn_manager(&game, 0);
-    }
-    else
-    {
-        // call the wall function
-    }
+    turn_manager(&game, 0);
 }
 
 // TODO
@@ -351,6 +336,7 @@ void key1_button_pressed()
     if (game.input_mode == PLAYER_MOVEMENT)
     {
         // call an appropriate function, we need to enter in wall mode
+        wall_mode_enter();
     }
 }
 
@@ -361,6 +347,27 @@ void key2_button_pressed()
     {
         // it's a wall rotation
     }
+}
+
+/**
+ * @brief We need to draw the current_wall
+ */
+void wall_mode_enter(void)
+{
+    // we undraw the available moves
+    delete_available_moves();
+    // reset the player token
+    reset_p1_token();
+    // draw the current_wall wall
+    current_wall_init();
+}
+
+/**
+ * @brief We need to delete the current wall from the screen
+ */
+void wall_mode_exit(void)
+{
+    // TODO
 }
 
 /**

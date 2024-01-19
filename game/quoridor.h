@@ -20,6 +20,12 @@ typedef enum move_type
     ROTATION
 } move_type;
 
+typedef enum wall_orientation
+{
+    HORIZONTAL,
+    VERTICAL
+} wall_orientation;
+
 typedef enum show_or_hide
 {
     SHOW,
@@ -114,17 +120,12 @@ typedef struct player
     ui8 num_of_possible_moves;
 } player;
 
-typedef struct screen_point
-{
-    ui16 x;
-    ui16 y;
-} screen_point;
-
 typedef struct wall
 {
     matrix_point top;
     matrix_point middle;
     matrix_point bottom;
+    wall_orientation wall_orientation;
 } wall;
 
 typedef struct stack
@@ -149,6 +150,7 @@ typedef struct game_data
 } game_data;
 
 // Functions prototypes
+// TODO: check which of them are still here
 void game_init(game_data *);
 void game_run(void);
 void init_players(game_data *);
@@ -167,4 +169,6 @@ void key1_button_pressed(void);
 void key2_button_pressed(void);
 void reset_p1_token(void);
 void reset_p2_token(void);
+void wall_mode_enter(void);
+void wall_mode_exit(void);
 #endif
