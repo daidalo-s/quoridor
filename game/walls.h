@@ -12,4 +12,5 @@ void push(game_data *, matrix_point);
 matrix_point pop(game_data *);
 void current_wall_init(void);
 void delete_current_wall(void);
+void find_all_possible_walls(void);
 #endif

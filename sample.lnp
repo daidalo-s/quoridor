@@ -20,6 +20,7 @@
 ".\graphics.o"
 ".\disco_dance.o"
 ".\the_pirate.o"
+".\magda.o"
 --strict --scatter ".\sample.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

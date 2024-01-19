@@ -228,3 +228,49 @@ matrix_point pop(game_data *game)
     vertex = game->stack.stack[game->stack.index];
     return vertex;
 }
+
+void find_all_possible_walls()
+{
+    ui8 i, j;
+    wall current_wall;
+    game.wall_moves.num_of_moves = 0;
+    // prima tutti gli orizzontali
+    for (i = 1; i < 12; i += 2)
+    {
+        for (j = 0; j < 11; j += 2)
+        {
+            if (game.board[i][j].availability == FREE && game.board[i][j + 1].availability == FREE && game.board[i][j + 2].availability == FREE)
+            {
+                // we can add the wall
+                current_wall.top.x = i;
+                current_wall.top.y = j;
+                current_wall.middle.x = i;
+                current_wall.middle.y = j + 1;
+                current_wall.bottom.x = i;
+                current_wall.bottom.y = j + 2;
+                current_wall.wall_orientation = HORIZONTAL;
+                game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = current_wall;
+                game.wall_moves.num_of_moves++;
+            }
+        }
+    }
+    // poi i verticali
+    for (i = 0; i < 11; i += 2)
+    {
+        for (j = 1; j < 12; j += 2)
+        {
+            if (game.board[i][j].availability == FREE && game.board[i + 1][j].availability == FREE && game.board[i + 2][j].availability == FREE)
+            {
+                current_wall.top.x = i;
+                current_wall.top.y = j;
+                current_wall.middle.x = i;
+                current_wall.middle.y = j + 1;
+                current_wall.bottom.x = i;
+                current_wall.bottom.y = j + 2;
+                current_wall.wall_orientation = VERTICAL;
+                game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = current_wall;
+                game.wall_moves.num_of_moves++;
+            }
+        }
+    }
+}

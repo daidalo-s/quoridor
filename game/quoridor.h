@@ -23,7 +23,8 @@ typedef enum move_type
 typedef enum wall_orientation
 {
     HORIZONTAL,
-    VERTICAL
+    VERTICAL,
+    NONE
 } wall_orientation;
 
 typedef enum show_or_hide
@@ -134,6 +135,12 @@ typedef struct stack
     int index;
 } stack;
 
+typedef struct wall_moves
+{
+    wall all_possible_walls[200];
+    ui8 num_of_moves;
+} wall_moves;
+
 typedef struct game_data
 {
     /* data */
@@ -147,6 +154,7 @@ typedef struct game_data
     wall current_wall;
     stack stack;
     uint32_t last_move;
+    wall_moves wall_moves;
 } game_data;
 
 // Functions prototypes

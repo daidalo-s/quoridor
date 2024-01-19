@@ -15,6 +15,7 @@
 #include "../GLCD/GLCD.h"
 #include "./player.h"
 #include "./walls.h"
+#include "../magda/magda.h"
 
 extern game_data game;
 
@@ -204,13 +205,22 @@ void turn_manager(game_data *game, ui8 time_over)
 
 void p1_turn(game_data *game)
 {
+    minimax_res move;
     game->input_mode = PLAYER_MOVEMENT;
     game->player_turn = PLAYER_1;
     game->game_tick = 20;
     reset_timer(0);
     enable_timer(0);
-    find_available_moves(game);
-    show_available_moves();
+    // find_available_moves(game);
+    // show_available_moves();
+    move = minimax(1, 1);
+    delete_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate);
+    game->player_1.tmp_x_matrix_coordinate = move.x;
+    game->player_1.tmp_y_matrix_coordinate = move.y;
+    confirm_player_move(game);
+    // delete_available_moves();
+    draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+    p2_turn(game);
     return;
 }
 

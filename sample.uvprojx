@@ -599,6 +599,21 @@
           <GroupName>player</GroupName>
         </Group>
         <Group>
+          <GroupName>magda</GroupName>
+          <Files>
+            <File>
+              <FileName>magda.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\magda\magda.c</FilePath>
+            </File>
+            <File>
+              <FileName>magda.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\magda\magda.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
