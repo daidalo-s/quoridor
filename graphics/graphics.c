@@ -296,336 +296,6 @@ void show_winner_message(player winner)
     }
 }
 
-/********************************* BELOW HERE IT'S ALL RADIOACTIVE **************************/
-
-// Se cancellando finisco per cancellare un muro già tracciato lo devo ridisegnare -> uso middle per questo
-void draw_walls(void)
-{
-    // matrix point?
-    screen_point nearest_playable_cell;
-    screen_point screen_coordinates;
-
-    /**
-     * Il codice che segue disegna current_wall qualsiasi sia il suo orientamento e anche dopo ogni spostamento
-     */
-
-    // Arrivo alla cella, io voglio disegnare solo top
-    // Se orizzontale sta sotto la cella a cui arrivo, se verticale sta a destra
-    if (game.current_wall.top.x == game.current_wall.bottom.x)
-    {
-        // è orizzontale, dobbiamo disegnare sotto
-        nearest_playable_cell.x = game.current_wall.top.x - 1;
-        // la y non deve cambiare
-        nearest_playable_cell.y = game.current_wall.top.y;
-        // Ora ho le coordinate della cella che uso come reference, ottieniamo i pixel
-        screen_coordinates.x = 5 + ((nearest_playable_cell.y / 2) * ITERATION_OFFSET);
-        screen_coordinates.y = 5 + ((nearest_playable_cell.x / 2) * ITERATION_OFFSET) + 1;
-        // Ora mi devo spostare verso il basso, aumenta la y -> 3 in teoria ci mette in mezzo
-        screen_coordinates.y += SQUARE_SIDE + 2;
-        // Possiamo disegnare 3 linee
-        LCD_DrawLine(screen_coordinates.x, screen_coordinates.y, screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y, Cyan);
-        LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 1, screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 1, Cyan);
-        LCD_DrawLine(screen_coordinates.x, screen_coordinates.y + 2, screen_coordinates.x + (SQUARE_SIDE * 2 + WALL_SIZE), screen_coordinates.y + 2, Cyan);
-    }
-    else
-    {
-        // è verticale, dobbiamo disegnare a destra
-        nearest_playable_cell.x = game.current_wall.top.x;
-        nearest_playable_cell.y = game.current_wall.top.y - 1;
-        // Ora ho le coordinate della cella che uso come reference, ottieniamo i pixel
-        screen_coordinates.x = 5 + ((nearest_playable_cell.y / 2) * ITERATION_OFFSET) + 1;
-        screen_coordinates.y = 5 + ((nearest_playable_cell.x / 2) * ITERATION_OFFSET);
-        // Ora mi devo spostare a destra
-        screen_coordinates.x += SQUARE_SIDE + 2;
-        LCD_DrawLine(screen_coordinates.x, screen_coordinates.y, screen_coordinates.x, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Cyan);
-        LCD_DrawLine(screen_coordinates.x + 1, screen_coordinates.y, screen_coordinates.x + 1, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Cyan);
-        LCD_DrawLine(screen_coordinates.x + 2, screen_coordinates.y, screen_coordinates.x + 2, screen_coordinates.y + (SQUARE_SIDE * 2 + WALL_SIZE), Cyan);
-    }
-}
-
-void update_wall_drawing(wall_move_type move)
-{
-    int horizontal;
-    screen_point point;
-    game.current_wall.top.x == game.current_wall.bottom.x ? (horizontal = 1) : (horizontal = 0);
-    if (move == WALL_ROTATION)
-    {
-        // If we are here the wall has been rotated -> before drawing current_wall we need to be sure we are not overriding things
-        if (horizontal)
-        {
-            // we need to search in a specific direction, both over middle and under middle
-            // Over middle
-            if (game.board[game.current_wall.middle.x - 1][game.current_wall.middle.y].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x - 1;
-                point.y = game.current_wall.middle.y;
-                // clear_wall(point, VERTICAL);
-            }
-            // under middle
-            if (game.board[game.current_wall.middle.x + 1][game.current_wall.middle.y].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x + 1;
-                point.y = game.current_wall.middle.y;
-                // clear_wall(point, VERTICAL);
-            }
-        }
-        else
-        {
-            // search in the vertical direction
-            // checking left
-            if (game.board[game.current_wall.middle.x][game.current_wall.middle.y - 1].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x;
-                point.y = game.current_wall.middle.y - 1;
-                // clear_wall(point, HORIZONTAL);
-            }
-            // checking right
-            if (game.board[game.current_wall.middle.x][game.current_wall.middle.y + 1].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x;
-                point.y = game.current_wall.middle.y + 1;
-                // clear_wall(point, HORIZONTAL);
-            }
-        }
-        draw_walls();
-        return;
-    }
-    else if (move == WALL_UP)
-    {
-        if (horizontal)
-        {
-            // we need to search in a specific direction, we need to check all 3 points
-            if (game.board[game.current_wall.top.x + 2][game.current_wall.top.y].availability == FREE)
-            {
-                point.x = game.current_wall.top.x + 2;
-                point.y = game.current_wall.top.y;
-                // clear_wall(point, HORIZONTAL);
-            }
-            if (game.board[game.current_wall.middle.x + 2][game.current_wall.middle.y].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x + 2;
-                point.y = game.current_wall.middle.y;
-                // clear_wall(point, HORIZONTAL);
-            }
-            if (game.board[game.current_wall.bottom.x + 2][game.current_wall.bottom.y].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x + 2;
-                point.y = game.current_wall.bottom.y;
-                // clear_wall(point, HORIZONTAL);
-            }
-        }
-        else
-        {
-            // search in the vertical direction
-            if (game.board[game.current_wall.bottom.x + 2][game.current_wall.top.y].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x + 2;
-                point.y = game.current_wall.bottom.y;
-                // clear_wall(point, VERTICAL);
-            }
-            if (game.board[game.current_wall.bottom.x + 1][game.current_wall.top.y].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x + 1;
-                point.y = game.current_wall.bottom.y;
-                // clear_wall(point, VERTICAL);
-            }
-        }
-        draw_walls();
-        return;
-    }
-    else if (move == WALL_DOWN)
-    {
-        if (horizontal)
-        {
-            // we need to search in a specific direction
-            if (game.board[game.current_wall.top.x - 2][game.current_wall.top.y].availability == FREE)
-            {
-                point.x = game.current_wall.top.x - 2;
-                point.y = game.current_wall.top.y;
-                // clear_wall(point, HORIZONTAL);
-            }
-            if (game.board[game.current_wall.middle.x - 2][game.current_wall.middle.y].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x - 2;
-                point.y = game.current_wall.middle.y;
-                // clear_wall(point, HORIZONTAL);
-            }
-            if (game.board[game.current_wall.bottom.x - 2][game.current_wall.bottom.y].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x - 2;
-                point.y = game.current_wall.bottom.y;
-                // clear_wall(point, HORIZONTAL);
-            }
-        }
-        else
-        {
-            // search in the vertical direction
-            if (game.board[game.current_wall.top.x - 2][game.current_wall.top.y].availability == FREE)
-            {
-                point.x = game.current_wall.top.x - 2;
-                point.y = game.current_wall.top.y;
-                // clear_wall(point, VERTICAL);
-            }
-            if (game.board[game.current_wall.top.x - 1][game.current_wall.top.y].availability == FREE)
-            {
-                point.x = game.current_wall.top.x - 1;
-                point.y = game.current_wall.top.y;
-                // clear_wall(point, VERTICAL);
-            }
-        }
-        draw_walls();
-        return;
-    }
-    else if (move == WALL_LEFT)
-    {
-        if (horizontal)
-        {
-            // we need to search in a specific direction
-            if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y + 1].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x;
-                point.y = game.current_wall.bottom.y + 1;
-                // clear_wall(point, HORIZONTAL);
-            }
-            if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y + 2].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x;
-                point.y = game.current_wall.bottom.y + 2;
-                // clear_wall(point, HORIZONTAL);
-            }
-        }
-        else
-        {
-            // search in the vertical direction
-            if (game.board[game.current_wall.top.x][game.current_wall.top.y + 2].availability == FREE)
-            {
-                point.x = game.current_wall.top.x;
-                point.y = game.current_wall.top.y + 2;
-                // clear_wall(point, VERTICAL);
-            }
-            if (game.board[game.current_wall.middle.x][game.current_wall.middle.y + 2].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x;
-                point.y = game.current_wall.middle.y + 2;
-                // clear_wall(point, VERTICAL);
-            }
-            if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y + 2].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x;
-                point.y = game.current_wall.bottom.y + 2;
-                // clear_wall(point, VERTICAL);
-            }
-        }
-        draw_walls();
-        return;
-    }
-    else
-    {
-        if (horizontal)
-        {
-            // we need to search in a specific direction
-            if (game.board[game.current_wall.top.x][game.current_wall.top.y - 2].availability == FREE)
-            {
-                point.x = game.current_wall.top.x;
-                point.y = game.current_wall.top.y - 2;
-                // clear_wall(point, HORIZONTAL);
-            }
-            if (game.board[game.current_wall.top.x][game.current_wall.top.y - 1].availability == FREE)
-            {
-                point.x = game.current_wall.top.x;
-                point.y = game.current_wall.top.y - 1;
-                // clear_wall(point, HORIZONTAL);
-            }
-        }
-        else
-        {
-            // search in the vertical direction
-            if (game.board[game.current_wall.top.x][game.current_wall.top.y - 2].availability == FREE)
-            {
-                point.x = game.current_wall.top.x;
-                point.y = game.current_wall.top.y - 2;
-                // clear_wall(point, VERTICAL);
-            }
-            if (game.board[game.current_wall.middle.x][game.current_wall.middle.y - 2].availability == FREE)
-            {
-                point.x = game.current_wall.middle.x;
-                point.y = game.current_wall.middle.y - 2;
-                // clear_wall(point, VERTICAL);
-            }
-            if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y - 2].availability == FREE)
-            {
-                point.x = game.current_wall.bottom.x;
-                point.y = game.current_wall.bottom.y - 2;
-                // clear_wall(point, VERTICAL);
-            }
-        }
-        draw_walls();
-        return;
-    }
-}
-
-void clear_wall(screen_point point_to_clear)
-{
-    screen_point nearest_playable_cell;
-    screen_point screen_coordinates;
-
-    // We need to understand if we need to clear also the mid cell
-    if ((point_to_clear.x % 2 != 0) && (point_to_clear.y % 2 != 0))
-    {
-        // we have to clear a middle cell
-        // whatever is the orientation, we choose the top left cell as a reference
-        nearest_playable_cell.x = point_to_clear.x - 1;
-        nearest_playable_cell.y = point_to_clear.y - 1;
-        screen_coordinates.x = 5 + ((nearest_playable_cell.y / 2) * ITERATION_OFFSET) + 1;
-        screen_coordinates.y = 5 + ((nearest_playable_cell.x / 2) * ITERATION_OFFSET);
-        screen_coordinates.x += SQUARE_SIDE;
-        // we are in the middle right from the starting point, going down one SQUARE_SIDE
-        screen_coordinates.y += SQUARE_SIDE + 2;
-        LCD_DrawLine(screen_coordinates.x, screen_coordinates.y, screen_coordinates.x, screen_coordinates.y + 6, Black);
-        LCD_DrawLine(screen_coordinates.x + 1, screen_coordinates.y, screen_coordinates.x + 1, screen_coordinates.y + 6, Black);
-        LCD_DrawLine(screen_coordinates.x + 2, screen_coordinates.y, screen_coordinates.x + 2, screen_coordinates.y + 6, Black);
-        LCD_DrawLine(screen_coordinates.x + 3, screen_coordinates.y, screen_coordinates.x + 3, screen_coordinates.y + 6, Black);
-        LCD_DrawLine(screen_coordinates.x + 4, screen_coordinates.y, screen_coordinates.x + 4, screen_coordinates.y + 6, Black);
-        LCD_DrawLine(screen_coordinates.x + 5, screen_coordinates.y, screen_coordinates.x + 5, screen_coordinates.y + 6, Black);
-        LCD_DrawLine(screen_coordinates.x + 6, screen_coordinates.y, screen_coordinates.x + 6, screen_coordinates.y + 6, Black);
-    }
-    else
-    {
-        if (game.current_wall.wall_orientation == VERTICAL)
-        {
-            // we need to clear right
-            // è verticale, dobbiamo disegnare a destra
-            nearest_playable_cell.x = point_to_clear.x;
-            nearest_playable_cell.y = point_to_clear.y - 1;
-            // Ora ho le coordinate della cella che uso come reference, ottieniamo i pixel
-            screen_coordinates.x = 5 + ((nearest_playable_cell.y / 2) * ITERATION_OFFSET) + 1;
-            screen_coordinates.y = 5 + ((nearest_playable_cell.x / 2) * ITERATION_OFFSET);
-            // Ora mi devo spostare a destra
-            screen_coordinates.x += SQUARE_SIDE + 2;
-            // what i'm doing below is good if the middle cell is occupied, but what if is not?
-            LCD_DrawLine(screen_coordinates.x, screen_coordinates.y - 2, screen_coordinates.x, screen_coordinates.y + (SQUARE_SIDE + 2), Black);
-            LCD_DrawLine(screen_coordinates.x + 1, screen_coordinates.y - 2, screen_coordinates.x + 1, screen_coordinates.y + (SQUARE_SIDE + 2), Black);
-            LCD_DrawLine(screen_coordinates.x + 2, screen_coordinates.y - 2, screen_coordinates.x + 2, screen_coordinates.y + (SQUARE_SIDE + 2), Black);
-        }
-        else
-        {
-            // we need to clear under
-            nearest_playable_cell.x = point_to_clear.x - 1;
-            // la y non deve cambiare
-            nearest_playable_cell.y = point_to_clear.y;
-            // Ora ho le coordinate della cella che uso come reference, ottieniamo i pixel
-            screen_coordinates.x = 5 + ((nearest_playable_cell.y / 2) * ITERATION_OFFSET);
-            screen_coordinates.y = 5 + ((nearest_playable_cell.x / 2) * ITERATION_OFFSET) + 1;
-            // Ora mi devo spostare verso il basso, aumenta la y -> 3 in teoria ci mette in mezzo
-            screen_coordinates.y += SQUARE_SIDE + 2;
-            // Possiamo disegnare 3 linee
-            LCD_DrawLine(screen_coordinates.x - 2, screen_coordinates.y, screen_coordinates.x + (SQUARE_SIDE + 2), screen_coordinates.y, Black);
-            LCD_DrawLine(screen_coordinates.x - 2, screen_coordinates.y + 1, screen_coordinates.x + (SQUARE_SIDE + 2), screen_coordinates.y + 1, Black);
-            LCD_DrawLine(screen_coordinates.x - 2, screen_coordinates.y + 2, screen_coordinates.x + (SQUARE_SIDE + 2), screen_coordinates.y + 2, Black);
-        }
-    }
-}
-
 /**
  * @brief This function simply draws the current wall in whatever position.
  * 1. understand the rotation and find the nearest_playable_cell
@@ -671,4 +341,127 @@ screen_point get_current_wall_screen_coordinates(void)
         starting_coordinates.y = HORIZONTAL_WALL_Y_OFFSET(game.current_wall.top.x);
     }
     return starting_coordinates;
+}
+
+/**
+ * @brief This function deletes the current wall considering what is already present in the board
+ */
+void delete_current_wall(void)
+{
+    screen_point starting_coordinates = get_current_wall_screen_coordinates();
+    if (game.current_wall.wall_orientation == VERTICAL)
+    {
+        // we need to draw in the vertical direction
+        // top
+        if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == FREE)
+        {
+            // cancello quella cella
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + SQUARE_SIDE, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + SQUARE_SIDE, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + SQUARE_SIDE, Black);
+            // we need to update the y
+            // TODO: maybe + 1?
+            starting_coordinates.y += SQUARE_SIDE;
+        }
+        // middle
+        if (game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == FREE)
+        {
+            // cancello tutta la middle
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + WALL_SIZE - 1, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + WALL_SIZE - 1, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + WALL_SIZE - 1, Black);
+            // TODO: maybe + 1?
+            starting_coordinates.y += WALL_SIZE;
+        }
+        else
+        {
+            // la middle è occupata, devo lasciare il quadrato -> 6 drawline, devo cancellare solo due pixel
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + 2, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
+            starting_coordinates.y += 5;
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + 2, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
+            starting_coordinates.y += 2;
+        }
+        // bottom
+        if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == FREE)
+        {
+            // cancello la bottom
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + SQUARE_SIDE, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + SQUARE_SIDE, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + SQUARE_SIDE, Black);
+        }
+    }
+    else
+    {
+        // the wall is horizontal, we need to draw in the horizontal direction
+        if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == FREE)
+        {
+            // cancello quella cella
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y + 2, Black);
+            // we need to update the x
+            // TODO: maybe + 1?
+            starting_coordinates.x += SQUARE_SIDE;
+        }
+        // middle
+        if (game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == FREE)
+        {
+            // cancello tutta la middle
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x + WALL_SIZE - 1, starting_coordinates.y, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + WALL_SIZE - 1, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + WALL_SIZE - 1, starting_coordinates.y + 2, Black);
+            // TODO: maybe + 1?
+            starting_coordinates.x += WALL_SIZE;
+        }
+        else
+        {
+            // la middle è occupata, devo lasciare il quadrato -> 6 drawline, devo cancellare solo due pixel
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + 2, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
+            starting_coordinates.x += 5;
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + 2, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
+            starting_coordinates.x += 2;
+        }
+        // bottom
+        if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == FREE)
+        {
+            // cancello la bottom
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y + 2, Black);
+        }
+    }
+}
+
+void p1_no_more_walls(void)
+{
+    GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", White, Black);
+    GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", White, Black);
+    return;
+}
+
+void p2_no_more_walls(void)
+{
+    GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", Red, Black);
+    GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", Red, Black);
+    return;
+}
+
+void p1_illegal_wall(void)
+{
+    GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)"Cannot place wall here!", White, Black);
+    return;
+}
+
+void p2_illegal_wall(void)
+{
+    GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)"Cannot place wall here!", Red, Black);
+    return;
 }

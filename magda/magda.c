@@ -139,16 +139,16 @@ void minimax_move_player(ui8 index, ui8 x, ui8 y, active_player player)
     if (player == PLAYER_1)
     {
         game.board[game.player_1.x_matrix_coordinate][game.player_1.y_matrix_coordinate].availability = FREE;
-        game.player_1.x_matrix_coordinate = game.player_1.possible_moves[i].x;
-        game.player_1.y_matrix_coordinate = game.player_1.possible_moves[i].y;
+        game.player_1.x_matrix_coordinate = game.player_1.possible_moves[index].x;
+        game.player_1.y_matrix_coordinate = game.player_1.possible_moves[index].y;
         game.board[game.player_1.x_matrix_coordinate][game.player_1.y_matrix_coordinate].availability = OCCUPIED;
         game.player_turn = PLAYER_2;
     }
     else
     {
         game.board[game.player_2.x_matrix_coordinate][game.player_2.y_matrix_coordinate].availability = FREE;
-        game.player_2.x_matrix_coordinate = game.player_2.possible_moves[i].x;
-        game.player_2.y_matrix_coordinate = game.player_2.possible_moves[i].y;
+        game.player_2.x_matrix_coordinate = game.player_2.possible_moves[index].x;
+        game.player_2.y_matrix_coordinate = game.player_2.possible_moves[index].y;
         game.board[game.player_2.x_matrix_coordinate][game.player_2.y_matrix_coordinate].availability = OCCUPIED;
         game.player_turn = PLAYER_1;
     }

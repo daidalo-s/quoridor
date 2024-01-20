@@ -148,8 +148,17 @@ void turn_manager(game_data *game, ui8 time_over)
             else
             {
                 // the player was trying to place a wall
-                // TODO: this still needs to be implemented
                 delete_current_wall();
+                if (game->player_turn == PLAYER_1)
+                {
+                    p2_turn(game);
+                    return;
+                }
+                else
+                {
+                    p1_turn(game);
+                    return;
+                }
             }
         }
         else
@@ -205,22 +214,14 @@ void turn_manager(game_data *game, ui8 time_over)
 
 void p1_turn(game_data *game)
 {
-    minimax_res move;
     game->input_mode = PLAYER_MOVEMENT;
     game->player_turn = PLAYER_1;
     game->game_tick = 20;
     reset_timer(0);
     enable_timer(0);
-    // find_available_moves(game);
-    // show_available_moves();
-    move = minimax(1, 1);
-    delete_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate);
-    game->player_1.tmp_x_matrix_coordinate = move.x;
-    game->player_1.tmp_y_matrix_coordinate = move.y;
-    confirm_player_move(game);
-    // delete_available_moves();
-    draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
-    p2_turn(game);
+    find_available_moves(game);
+    show_available_moves();
+    return;
     return;
 }
 
@@ -233,6 +234,36 @@ void p2_turn(game_data *game)
     enable_timer(0);
     find_available_moves(game);
     show_available_moves();
+    return;
+}
+
+/**
+ * @brief Remember that the bot doesn't show anything, he just moves
+ * @param game
+ */
+void p1_bot_turn(game_data *game)
+{
+    minimax_res move;
+    game->input_mode = PLAYER_MOVEMENT;
+    game->player_turn = PLAYER_1;
+    game->game_tick = 20;
+    reset_timer(0);
+    enable_timer(0);
+    move = minimax(1, 1);
+    if (move.wall_orientation == NONE)
+    {
+        // player movement
+        delete_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate);
+        game->player_1.tmp_x_matrix_coordinate = move.x;
+        game->player_1.tmp_y_matrix_coordinate = move.y;
+        confirm_player_move(game);
+        draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+    }
+    else
+    {
+        // wall placement
+    }
+    p2_turn(game);
     return;
 }
 
@@ -307,25 +338,25 @@ void move_dispatcher(move_type direction, game_data *game)
             // Wall mode
             if (direction == UP)
             {
-                // move_wall(UP);
+                move_wall(WALL_UP);
             }
             else if (direction == LEFT)
             {
-                // move_wall(LEFT);
+                move_wall(WALL_LEFT);
             }
             else if (direction == RIGHT)
             {
-                // move_wall(RIGHT);
+                move_wall(WALL_RIGHT);
             }
             else if (direction == DOWN)
             {
                 // down
-                // move_wall(DOWN);
+                move_wall(WALL_DOWN);
             }
             else
             {
                 // rotation
-                // move_wall(ROTATION);
+                move_wall(WALL_ROTATION);
             }
         }
     }
@@ -347,15 +378,21 @@ void key1_button_pressed()
     {
         // call an appropriate function, we need to enter in wall mode
         wall_mode_enter();
+        return;
+    }
+    if (game.input_mode == WALL_MODE)
+    {
+        wall_mode_exit();
+        return;
     }
 }
 
-// TODO
 void key2_button_pressed()
 {
-    if (game.input_mode == WAIT_MODE)
+    if (game.input_mode == WALL_MODE)
     {
         // it's a wall rotation
+        move_wall(WALL_ROTATION);
     }
 }
 
@@ -368,6 +405,8 @@ void wall_mode_enter(void)
     delete_available_moves();
     // reset the player token
     reset_p1_token();
+    // changing the game mode
+    game.input_mode = WALL_MODE;
     // draw the current_wall wall
     current_wall_init();
 }
@@ -377,7 +416,9 @@ void wall_mode_enter(void)
  */
 void wall_mode_exit(void)
 {
-    // TODO
+    delete_current_wall();
+    show_available_moves();
+    game.input_mode = PLAYER_MOVEMENT;
 }
 
 /**

@@ -8,7 +8,6 @@ extern game_data game;
 /**
  * @brief In here we init the current wall with the position and the orientation
  * and we draw it
- * TODO: this needs to be completed
  */
 void current_wall_init(void)
 {
@@ -23,71 +22,85 @@ void current_wall_init(void)
 }
 
 /**
- * @brief In this function we simply delete the current wall at
- * whatever coordinates
+ * @brief In this function we simply delete the current wall at the
+ * coordinates inside the struct IF THERE IS NO WALL ALREADY PLACED
+ * THERE
  */
-void delete_current_wall(void)
+void current_wall_move(void)
 {
+    delete_current_wall();
+    // between the two operations we need to update the coordinates
+    draw_current_wall();
 }
 
 // Inside of each move we have to check if it's feasible
 // The only check we need to do is on the middle cell
 // We also need to check if in the destination there is already a wall
 // We must check that both top and bottom are in a free cell
-void move_wall(wall_move_type move, game_data *game)
+void move_wall(wall_move_type move)
 {
 
-    int top_x = game->current_wall.top.x;
-    int top_y = game->current_wall.top.y;
-    int middle_x = game->current_wall.middle.x;
-    int middle_y = game->current_wall.middle.y;
-    int bottom_x = game->current_wall.bottom.x;
-    int bottom_y = game->current_wall.bottom.y;
+    int top_x = game.current_wall.top.x;
+    int top_y = game.current_wall.top.y;
+    int middle_x = game.current_wall.middle.x;
+    int middle_y = game.current_wall.middle.y;
+    int bottom_x = game.current_wall.bottom.x;
+    int bottom_y = game.current_wall.bottom.y;
 
     if (move == WALL_UP)
     {
         // moving up means decreasing x
         // we need to add the cell check both for top and bottom to be free
-        if (middle_x - 2 < 1)
-            goto illegal_move;
-        // if we are still here the move is legal, we can assign the new coordinates
-        game->current_wall.top.x = top_x - 2;
-        game->current_wall.middle.x = middle_x - 2;
-        game->current_wall.bottom.x = bottom_x - 2;
-        update_wall_drawing(WALL_UP);
+        if (!(middle_x - 2 < 1))
+        {
+            // if we are still here the move is legal, we can assign the new coordinates
+            delete_current_wall();
+            game.current_wall.top.x = top_x - 2;
+            game.current_wall.middle.x = middle_x - 2;
+            game.current_wall.bottom.x = bottom_x - 2;
+            draw_current_wall();
+        }
     }
     else if (move == WALL_DOWN)
     {
         // moving down means increasing x
-        if (middle_x + 2 > 11)
-            goto illegal_move;
-        // The move is legal
-        game->current_wall.top.x = top_x + 2;
-        game->current_wall.middle.x = middle_x + 2;
-        game->current_wall.bottom.x = bottom_x + 2;
-        update_wall_drawing(WALL_DOWN);
+        if (!(middle_x + 2 > 11))
+        {
+            // The move is legal
+            delete_current_wall();
+            game.current_wall.top.x = top_x + 2;
+            game.current_wall.middle.x = middle_x + 2;
+            game.current_wall.bottom.x = bottom_x + 2;
+            draw_current_wall();
+        }
+        // update_wall_drawing(WALL_DOWN);
     }
     else if (move == WALL_LEFT)
     {
         // moving left means decreasing y
-        if (middle_y - 2 < 1)
-            goto illegal_move;
-        // The move is legal
-        game->current_wall.top.y = top_y - 2;
-        game->current_wall.middle.y = middle_y - 2;
-        game->current_wall.bottom.y = bottom_y - 2;
-        update_wall_drawing(WALL_LEFT);
+        if (!(middle_y - 2 < 1))
+        {
+            // The move is legal
+            delete_current_wall();
+            game.current_wall.top.y = top_y - 2;
+            game.current_wall.middle.y = middle_y - 2;
+            game.current_wall.bottom.y = bottom_y - 2;
+            draw_current_wall();
+        }
     }
     else if (move == WALL_RIGHT)
     {
         // moving right means increasing y
-        if (middle_y + 2 > 11)
-            goto illegal_move;
-        // The move is legal
-        game->current_wall.top.y = top_y + 2;
-        game->current_wall.middle.y = middle_y + 2;
-        game->current_wall.bottom.y = bottom_y + 2;
-        update_wall_drawing(WALL_RIGHT);
+        if (!(middle_y + 2 > 11))
+        {
+            // The move is legal
+            delete_current_wall();
+            game.current_wall.top.y = top_y + 2;
+            game.current_wall.middle.y = middle_y + 2;
+            game.current_wall.bottom.y = bottom_y + 2;
+            draw_current_wall();
+        }
+        // update_wall_drawing(WALL_RIGHT);
     }
     else
     {
@@ -96,27 +109,64 @@ void move_wall(wall_move_type move, game_data *game)
         // middle remains the same
         // Depending from the orientation, we'll need to do different things
         // se orizzontale hanno la stessa x
-        if (game->current_wall.top.x == game->current_wall.bottom.x)
+        if (game.current_wall.wall_orientation == HORIZONTAL)
         {
             // The wall is horizontal, rotating to vertical
-            game->current_wall.top.x = top_x - 1;
-            game->current_wall.top.y = top_y + 1;
-            game->current_wall.bottom.x = bottom_x + 1;
-            game->current_wall.bottom.y = bottom_y - 1;
-            update_wall_drawing(WALL_ROTATION);
+            delete_current_wall();
+            game.current_wall.top.x = top_x - 1;
+            game.current_wall.top.y = top_y + 1;
+            game.current_wall.bottom.x = bottom_x + 1;
+            game.current_wall.bottom.y = bottom_y - 1;
+            game.current_wall.wall_orientation = VERTICAL;
+            draw_current_wall();
         }
         else
         {
             // The wall is vertical, rotating to horizontal
-            game->current_wall.top.x = top_x + 1;
-            game->current_wall.top.y = top_y - 1;
-            game->current_wall.bottom.x = bottom_x - 1;
-            game->current_wall.bottom.y = bottom_y + 1;
-            update_wall_drawing(WALL_ROTATION);
+            delete_current_wall();
+            game.current_wall.top.x = top_x + 1;
+            game.current_wall.top.y = top_y - 1;
+            game.current_wall.bottom.x = bottom_x - 1;
+            game.current_wall.bottom.y = bottom_y + 1;
+            game.current_wall.wall_orientation = HORIZONTAL;
+            draw_current_wall();
         }
     }
-illegal_move:
     return;
+}
+
+void confirm_wall_placement(void)
+{
+    if (game.player_turn == PLAYER_1)
+    {
+        if (game.player_1.available_walls != 0)
+        {
+            if (legal_wall_placement(&game))
+            {
+                game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+                game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+                game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
+                game.player_1.available_walls--;
+                p1_walls_update(game.player_1.available_walls);
+                turn_manager(&game, 0);
+            }
+            // if it's not legal we need to show the message
+            return;
+        }
+        // if he doesn't have any more walls, we need to show the message
+        return;
+    }
+    else
+    {
+        if (game.player_2.available_walls != 0)
+        {
+            if (legal_wall_placement(&game))
+            {
+            }
+            return;
+        }
+        return;
+    }
 }
 
 int legal_wall_placement(game_data *game)

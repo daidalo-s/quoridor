@@ -227,56 +227,6 @@ void RIT_IRQHandler(void)
 			switch (down_1)
 			{
 			case 2:
-				// we have to enable the wall mode
-				// if (game.game_status == RUNNING)
-				// {
-				// 	if (game.input_mode == PLAYER_MOVEMENT)
-				// 	{
-				// 		if (game.player_turn == PLAYER_1)
-				// 		{
-				// 			if (game.player_1.available_walls == 0)
-				// 			{
-				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", White, Black);
-				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", White, Black);
-				// 				break;
-				// 			}
-				// 		}
-				// 		else
-				// 		{
-				// 			if (game.player_2.available_walls == 0)
-				// 			{
-				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", Red, Black);
-				// 				GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", Red, Black);
-				// 				break;
-				// 			}
-				// 		}
-				// game.player_turn == PLAYER_1 ? (update_player_token_pos(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate,
-				// 														game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_1))
-				// 							 : (update_player_token_pos(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate,
-				// 														game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate, PLAYER_2));
-				// game.player_turn == PLAYER_1 ? (game.player_1.tmp_x_matrix_coordinate = game.player_1.x_matrix_coordinate) : (game.player_2.tmp_x_matrix_coordinate = game.player_2.x_matrix_coordinate);
-				// game.player_turn == PLAYER_1 ? (game.player_1.tmp_y_matrix_coordinate = game.player_1.y_matrix_coordinate) : (game.player_2.tmp_y_matrix_coordinate = game.player_2.y_matrix_coordinate);
-				// show_available_moves(&game, HIDE);
-				// game.input_mode = WALL_MODE;
-				// // We also need to initialize the wall struct
-				// // initial position: [5][4]|[5][5|[5][6]
-				// game.current_wall.top.x = 5;
-				// game.current_wall.top.y = 4;
-				// game.current_wall.middle.x = 5;
-				// game.current_wall.middle.y = 5;
-				// game.current_wall.bottom.x = 5;
-				// game.current_wall.bottom.y = 6;
-				// draw_walls();
-				// 	}
-				// 	else
-				// 	{
-				// 		// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.top, HORIZONTAL)) : (clear_wall(game.current_wall.top, VERTICAL));
-				// 		// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.middle, HORIZONTAL)) : (clear_wall(game.current_wall.middle, VERTICAL));
-				// 		// game.current_wall.top.x == game.current_wall.bottom.x ? (clear_wall(game.current_wall.bottom, HORIZONTAL)) : (clear_wall(game.current_wall.bottom, VERTICAL));
-				// 		// game.input_mode = PLAYER_MOVEMENT;
-				// 		// show_available_moves(&game, SHOW);
-				// 	}
-				// }
 				key1_button_pressed();
 				break;
 			default:
@@ -303,13 +253,6 @@ void RIT_IRQHandler(void)
 			switch (down_2)
 			{
 			case 2:
-				// We need to rotate the wall by 90 degrees
-				// if (game.game_status == RUNNING && game.input_mode == WALL_MODE)
-				// {
-				// 	// we need to do something
-				// 	move_wall(WALL_ROTATION, &game);
-				// 	draw_walls();
-				// }
 				key2_button_pressed();
 				break;
 			default:

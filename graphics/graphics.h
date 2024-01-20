@@ -150,12 +150,28 @@ void clear_text_area(void);
  */
 void show_winner_message(player);
 
-// TODO: da qua in poi da fixare
-void draw_walls(void);
-void update_wall_drawing(wall_move_type);
-void clear_wall(screen_point);
-
+/**
+ * @brief This function draws the current wall at the coordinates
+ * contained inside the struct
+ */
 void draw_current_wall(void);
+
+/**
+ * @brief This function deletes the current wall considering what
+ * is present on the board already
+ */
+void delete_current_wall(void);
+
+/**
+ * @brief This if a helper function that returns the screen_coordinates
+ * of the top cell of the current wall
+ * @return screen_point
+ */
 screen_point get_current_wall_screen_coordinates(void);
+
+void p1_no_more_walls(void);
+void p2_no_more_walls(void);
+void p1_illegal_wall(void);
+void p2_illegal_wall(void);
 
 #endif
