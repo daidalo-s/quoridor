@@ -16,6 +16,7 @@
 #include "./player.h"
 #include "./walls.h"
 #include "../magda/magda.h"
+#include "../menu/menu.h"
 
 extern game_data game;
 

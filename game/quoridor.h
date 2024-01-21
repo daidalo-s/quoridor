@@ -2,6 +2,8 @@
 #define QUORIDOR_H
 
 #include <stdint.h>
+#include "../menu/menu.h"
+
 /**
  * @brief inside this file there are the prototypes of all the functions used in the
  * game and also all the type definitions
@@ -61,8 +63,7 @@ typedef enum game_status
 {
     WAIT_MODE,
     RUNNING,
-    OVER,
-    MENU_MODE
+    OVER
 } game_status;
 
 // typedef enum move_type
@@ -187,4 +188,5 @@ void reset_p1_token(void);
 void reset_p2_token(void);
 void wall_mode_enter(void);
 void wall_mode_exit(void);
+
 #endif

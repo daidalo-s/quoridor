@@ -1,6 +1,9 @@
 #ifndef MENU_H
 #define MENU_H
 
+#define ui8 uint8_t
+#include "../game/quoridor.h"
+
 // show_int0_message
 #define X_INT0_MESSAGE_LINE_1 44
 #define Y_INT0_MESSAGE_LINE_1 141
@@ -41,6 +44,22 @@
 #define STB_X_THIRD_SELECTION 104
 #define STB_Y_THIRD_SELECTION (STB_Y_SECOND_SELECTION + 6)
 
+typedef enum menu_window
+{
+    MENU_INT0,
+    GAME_MODE_SELECT,
+    SINGLE_BOARD,
+    MULTI_BOARD
+} menu_window;
+
+typedef struct menu
+{
+    menu_window menu_window;
+    ui8 option_num;
+} menu;
+
+void menu_init(void);
+void menu_manager(void);
 void show_int0_message(void);
 void show_game_mode_menu(void);
 void show_single_board_menu(void);

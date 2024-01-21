@@ -28,6 +28,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 #endif
 int down;
 game_data game;
+menu menu;
 /*----------------------------------------------------------------------------
   Main Program
  *----------------------------------------------------------------------------*/
@@ -46,8 +47,8 @@ int main(void)
 	joystick_init();
 
 	LCD_Initialization();
-	show_int0_message();
-	game_init(&game);
+
+	menu_handler();
 
 	LPC_SC->PCON |= 0x1; /* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);
