@@ -21,6 +21,7 @@
 #include "joystick/joystick.h"
 #include "game/quoridor.h"
 #include "GLCD/GLCD.h"
+#include "menu/menu.h"
 
 #ifdef SIMULATOR
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
@@ -43,9 +44,9 @@ int main(void)
 
 	/*Gestione JOYSTICK*/
 	joystick_init();
-	LCD_Initialization();
-	LCD_Clear(Black);
 
+	LCD_Initialization();
+	show_int0_message();
 	game_init(&game);
 
 	LPC_SC->PCON |= 0x1; /* power-down	mode										*/

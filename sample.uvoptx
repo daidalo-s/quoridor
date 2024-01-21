@@ -161,7 +161,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\61</Expression>
         </Bp>
@@ -177,7 +177,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\62</Expression>
         </Bp>
@@ -193,7 +193,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\63</Expression>
         </Bp>
@@ -209,7 +209,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\125</Expression>
         </Bp>
@@ -225,7 +225,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
+          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\game/walls.c\139</Expression>
         </Bp>
@@ -241,7 +241,7 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
+          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\game/walls.c\153</Expression>
         </Bp>
@@ -356,7 +356,7 @@
 
   <Group>
     <GroupName>startup_file</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -376,7 +376,7 @@
 
   <Group>
     <GroupName>main</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -396,7 +396,7 @@
 
   <Group>
     <GroupName>lib_SoC_board</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -861,6 +861,38 @@
       <bDave2>0</bDave2>
       <PathWithFileName>.\magda\magda.h</PathWithFileName>
       <FilenameWithoutPath>magda.h</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+  </Group>
+
+  <Group>
+    <GroupName>menu</GroupName>
+    <tvExp>1</tvExp>
+    <tvExpOptDlg>0</tvExpOptDlg>
+    <cbSel>0</cbSel>
+    <RteFlg>0</RteFlg>
+    <File>
+      <GroupNumber>14</GroupNumber>
+      <FileNumber>35</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\menu\menu.c</PathWithFileName>
+      <FilenameWithoutPath>menu.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>14</GroupNumber>
+      <FileNumber>36</FileNumber>
+      <FileType>5</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\menu\menu.h</PathWithFileName>
+      <FilenameWithoutPath>menu.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

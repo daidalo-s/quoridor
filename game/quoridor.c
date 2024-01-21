@@ -48,6 +48,7 @@ void game_init(game_data *game)
  */
 void game_start(game_data *game)
 {
+
     // If the game is already running we don't have to do anything
     if (game->game_status != WAIT_MODE)
         return;

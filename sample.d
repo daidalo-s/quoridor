@@ -15,3 +15,4 @@
 .\sample.o: joystick/joystick.h
 .\sample.o: game/quoridor.h
 .\sample.o: GLCD/GLCD.h
+.\sample.o: menu/menu.h

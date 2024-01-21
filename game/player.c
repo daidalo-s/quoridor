@@ -38,7 +38,7 @@ void init_players(game_data *game)
     // And we need to assign the first player to the white one
     game->player_turn = PLAYER_1;
     // We are in wait mode
-    game->game_status = WAIT_MODE;
+    game->game_status = MENU_MODE;
     // We begin in player_mode
     game->input_mode = PLAYER_MOVEMENT;
     // Setting the text area status

@@ -61,7 +61,8 @@ typedef enum game_status
 {
     WAIT_MODE,
     RUNNING,
-    OVER
+    OVER,
+    MENU_MODE
 } game_status;
 
 // typedef enum move_type
