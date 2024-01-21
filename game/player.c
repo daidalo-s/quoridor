@@ -41,6 +41,8 @@ void init_players(game_data *game)
     game->game_status = WAIT_MODE;
     // We begin in player_mode
     game->input_mode = PLAYER_MOVEMENT;
+    // Setting the text area status
+    game->text_area_status = CLEAR;
 }
 
 void find_available_moves(game_data *game)

@@ -45,57 +45,11 @@ void RIT_IRQHandler(void)
 		switch (j_select)
 		{
 		case 1:
-			// qua dentro quello che vuoi fare
-			// if the game is not running we need to ignore the interrupts
 			if (game.game_status == WAIT_MODE)
 				break;
 			if (game.game_status == OVER)
 				break;
-			// If we end up here the game is in progress and we have a move
-			// Select is used also for the walls, we need to know if we are in wall mode or move_mode
 			select_button_pressed();
-			// if (game.input_mode == PLAYER_MOVEMENT)
-			// {
-			// 	// This will solidify whatever move
-			// 	swap_turn(&game, select);
-			// }
-			// else
-			// {
-			// 	// we need to confirm the wall placement
-			// 	// TODO: you can simplify this, simply solidify the placement based on the game mode (wtf? were you drunk?)
-			// 	// We need to do the validity checks here before solidifying the placement
-			// 	if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == OCCUPIED ||
-			// 		game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == OCCUPIED ||
-			// 		game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == OCCUPIED)
-			// 	{
-			// 		game.player_turn == PLAYER_1 ? (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-			// 												 (uint8_t *)"Cannot place wall here!", White, Black))
-			// 									 : (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-			// 												 (uint8_t *)"Cannot place wall here!", Red, Black));
-			// 		break;
-			// 	}
-			// 	// If we are here we can finalize the move
-			// 	// We first need to simulate the move
-			// 	game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
-			// 	game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
-			// 	game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
-			// 	if (legal_wall_placement(&game))
-			// 	{
-			// 		game.player_turn == PLAYER_1 ? (game.player_1.available_walls--) : (game.player_2.available_walls--);
-			// 		game.player_turn == PLAYER_1 ? (p1_walls_update(game.player_1.available_walls)) : (p2_walls_update(game.player_2.available_walls));
-			// 		swap_turn(&game, select);
-			// 	}
-			// 	else
-			// 	{
-			// 		game.player_turn == PLAYER_1 ? (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-			// 												 (uint8_t *)"Cannot place wall here!", White, Black))
-			// 									 : (GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA,
-			// 												 (uint8_t *)"Cannot place wall here!", Red, Black));
-			// 		game.board[game.current_wall.top.x][game.current_wall.top.y].availability = FREE;
-			// 		game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = FREE;
-			// 		game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = FREE;
-			// 	}
-			// }
 			break;
 		default:
 			break;

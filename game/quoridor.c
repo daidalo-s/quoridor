@@ -114,6 +114,7 @@ void board_cell_type_init(game_data *game)
  */
 void turn_manager(game_data *game, ui8 time_over)
 {
+    ui8 success;
     if (game->game_status == WAIT_MODE)
     {
         game->game_status = RUNNING;
@@ -124,6 +125,9 @@ void turn_manager(game_data *game, ui8 time_over)
     else if (game->game_status == RUNNING)
     {
         // we need to swap turns
+        // if (game->text_area_status == FULL)
+        //     clear_text_area();
+
         if (time_over)
         {
             // here we must reset the state, we don't have a confirmation
@@ -167,24 +171,17 @@ void turn_manager(game_data *game, ui8 time_over)
             if (game->input_mode == PLAYER_MOVEMENT)
             {
                 // the player moved itself
-                if (game->player_turn == PLAYER_1)
+                confirm_player_move(game);
+                if (game->game_status != OVER)
                 {
-                    // player_1 stuff
-                    confirm_player_move(game);
-                    if (game->game_status != OVER)
+                    delete_available_moves();
+                    if (game->player_turn == PLAYER_1)
                     {
-                        delete_available_moves();
                         draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
                         p2_turn(game);
                     }
-                }
-                else
-                {
-                    // player_2 stuff
-                    confirm_player_move(game);
-                    if (game->game_status != OVER)
+                    else
                     {
-                        delete_available_moves();
                         draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
                         p1_turn(game);
                     }
@@ -192,14 +189,18 @@ void turn_manager(game_data *game, ui8 time_over)
             }
             else
             {
-                // the player placed a wall
-                if (game->player_turn == PLAYER_1)
+                success = confirm_wall_placement();
+                if (success)
                 {
-                    // player_1 stuff
-                }
-                else
-                {
-                    // player_2 stuff
+                    // we can swap turn
+                    if (game->player_turn == PLAYER_1)
+                    {
+                        p2_turn(game);
+                    }
+                    else
+                    {
+                        p1_turn(game);
+                    }
                 }
             }
         }
@@ -336,6 +337,8 @@ void move_dispatcher(move_type direction, game_data *game)
         else
         {
             // Wall mode
+            if (game->text_area_status == FULL)
+                clear_text_area();
             if (direction == UP)
             {
                 move_wall(WALL_UP);
@@ -371,7 +374,6 @@ void select_button_pressed()
     turn_manager(&game, 0);
 }
 
-// TODO
 void key1_button_pressed()
 {
     if (game.input_mode == PLAYER_MOVEMENT)
@@ -382,6 +384,8 @@ void key1_button_pressed()
     }
     if (game.input_mode == WALL_MODE)
     {
+        if (game.text_area_status == FULL)
+            clear_text_area();
         wall_mode_exit();
         return;
     }
@@ -404,7 +408,7 @@ void wall_mode_enter(void)
     // we undraw the available moves
     delete_available_moves();
     // reset the player token
-    reset_p1_token();
+    game.player_turn == PLAYER_1 ? (reset_p1_token()) : (reset_p2_token());
     // changing the game mode
     game.input_mode = WALL_MODE;
     // draw the current_wall wall

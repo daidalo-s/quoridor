@@ -135,40 +135,60 @@ void move_wall(wall_move_type move)
     return;
 }
 
-void confirm_wall_placement(void)
+ui8 confirm_wall_placement(void)
 {
+    ui8 success = 0;
+    if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == OCCUPIED ||
+        game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == OCCUPIED ||
+        game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == OCCUPIED)
+    {
+        game.player_turn == PLAYER_1 ? (p1_illegal_wall()) : (p2_illegal_wall());
+        return success;
+    }
     if (game.player_turn == PLAYER_1)
     {
         if (game.player_1.available_walls != 0)
         {
-            if (legal_wall_placement(&game))
+            place_current_wall();
+            success = legal_wall_placement(&game);
+            if (success)
             {
-                game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
-                game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
-                game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
                 game.player_1.available_walls--;
                 p1_walls_update(game.player_1.available_walls);
-                turn_manager(&game, 0);
+                return success;
             }
             // if it's not legal we need to show the message
-            return;
+            remove_current_wall();
+            p1_illegal_wall();
+        }
+        else
+        {
+            p1_no_more_walls();
         }
         // if he doesn't have any more walls, we need to show the message
-        return;
     }
     else
     {
         if (game.player_2.available_walls != 0)
         {
-            if (legal_wall_placement(&game))
+            place_current_wall();
+            success = legal_wall_placement(&game);
+            if (success)
             {
+                game.player_2.available_walls--;
+                p2_walls_update(game.player_2.available_walls);
+                return success;
             }
-            return;
+            remove_current_wall();
+            p2_illegal_wall();
         }
-        return;
+        else
+        {
+            p2_no_more_walls();
+        }
     }
+    return success;
 }
-
 int legal_wall_placement(game_data *game)
 {
     // 2. dfs
@@ -277,6 +297,20 @@ matrix_point pop(game_data *game)
     game->stack.index--;
     vertex = game->stack.stack[game->stack.index];
     return vertex;
+}
+
+void place_current_wall(void)
+{
+    game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+    game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+    game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
+}
+
+void remove_current_wall(void)
+{
+    game.board[game.current_wall.top.x][game.current_wall.top.y].availability = FREE;
+    game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = FREE;
+    game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = FREE;
 }
 
 void find_all_possible_walls()

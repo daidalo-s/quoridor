@@ -19,7 +19,7 @@ void current_wall_move(void);
 
 void move_wall(wall_move_type);
 
-void confirm_wall_placement(void);
+ui8 confirm_wall_placement(void);
 
 // Below all functions related to the legal wall placements
 int legal_wall_placement(game_data *);
@@ -29,4 +29,6 @@ void push(game_data *, matrix_point);
 matrix_point pop(game_data *);
 
 void find_all_possible_walls(void);
+void place_current_wall(void);
+void remove_current_wall(void);
 #endif

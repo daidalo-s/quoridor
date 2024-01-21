@@ -27,19 +27,45 @@ Project File Date:  01/19/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
+compiling IRQ_RIT.c...
+RIT\../game/walls.h(34): warning:  #1-D: last line of file ends without a newline
+  #endif
+RIT\../game/player.h(16): warning:  #1-D: last line of file ends without a newline
+  #endif
+RIT\IRQ_RIT.c: 2 warnings, 0 errors
 compiling quoridor.c...
 game\./player.h(16): warning:  #1-D: last line of file ends without a newline
   #endif
-game\./walls.h(30): warning:  #1-D: last line of file ends without a newline
+game\./walls.h(34): warning:  #1-D: last line of file ends without a newline
   #endif
 game\../magda/magda.h(24): warning:  #1-D: last line of file ends without a newline
   #endif
-game\quoridor.c(225): warning:  #111-D: statement is unreachable
+game\quoridor.c(226): warning:  #111-D: statement is unreachable
       return;
 game\quoridor.c: 4 warnings, 0 errors
+compiling walls.c...
+game\./walls.h(34): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\walls.c(360): warning:  #1-D: last line of file ends without a newline
+  }
+game\walls.c: 2 warnings, 0 errors
+compiling magda.c...
+magda\../game/player.h(16): warning:  #1-D: last line of file ends without a newline
+  #endif
+magda\../game/walls.h(34): warning:  #1-D: last line of file ends without a newline
+  #endif
+magda\./magda.h(24): warning:  #1-D: last line of file ends without a newline
+  #endif
+magda\magda.c(42): warning:  #177-D: variable "node_value"  was declared but never referenced
+      int node_value;
+magda\magda.c(45): warning:  #177-D: variable "tmp_wall"  was declared but never referenced
+      wall tmp_wall;
+magda\magda.c(212): warning:  #1-D: last line of file ends without a newline
+  }
+magda\magda.c: 6 warnings, 0 errors
 linking...
-Program Size: Code=33352 RO-data=5548 RW-data=44 ZI-data=6260  
-".\sample.axf" - 0 Error(s), 4 Warning(s).
+Program Size: Code=31472 RO-data=5548 RW-data=44 ZI-data=6260  
+".\sample.axf" - 0 Error(s), 14 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -62,7 +88,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:05
 </pre>
 </body>
 </html>

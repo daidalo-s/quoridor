@@ -359,33 +359,34 @@ void delete_current_wall(void)
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + SQUARE_SIDE, Black);
             LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + SQUARE_SIDE, Black);
             LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + SQUARE_SIDE, Black);
-            // we need to update the y
-            // TODO: maybe + 1?
-            starting_coordinates.y += SQUARE_SIDE;
         }
         // middle
+        // we need to update the y
+        // TODO: maybe + 1?
+        starting_coordinates.y += SQUARE_SIDE + 1;
         if (game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == FREE)
         {
             // cancello tutta la middle
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + WALL_SIZE - 1, Black);
             LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + WALL_SIZE - 1, Black);
             LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + WALL_SIZE - 1, Black);
-            // TODO: maybe + 1?
-            starting_coordinates.y += WALL_SIZE;
         }
-        else
+        if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == FREE && game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == OCCUPIED)
         {
+            // if the top was free and the middle is occupied, there is a vertical wall
             // la middle è occupata, devo lasciare il quadrato -> 6 drawline, devo cancellare solo due pixel
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
-            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + 2, Black);
-            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
-            starting_coordinates.y += 5;
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
-            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + 2, Black);
-            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
-            starting_coordinates.y += 2;
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + 1, Black);
+            // starting_coordinates.y += 5;
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 5, starting_coordinates.x, starting_coordinates.y + 6, Black);
+            LCD_DrawLine(starting_coordinates.x + 1, starting_coordinates.y + 5, starting_coordinates.x + 1, starting_coordinates.y + 6, Black);
+            LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y + 5, starting_coordinates.x + 2, starting_coordinates.y + 6, Black);
+            // starting_coordinates.y += 2;
         }
         // bottom
+        // TODO: maybe + 1?
+        starting_coordinates.y += WALL_SIZE - 1;
         if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == FREE)
         {
             // cancello la bottom
@@ -394,7 +395,7 @@ void delete_current_wall(void)
             LCD_DrawLine(starting_coordinates.x + 2, starting_coordinates.y, starting_coordinates.x + 2, starting_coordinates.y + SQUARE_SIDE, Black);
         }
     }
-    else
+    else // il caso orizzontale è perfetto, copialo al verticale
     {
         // the wall is horizontal, we need to draw in the horizontal direction
         if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == FREE)
@@ -404,32 +405,32 @@ void delete_current_wall(void)
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y + 1, Black);
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + SQUARE_SIDE, starting_coordinates.y + 2, Black);
             // we need to update the x
-            // TODO: maybe + 1?
-            starting_coordinates.x += SQUARE_SIDE;
         }
         // middle
+        // TODO: maybe + 1?
+        starting_coordinates.x += SQUARE_SIDE + 1;
         if (game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == FREE)
         {
             // cancello tutta la middle
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x + WALL_SIZE - 1, starting_coordinates.y, Black);
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + WALL_SIZE - 1, starting_coordinates.y + 1, Black);
             LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + WALL_SIZE - 1, starting_coordinates.y + 2, Black);
-            // TODO: maybe + 1?
-            starting_coordinates.x += WALL_SIZE;
         }
-        else
+        if (game.board[game.current_wall.top.x][game.current_wall.top.y].availability == FREE && game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability == OCCUPIED)
         {
             // la middle è occupata, devo lasciare il quadrato -> 6 drawline, devo cancellare solo due pixel
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + 2, starting_coordinates.y + 1, Black);
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
-            starting_coordinates.x += 5;
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x, starting_coordinates.y + 2, Black);
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + 2, starting_coordinates.y + 1, Black);
-            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + 2, starting_coordinates.y + 2, Black);
-            starting_coordinates.x += 2;
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y, starting_coordinates.x + 1, starting_coordinates.y, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 1, starting_coordinates.x + 1, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x, starting_coordinates.y + 2, starting_coordinates.x + 1, starting_coordinates.y + 2, Black);
+            // starting_coordinates.x += 5;
+            LCD_DrawLine(starting_coordinates.x + 5, starting_coordinates.y, starting_coordinates.x + 6, starting_coordinates.y, Black);
+            LCD_DrawLine(starting_coordinates.x + 5, starting_coordinates.y + 1, starting_coordinates.x + 6, starting_coordinates.y + 1, Black);
+            LCD_DrawLine(starting_coordinates.x + 5, starting_coordinates.y + 2, starting_coordinates.x + 6, starting_coordinates.y + 2, Black);
+            // starting_coordinates.x += 2;
         }
         // bottom
+        // TODO: maybe + 1?
+        starting_coordinates.x += WALL_SIZE - 1;
         if (game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability == FREE)
         {
             // cancello la bottom
@@ -444,6 +445,7 @@ void p1_no_more_walls(void)
 {
     GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", White, Black);
     GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", White, Black);
+    game.text_area_status = FULL;
     return;
 }
 
@@ -451,17 +453,20 @@ void p2_no_more_walls(void)
 {
     GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, "No walls available, move the", Red, Black);
     GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA + 16, "token!", Red, Black);
+    game.text_area_status = FULL;
     return;
 }
 
 void p1_illegal_wall(void)
 {
     GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)"Cannot place wall here!", White, Black);
+    game.text_area_status = FULL;
     return;
 }
 
 void p2_illegal_wall(void)
 {
     GUI_Text(X_MESSAGE_AREA, Y_MESSAGE_AREA, (uint8_t *)"Cannot place wall here!", Red, Black);
+    game.text_area_status = FULL;
     return;
 }

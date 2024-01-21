@@ -141,6 +141,12 @@ typedef struct wall_moves
     ui8 num_of_moves;
 } wall_moves;
 
+typedef enum text_area_status
+{
+    CLEAR,
+    FULL
+} text_area_status;
+
 typedef struct game_data
 {
     /* data */
@@ -155,6 +161,7 @@ typedef struct game_data
     stack stack;
     uint32_t last_move;
     wall_moves wall_moves;
+    text_area_status text_area_status;
 } game_data;
 
 // Functions prototypes
