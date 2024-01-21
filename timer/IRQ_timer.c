@@ -33,7 +33,7 @@ void TIMER0_IRQHandler(void)
 	LPC_TIM0->IR = 1;
 	// Decrementing the game_tick counter
 	ticks_counter_update(game.game_tick);
-	// game.game_tick--;
+	game.game_tick--;
 	ticks_counter_update(game.game_tick);
 	if (game.game_tick == 0)
 	{
