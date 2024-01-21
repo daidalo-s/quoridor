@@ -1,27 +1,46 @@
 #include "./menu.h"
 #include "../GLCD/GLCD.h"
-#include "../game/quoridor.h"
 
-extern menu menu;
+extern menu game_menu;
+extern game_data game;
 
 void menu_init(void)
 {
     show_int0_message();
 }
 
-void menu_manager(void)
+// ROTATION will be our select
+void menu_manager(move_type move)
 {
-    if (menu.menu_window == MENU_INT0)
+    if (game.game_status == MENU_MODE && game_menu.menu_window == MENU_INT0)
     {
         // the user pressed int0
         show_game_mode_menu();
+        return;
+    }
+    // at this point we are or in the GAME_MODE_SELECT or in another submenu
+    if (game_menu.menu_window == GAME_MODE_SELECT)
+    {
+        // reagiamo agli input in un certo modo
+        update_game_mode_menu(move);
+    }
+    if (game_menu.menu_window == SINGLE_BOARD)
+    {
+        // reagiamo agli input in altro modo
+        update_single_board_menu(move);
+    }
+    if (game_menu.menu_window == MULTI_BOARD)
+    {
+        // reagiamo agli input in un altro modo ancora
+        update_two_board_menu(move);
     }
 }
 
 void show_int0_message(void)
 {
     LCD_Clear(Black);
-    menu.menu_window = MENU_INT0;
+    game.game_status = MENU_MODE;
+    game_menu.menu_window = MENU_INT0;
     GUI_Text(X_INT0_MESSAGE_LINE_1, Y_INT0_MESSAGE_LINE_1, (ui8 *)"Press INT0 to start", White, Black);
     GUI_Text(X_INT0_MESSAGE_LINE_2, Y_INT0_MESSAGE_LINE_2, (ui8 *)"a game", White, Black);
 }
@@ -29,17 +48,56 @@ void show_int0_message(void)
 void show_game_mode_menu(void)
 {
     LCD_Clear(Black);
-    menu.menu_window = GAME_MODE_SELECT;
+    game_menu.menu_window = GAME_MODE_SELECT;
+    game_menu.option_num = 1;
     GUI_Text(SGM_X_TEXT_AREA_LINE_1, SGM_Y_TEXT_AREA_LINE_1, (ui8 *)"Select the", White, Black);
     GUI_Text(SGM_X_TEXT_AREA_LINE_2, SGM_Y_TEXT_AREA_LINE_2, (ui8 *)"GAME MODE", White, Black);
     GUI_Text(SGM_X_FIRST_SELECTION, SGM_Y_FIRST_SELECTION, (ui8 *)"Single board", Black, White);
     GUI_Text(SGM_X_SECOND_SELECTION, SGM_Y_SECOND_SELECTION, (ui8 *)"Two boards", White, Black);
 }
 
+void update_game_mode_menu(move_type move)
+{
+    if (move == ROTATION)
+    {
+        // we have selected the current option
+        if (game_menu.option_num == 1)
+        {
+            show_single_board_menu();
+            return;
+        }
+        if (game_menu.option_num == 2)
+        {
+            show_two_board_menu();
+            return;
+        }
+    }
+
+    if (move == DOWN)
+    {
+        if (game_menu.option_num == 1)
+        {
+            GUI_Text(SGM_X_FIRST_SELECTION, SGM_Y_FIRST_SELECTION, (ui8 *)"Single board", White, Black);
+            GUI_Text(SGM_X_SECOND_SELECTION, SGM_Y_SECOND_SELECTION, (ui8 *)"Two boards", Black, White);
+            game_menu.option_num = 2;
+        }
+    }
+    else if (move == UP)
+    {
+        if (game_menu.option_num == 2)
+        {
+            GUI_Text(SGM_X_SECOND_SELECTION, SGM_Y_SECOND_SELECTION, (ui8 *)"Two boards", White, Black);
+            GUI_Text(SGM_X_FIRST_SELECTION, SGM_Y_FIRST_SELECTION, (ui8 *)"Single board", Black, White);
+            game_menu.option_num = 1;
+        }
+    }
+}
+
 void show_single_board_menu(void)
 {
     LCD_Clear(Black);
-    menu.menu_window = SINGLE_BOARD;
+    game_menu.menu_window = SINGLE_BOARD;
+    game_menu.option_num = 1;
     GUI_Text(SSB_X_TEXT_AREA_LINE_1, SSB_Y_TEXT_AREA_LINE_1, (ui8 *)"Single-board: select", White, Black);
     GUI_Text(SSB_X_TEXT_AREA_LINE_2, SSB_Y_TEXT_AREA_LINE_2, (ui8 *)"the opposite player", White, Black);
     GUI_Text(SSB_X_FIRST_SELECTION, SSB_Y_FIRST_SELECTION, (ui8 *)"Human", Black, White);
@@ -47,13 +105,112 @@ void show_single_board_menu(void)
     GUI_Text(SSB_X_THIRD_SELECTION, SSB_Y_THIRD_SELECTION, (ui8 *)"Back", White, Black);
 }
 
+void update_single_board_menu(move_type move)
+{
+    if (move == ROTATION)
+    {
+        if (game_menu.option_num == 1)
+        {
+            return;
+        }
+        if (game_menu.option_num == 2)
+        {
+            return;
+        }
+        if (game_menu.option_num == 3)
+        {
+            show_game_mode_menu();
+        }
+    }
+    if (move == DOWN)
+    {
+        if (game_menu.option_num == 1)
+        {
+            GUI_Text(SSB_X_FIRST_SELECTION, SSB_Y_FIRST_SELECTION, (ui8 *)"Human", White, Black);
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", Black, White);
+            game_menu.option_num = 2;
+        }
+        else if (game_menu.option_num == 2)
+        {
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", White, Black);
+            GUI_Text(SSB_X_THIRD_SELECTION, SSB_Y_THIRD_SELECTION, (ui8 *)"Back", Black, White);
+            game_menu.option_num = 3;
+        }
+    }
+    else if (move == UP)
+    {
+        if (game_menu.option_num == 2)
+        {
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", White, Black);
+            GUI_Text(SSB_X_FIRST_SELECTION, SSB_Y_FIRST_SELECTION, (ui8 *)"Human", Black, White);
+            game_menu.option_num = 1;
+        }
+        else if (game_menu.option_num == 3)
+        {
+            GUI_Text(SSB_X_THIRD_SELECTION, SSB_Y_THIRD_SELECTION, (ui8 *)"Back", White, Black);
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", Black, White);
+            game_menu.option_num = 2;
+        }
+    }
+}
+
 void show_two_board_menu(void)
 {
     LCD_Clear(Black);
-    menu.menu_window = MULTI_BOARD;
+    game_menu.menu_window = MULTI_BOARD;
+    game_menu.option_num = 1;
     GUI_Text(STB_X_TEXT_AREA_LINE_1, STB_Y_TEXT_AREA_LINE_1, (ui8 *)"Two-boards: select", White, Black);
     GUI_Text(STB_X_TEXT_AREA_LINE_2, STB_Y_TEXT_AREA_LINE_2, (ui8 *)"your player", White, Black);
     GUI_Text(STB_X_FIRST_SELECTION, STB_Y_FIRST_SELECTION, (ui8 *)"Human", Black, White);
     GUI_Text(STB_X_SECOND_SELECTION, STB_Y_SECOND_SELECTION, (ui8 *)"NPC", White, Black);
     GUI_Text(STB_X_THIRD_SELECTION, STB_Y_THIRD_SELECTION, (ui8 *)"Back", White, Black);
+}
+
+void update_two_board_menu(move_type move)
+{
+    if (move == ROTATION)
+    {
+        if (game_menu.option_num == 1)
+        {
+            return;
+        }
+        if (game_menu.option_num == 2)
+        {
+            return;
+        }
+        if (game_menu.option_num == 3)
+        {
+            show_game_mode_menu();
+        }
+    }
+    if (move == DOWN)
+    {
+        if (game_menu.option_num == 1)
+        {
+            GUI_Text(SSB_X_FIRST_SELECTION, SSB_Y_FIRST_SELECTION, (ui8 *)"Human", White, Black);
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", Black, White);
+            game_menu.option_num = 2;
+        }
+        else if (game_menu.option_num == 2)
+        {
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", White, Black);
+            GUI_Text(SSB_X_THIRD_SELECTION, SSB_Y_THIRD_SELECTION, (ui8 *)"Back", Black, White);
+            game_menu.option_num = 3;
+        }
+    }
+    else if (move == UP)
+    {
+        if (game_menu.option_num == 2)
+        {
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", White, Black);
+            GUI_Text(SSB_X_FIRST_SELECTION, SSB_Y_FIRST_SELECTION, (ui8 *)"Human", Black, White);
+            game_menu.option_num = 1;
+        }
+        else if (game_menu.option_num == 3)
+        {
+            GUI_Text(SSB_X_THIRD_SELECTION, SSB_Y_THIRD_SELECTION, (ui8 *)"Back", White, Black);
+            GUI_Text(SSB_X_SECOND_SELECTION, SSB_Y_SECOND_SELECTION, (ui8 *)"NPC", Black, White);
+            game_menu.option_num = 2;
+        }
+    }
 }

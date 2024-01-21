@@ -18,6 +18,7 @@
 #include "../GLCD/GLCD.h"
 #include "../game/walls.h"
 #include "../game/player.h"
+
 extern game_data game;
 uint8_t select = 1;
 /******************************************************************************
@@ -152,7 +153,7 @@ void RIT_IRQHandler(void)
 			{
 			case 2:
 				// this is the button that starts the game
-				game_start(&game);
+				menu_manager(UP);
 				break;
 			// per controllare pressioni prolungate: es. 5[sec]/50[msec](RIT timer) = 100
 			// case 100:

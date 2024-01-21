@@ -27,14 +27,23 @@ Project File Date:  01/21/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling sample.c...
+compiling quoridor.c...
+game\./player.h(16): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\./walls.h(34): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\../magda/magda.h(24): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\quoridor.c(228): warning:  #111-D: statement is unreachable
+      return;
+game\quoridor.c: 4 warnings, 0 errors
 compiling menu.c...
-menu\menu.c(39): warning:  #1-D: last line of file ends without a newline
+menu\menu.c(216): warning:  #1-D: last line of file ends without a newline
   }
 menu\menu.c: 1 warning, 0 errors
 linking...
-Program Size: Code=31982 RO-data=5550 RW-data=44 ZI-data=6260  
-".\sample.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=32814 RO-data=5550 RW-data=52 ZI-data=6260  
+".\sample.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 

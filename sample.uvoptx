@@ -130,7 +130,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDARM</Key>
-          <Name>(1010=22,109,407,665,0)(1007=36,258,213,523,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)(350=249,476,498,730,0)(250=-1,-1,-1,-1,0)(270=37,106,239,247,0)(313=144,109,1018,644,0)(291=868,545,1181,730,0)(302=1097,260,1359,709,0)(110=944,4,1280,322,0)(113=-1,-1,-1,-1,0)(320=1049,332,1280,650,0)(210=-1,-1,-1,-1,0)(330=22,102,393,719,0)(332=-1,-1,-1,-1,0)(333=116,345,704,540,0)(334=513,525,1101,720,0)(335=-1,-1,-1,-1,0)(336=-1,-1,-1,-1,0)(345=-1,-1,-1,-1,0)(346=-1,-1,-1,-1,0)(381=-1,-1,-1,-1,0)(382=-1,-1,-1,-1,0)(383=-1,-1,-1,-1,0)(384=-1,-1,-1,-1,0)(197=-1,-1,-1,-1,0)(198=-1,-1,-1,-1,0)(191=-1,-1,-1,-1,0)(192=-1,-1,-1,-1,0)(199=-1,-1,-1,-1,0)(180=-1,-1,-1,-1,0)(261=-1,-1,-1,-1,0)(262=-1,-1,-1,-1,0)(231=-1,-1,-1,-1,0)(232=-1,-1,-1,-1,0)(233=-1,-1,-1,-1,0)(121=0,138,526,642,0)(122=-1,-1,-1,-1,0)(123=-1,-1,-1,-1,0)(124=-1,-1,-1,-1,0)(170=-1,632,252,908,1)(142=-1,-1,-1,-1,0)(150=-1,-1,-1,-1,0)(400=-1,-1,-1,-1,0)(370=-1,-1,-1,-1,0)(160=-1,-1,-1,-1,0)(280=672,145,1114,720,0)(240=747,258,1114,455,0)(1000=-79,568,724,1180,0)</Name>
+          <Name>(1010=22,109,407,665,0)(1007=36,258,213,523,0)(1008=-1,-1,-1,-1,0)(1009=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)(350=249,476,498,730,0)(250=-1,-1,-1,-1,0)(270=37,106,239,247,0)(313=144,109,1018,644,0)(291=868,545,1181,730,0)(302=1097,260,1359,709,0)(110=944,4,1280,322,0)(113=-1,-1,-1,-1,0)(320=1049,332,1280,650,0)(210=-1,-1,-1,-1,0)(330=22,102,393,719,0)(332=-1,-1,-1,-1,0)(333=116,345,704,540,0)(334=513,525,1101,720,0)(335=-1,-1,-1,-1,0)(336=-1,-1,-1,-1,0)(345=-1,-1,-1,-1,0)(346=-1,-1,-1,-1,0)(381=-1,-1,-1,-1,0)(382=-1,-1,-1,-1,0)(383=-1,-1,-1,-1,0)(384=-1,-1,-1,-1,0)(197=-1,-1,-1,-1,0)(198=-1,-1,-1,-1,0)(191=-1,-1,-1,-1,0)(192=-1,-1,-1,-1,0)(199=-1,-1,-1,-1,0)(180=-1,-1,-1,-1,0)(261=-1,-1,-1,-1,0)(262=-1,-1,-1,-1,0)(231=-1,-1,-1,-1,0)(232=-1,-1,-1,-1,0)(233=-1,-1,-1,-1,0)(121=0,138,526,642,0)(122=-1,-1,-1,-1,0)(123=-1,-1,-1,-1,0)(124=-1,-1,-1,-1,0)(170=30,500,283,776,1)(142=-1,-1,-1,-1,0)(150=-1,-1,-1,-1,0)(400=-1,-1,-1,-1,0)(370=-1,-1,-1,-1,0)(160=-1,-1,-1,-1,0)(280=672,145,1114,720,0)(240=747,258,1114,455,0)(1000=-92,143,711,755,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -154,14 +154,14 @@
           <Type>0</Type>
           <LineNumber>61</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>30404</Address>
+          <Address>30444</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\61</Expression>
         </Bp>
@@ -170,14 +170,14 @@
           <Type>0</Type>
           <LineNumber>62</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>30410</Address>
+          <Address>30450</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\62</Expression>
         </Bp>
@@ -186,14 +186,14 @@
           <Type>0</Type>
           <LineNumber>63</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>30414</Address>
+          <Address>30454</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\63</Expression>
         </Bp>
@@ -202,14 +202,14 @@
           <Type>0</Type>
           <LineNumber>125</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>30872</Address>
+          <Address>30912</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
+          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\magda\magda.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\magda/magda.c\125</Expression>
         </Bp>
@@ -218,14 +218,14 @@
           <Type>0</Type>
           <LineNumber>139</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>24418</Address>
+          <Address>24650</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
+          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\game/walls.c\139</Expression>
         </Bp>
@@ -234,14 +234,14 @@
           <Type>0</Type>
           <LineNumber>153</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>24578</Address>
+          <Address>24804</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>\\vmware-host\Shared Folders\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
+          <Filename>\vmware-host\Shared Folders\lorenzo On My Mac\Uni\ASE\Extra_point\quorridor\game\walls.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\sample\game/walls.c\153</Expression>
         </Bp>
@@ -271,7 +271,7 @@
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>success</ItemText>
+          <ItemText>game_menu</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>

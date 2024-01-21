@@ -28,7 +28,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 #endif
 int down;
 game_data game;
-menu menu;
+menu game_menu;
 /*----------------------------------------------------------------------------
   Main Program
  *----------------------------------------------------------------------------*/
@@ -48,7 +48,7 @@ int main(void)
 
 	LCD_Initialization();
 
-	menu_handler();
+	menu_init();
 
 	LPC_SC->PCON |= 0x1; /* power-down	mode										*/
 	LPC_SC->PCON &= ~(0x2);

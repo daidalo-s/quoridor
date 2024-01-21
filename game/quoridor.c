@@ -315,6 +315,12 @@ void confirm_player_move(game_data *game)
 
 void move_dispatcher(move_type direction, game_data *game)
 {
+    if (game->game_status == MENU_MODE)
+    {
+        menu_manager(direction);
+        return;
+    }
+
     if (game->game_status == RUNNING)
     {
         if (game->input_mode == PLAYER_MOVEMENT)
@@ -373,6 +379,11 @@ void move_dispatcher(move_type direction, game_data *game)
  */
 void select_button_pressed()
 {
+    if (game.game_status == MENU_MODE)
+    {
+        menu_manager(ROTATION);
+        return;
+    }
     turn_manager(&game, 0);
 }
 
