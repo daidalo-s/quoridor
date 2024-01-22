@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_QUORRIDOR
 #define GRAPHICS_QUORRIDOR
 
-#include "../game/quoridor.h"
+#include "../common.h"
 
 #define SQUARE_SIDE 26
 #define WALL_SIZE 8
@@ -66,12 +66,6 @@
 #define VERTICAL_WALL_Y_OFFSET(x) (5 + ((SQUARE_SIDE + WALL_SIZE) * (x / 2)))
 
 #define WALL_LENGTH ((SQUARE_SIDE * 2) + 8)
-
-typedef struct screen_point
-{
-    ui16 x;
-    ui16 y;
-} screen_point;
 
 /**
  * @brief This function simply draws the game board

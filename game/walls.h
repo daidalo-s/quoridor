@@ -1,7 +1,7 @@
 #ifndef WALLS_H
 #define WALLS_H
 
-#include "./quoridor.h"
+#include "../common.h"
 
 // inside here all the functions related to the walls management
 
@@ -31,4 +31,10 @@ matrix_point pop(game_data *);
 void find_all_possible_walls(void);
 void place_current_wall(void);
 void remove_current_wall(void);
+
+bfs_node bfs(active_player);
+void enqueue(bfs_node);
+bfs_node dequeue(void);
+ui8 terminal_node(bfs_node, active_player);
+void add_bfs_node(ui8, ui8, int);
 #endif

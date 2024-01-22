@@ -50,11 +50,15 @@ minimax_res minimax(ui8 depth, ui8 maximizingPlayer)
         return move;
     }
 
+    // mi voglio fermare perché altrimenti continuo a guardare ma è la fine, è il check
+    // di game over
     if (game.player_1.x_matrix_coordinate == 12)
     {
         move.value = INT32_MIN;
         return move;
     }
+
+    // se il game non è over
     if (maximizingPlayer)
     {
         move.value = INT32_MIN;
@@ -131,7 +135,7 @@ int heuristic_value_of_node()
     //     return 12 - game.player_1.x_matrix_coordinate;
     // else
     //     return game.player_2.x_matrix_coordinate;
-    return game.player_1.x_matrix_coordinate - 12;
+    return (game.player_1.x_matrix_coordinate - 12) + (game.player_2.x_matrix_coordinate);
 }
 
 void minimax_move_player(ui8 index, ui8 x, ui8 y, active_player player)

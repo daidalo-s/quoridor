@@ -213,76 +213,267 @@ void cells_not_visited(game_data *game)
 
 int feasible_path(game_data *game, active_player active_player)
 {
-    matrix_point start;
-    matrix_point v;
-    matrix_point tmp;
-    // 1. all cells must be marked as not visited
-    cells_not_visited(game);
-    if (active_player == PLAYER_1)
+    bfs_node node = bfs(active_player);
+    if (node.success)
+        return 1;
+    return 0;
+    // matrix_point start;
+    // matrix_point v;
+    // matrix_point tmp;
+    // // 1. all cells must be marked as not visited
+    // cells_not_visited(game);
+    // if (active_player == PLAYER_1)
+    // {
+    //     start.x = game->player_1.x_matrix_coordinate;
+    //     start.y = game->player_1.y_matrix_coordinate;
+    // }
+    // else
+    // {
+    //     start.x = game->player_2.x_matrix_coordinate;
+    //     start.y = game->player_2.y_matrix_coordinate;
+    // }
+
+    // push(game, start);
+    // while (game->stack.index != 0)
+    // {
+    //     v = pop(game);
+    //     if (active_player == PLAYER_1)
+    //     {
+    //         if (v.x == 12)
+    //         {
+    //             game->stack.index = 0;
+    //             return 1;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (v.x == 0)
+    //         {
+    //             game->stack.index = 0;
+    //             return 1;
+    //         }
+    //     }
+    //     if (game->board[v.x][v.y].cell_status == NOT_VISITED)
+    //     {
+    //         game->board[v.x][v.y].cell_status = VISITED;
+    //         // For all legal moves starting from v
+    //         if (!(v.x - 2 < 0 || game->board[v.x - 1][v.y].availability == OCCUPIED) && game->board[v.x - 2][v.y].cell_status == NOT_VISITED)
+    //         {
+    //             tmp.x = v.x - 2;
+    //             tmp.y = v.y;
+    //             push(game, tmp);
+    //         }
+
+    //         if (!(v.x + 2 > 12 || game->board[v.x + 1][v.y].availability == OCCUPIED) && game->board[v.x + 2][v.y].cell_status == NOT_VISITED)
+    //         {
+    //             tmp.x = v.x + 2;
+    //             tmp.y = v.y;
+    //             push(game, tmp);
+    //         }
+
+    //         if (!(v.y - 2 < 0 || game->board[v.x][v.y - 1].availability == OCCUPIED) && game->board[v.x][v.y - 2].cell_status == NOT_VISITED)
+    //         {
+    //             tmp.x = v.x;
+    //             tmp.y = v.y - 2;
+    //             push(game, tmp);
+    //         }
+
+    //         if (!(v.y + 2 > 12 || game->board[v.x][v.y + 1].availability == OCCUPIED) && game->board[v.x][v.y + 2].cell_status == NOT_VISITED)
+    //         {
+    //             tmp.x = v.x;
+    //             tmp.y = v.y + 2;
+    //             push(game, tmp);
+    //         }
+    //     }
+    // }
+}
+
+bfs_node bfs(active_player player)
+{
+    // init
+    bfs_node node;
+    int x, y, length;
+    node.length = 0;
+    node.success = 0;
+    game.bfs_data.start = 0;
+    game.bfs_data.end = 0;
+    cells_not_visited(&game);
+
+    if (player == PLAYER_1)
     {
-        start.x = game->player_1.x_matrix_coordinate;
-        start.y = game->player_1.y_matrix_coordinate;
+        node.matrix_point.x = game.player_1.x_matrix_coordinate;
+        node.matrix_point.y = game.player_1.y_matrix_coordinate;
     }
     else
     {
-        start.x = game->player_2.x_matrix_coordinate;
-        start.y = game->player_2.y_matrix_coordinate;
+        node.matrix_point.x = game.player_2.x_matrix_coordinate;
+        node.matrix_point.y = game.player_2.y_matrix_coordinate;
     }
-
-    push(game, start);
-    while (game->stack.index != 0)
+	
+		enqueue(node);
+		
+    while (game.bfs_data.start < game.bfs_data.end)
     {
-        v = pop(game);
-        if (active_player == PLAYER_1)
+        node = dequeue();
+        if (terminal_node(node, player))
         {
-            if (v.x == 12)
+            node.success = 1;
+            return node;
+        }
+        x = node.matrix_point.x;
+        y = node.matrix_point.y;
+        length = node.length;
+        // for each subnode facciamo la enqueue
+
+        if (!(x - 2 < 0 || game.board[x - 1][y].availability == OCCUPIED))
+        {
+            // going up is legal
+            if (game.board[x - 2][y].availability == OCCUPIED)
             {
-                game->stack.index = 0;
-                return 1;
+                // The opponent is facing us, we need to check if we can jump him
+                if (!(x - 4 < 0 || game.board[x - 3][y].availability == OCCUPIED))
+                {
+                    add_bfs_node(x - 4, y, length);
+                }
+                else
+                {
+                    // checking if we can jump him right
+                    if (!(y + 2 > 12 || game.board[x - 2][y + 1].availability == OCCUPIED))
+                        add_bfs_node(x - 2, y + 2, length);
+                    // checking if we can jump him left
+                    if (!(y - 2 < 0 || game.board[x - 2][y - 1].availability == OCCUPIED))
+                        add_bfs_node(x - 2, y - 2, length);
+                }
+            }
+            else
+            {
+                add_bfs_node(x - 2, y, length);
             }
         }
-        else
+
+        // DOWN
+        // checking that the move is legal, now we are moving down so increasing X
+        if (!(x + 2 > 12 || game.board[x + 1][y].availability == OCCUPIED))
         {
-            if (v.x == 0)
+            // going down is legal
+            if (game.board[x + 2][y].availability == OCCUPIED)
             {
-                game->stack.index = 0;
-                return 1;
+                if (!(x + 4 > 12 || game.board[x + 3][y].availability == OCCUPIED))
+                {
+                    add_bfs_node(x + 4, y, length);
+                }
+                else
+                {
+                    // checking if we can jump him right
+                    if (!(y + 2 > 12 || game.board[x + 2][y + 1].availability == OCCUPIED))
+                        add_bfs_node(x + 2, y + 2, length);
+                    // checking if we can jump him left
+                    if (!(y - 2 < 0 || game.board[x + 2][y - 1].availability == OCCUPIED))
+                        add_bfs_node(x + 2, y - 2, length);
+                }
+            }
+            else
+            {
+                add_bfs_node(x + 2, y, length);
             }
         }
-        if (game->board[v.x][v.y].cell_status == NOT_VISITED)
+        // LEFT
+        // checking that the move is legal, we are decrementing y
+        if (!(y - 2 < 0 || game.board[x][y - 1].availability == OCCUPIED))
         {
-            game->board[v.x][v.y].cell_status = VISITED;
-            // For all legal moves starting from v
-            if (!(v.x - 2 < 0 || game->board[v.x - 1][v.y].availability == OCCUPIED) && game->board[v.x - 2][v.y].cell_status == NOT_VISITED)
+            // going left is legal
+            if (game.board[x][y - 2].availability == OCCUPIED)
             {
-                tmp.x = v.x - 2;
-                tmp.y = v.y;
-                push(game, tmp);
+                if (!(y - 4 < 0 || game.board[x][y - 3].availability == OCCUPIED))
+                {
+                    add_bfs_node(x, y - 4, length);
+                }
+                else
+                {
+                    // checking if we can jump him right -> in this case means up
+                    if (!(x - 2 < 0 || game.board[x - 1][y - 2].availability == OCCUPIED))
+                        add_bfs_node(x - 2, y - 2, length);
+                    // checking if we can jump him left -> in this case means down
+                    if (!(x + 2 > 12 || game.board[x + 1][y - 2].availability == OCCUPIED))
+                        add_bfs_node(x + 2, y - 2, length);
+                }
             }
-
-            if (!(v.x + 2 > 12 || game->board[v.x + 1][v.y].availability == OCCUPIED) && game->board[v.x + 2][v.y].cell_status == NOT_VISITED)
+            else
             {
-                tmp.x = v.x + 2;
-                tmp.y = v.y;
-                push(game, tmp);
+                add_bfs_node(x, y - 2, length);
             }
-
-            if (!(v.y - 2 < 0 || game->board[v.x][v.y - 1].availability == OCCUPIED) && game->board[v.x][v.y - 2].cell_status == NOT_VISITED)
+        }
+        // RIGHT
+        if (!(y + 2 > 12 || game.board[x][y + 1].availability == OCCUPIED))
+        {
+            // going right is legal
+            if (game.board[x][y + 2].availability == OCCUPIED)
             {
-                tmp.x = v.x;
-                tmp.y = v.y - 2;
-                push(game, tmp);
+                if (!(y + 4 > 12 || game.board[x][y + 3].availability == OCCUPIED))
+                {
+                    add_bfs_node(x, y + 4, length);
+                }
+                else
+                {
+                    // checking if we can jump him right -> in this case means up
+                    if (!(x - 2 < 0 || game.board[x - 1][y + 2].availability == OCCUPIED))
+                        add_bfs_node(x - 2, y + 2, length);
+                    // checking if we can jump him left -> in this case means down
+                    if (!(x + 2 > 12 || game.board[x + 1][y + 2].availability == OCCUPIED))
+                        add_bfs_node(x + 2, y + 2, length);
+                }
             }
-
-            if (!(v.y + 2 > 12 || game->board[v.x][v.y + 1].availability == OCCUPIED) && game->board[v.x][v.y + 2].cell_status == NOT_VISITED)
+            else
             {
-                tmp.x = v.x;
-                tmp.y = v.y + 2;
-                push(game, tmp);
+                add_bfs_node(x, y + 2, length);
             }
         }
     }
-    return -1;
+    // if we get here it means that there is no passage
+    return node;
+}
+
+void enqueue(bfs_node node)
+{
+    // push
+    game.board[node.matrix_point.x][node.matrix_point.y].cell_status = VISITED;
+    game.bfs_data.bfs_node_array[game.bfs_data.end] = node;
+    game.bfs_data.end++;
+}
+
+bfs_node dequeue(void)
+{
+    bfs_node node;
+    node = game.bfs_data.bfs_node_array[game.bfs_data.start];
+    game.bfs_data.start++;
+}
+
+ui8 terminal_node(bfs_node node, active_player player)
+{
+    if (player == PLAYER_1)
+    {
+        if (node.matrix_point.x == 12)
+            return 1;
+        return 0;
+    }
+    else
+    {
+        if (node.matrix_point.x == 0)
+            return 1;
+        return 0;
+    }
+}
+
+void add_bfs_node(ui8 x, ui8 y, int length)
+{
+    bfs_node node;
+    if (game.board[x][y].cell_status == NOT_VISITED)
+    {
+        node.length = length + 1;
+        node.matrix_point.x = x;
+        node.matrix_point.y = y;
+        enqueue(node);
+    }
 }
 
 void push(game_data *game, matrix_point vertex)

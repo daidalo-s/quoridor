@@ -27,15 +27,21 @@ Project File Date:  01/22/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling player.c...
-game\./player.h(16): warning:  #1-D: last line of file ends without a newline
+compiling walls.c...
+game\./../common.h(203): warning:  #1-D: last line of file ends without a newline
   #endif
-game\player.c(53): warning:  #177-D: variable "destination"  was declared but never referenced
-      matrix_point destination;
-game\player.c: 2 warnings, 0 errors
+game\./walls.h(40): warning:  #1-D: last line of file ends without a newline
+  #endif
+game\walls.c(449): warning:  #940-D: missing return statement at end of non-void function "dequeue" 
+  }
+game\walls.c(446): warning:  #550-D: variable "node"  was set but never used
+      bfs_node node;
+game\walls.c(551): warning:  #1-D: last line of file ends without a newline
+  }
+game\walls.c: 5 warnings, 0 errors
 linking...
-Program Size: Code=34926 RO-data=5550 RW-data=68 ZI-data=6260  
-".\sample.axf" - 0 Error(s), 2 Warning(s).
+Program Size: Code=35706 RO-data=5550 RW-data=68 ZI-data=6580  
+".\sample.axf" - 0 Error(s), 5 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -58,7 +64,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:04
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

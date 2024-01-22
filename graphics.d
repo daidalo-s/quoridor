@@ -1,7 +1,8 @@
 .\graphics.o: graphics\graphics.c
 .\graphics.o: graphics\graphics.h
-.\graphics.o: graphics\../game/quoridor.h
+.\graphics.o: graphics\../common.h
 .\graphics.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\graphics.o: graphics\../game/quoridor.h
 .\graphics.o: graphics\../GLCD/GLCD.h
 .\graphics.o: C:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include\LPC17xx.h
 .\graphics.o: C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\core_cm3.h

@@ -44,20 +44,6 @@
 #define STB_X_THIRD_SELECTION 104
 #define STB_Y_THIRD_SELECTION (STB_Y_SECOND_SELECTION + 16 + 6)
 
-typedef enum menu_window
-{
-    MENU_INT0,
-    GAME_MODE_SELECT,
-    SINGLE_BOARD,
-    MULTI_BOARD
-} menu_window;
-
-typedef struct menu
-{
-    menu_window menu_window;
-    ui8 option_num;
-} menu;
-
 void menu_init(void);
 void menu_manager(move_type);
 void show_int0_message(void);

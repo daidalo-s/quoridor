@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "quoridor.h"
+#include "../common.h"
 
 // inside here all the functions related to the players management
 void init_players(game_data *game);
@@ -13,4 +13,5 @@ void add_move(game_data *, matrix_point);
  * move is detected
  */
 void move_player(move_type, game_data *, active_player);
+void bfs_find_available_moves(bfs_node, active_player);
 #endif

@@ -14,5 +14,6 @@
 .\sample.o: RIT/RIT.h
 .\sample.o: joystick/joystick.h
 .\sample.o: game/quoridor.h
+.\sample.o: game/../common.h
 .\sample.o: GLCD/GLCD.h
 .\sample.o: menu/menu.h

@@ -1,6 +1,7 @@
 .\menu.o: menu\menu.c
 .\menu.o: menu\./menu.h
 .\menu.o: menu\./../game/quoridor.h
+.\menu.o: menu\./../game/../common.h
 .\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\menu.o: menu\../GLCD/GLCD.h
 .\menu.o: C:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include\LPC17xx.h
