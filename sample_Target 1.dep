@@ -18,7 +18,7 @@ I (RIT/RIT.h)(0x659D7BD4)
 I (joystick/joystick.h)(0x659D7BD4)
 I (game/quoridor.h)(0x65AD905E)
 I (GLCD/GLCD.h)(0x65810AF5)
-I (menu/menu.h)(0x65AD91D9)
+I (menu/menu.h)(0x65ADA42B)
 F (.\core_cm3.c)(0x65810AF1)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\core_cm3.o --omf_browse .\core_cm3.crf --depend .\core_cm3.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x602585EE)
 F (.\system_LPC17xx.c)(0x65A45322)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\system_lpc17xx.o --omf_browse .\system_lpc17xx.crf --depend .\system_lpc17xx.d)
@@ -149,7 +149,7 @@ I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\m
 I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include\system_LPC17xx.h)(0x58493F92)
 I (timer\timer.h)(0x659DBE88)
 F (.\timer\timer.h)(0x659DBE88)()
-F (.\game\quoridor.c)(0x65AD94DF)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\quoridor.o --omf_browse .\quoridor.crf --depend .\quoridor.d)
+F (.\game\quoridor.c)(0x65ADA681)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\quoridor.o --omf_browse .\quoridor.crf --depend .\quoridor.d)
 I (game\quoridor.h)(0x65AD905E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x602585EE)
 I (game\../timer/timer.h)(0x659DBE88)
@@ -165,7 +165,7 @@ I (game\../GLCD/GLCD.h)(0x65810AF5)
 I (game\./player.h)(0x65A952E7)
 I (game\./walls.h)(0x65AD13AF)
 I (game\../magda/magda.h)(0x65AD13AF)
-I (game\../menu/menu.h)(0x65AD91D9)
+I (game\../menu/menu.h)(0x65ADA42B)
 F (.\game\quoridor.h)(0x65AD905E)()
 F (.\game\player.c)(0x65AD4788)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\player.o --omf_browse .\player.crf --depend .\player.d)
 I (game\./player.h)(0x65A952E7)
@@ -204,8 +204,8 @@ I (magda\../game/player.h)(0x65A952E7)
 I (magda\../game/walls.h)(0x65AD13AF)
 I (magda\./magda.h)(0x65AD13AF)
 F (.\magda\magda.h)(0x65AD13AF)()
-F (.\menu\menu.c)(0x65AD9A54)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\menu.o --omf_browse .\menu.crf --depend .\menu.d)
-I (menu\./menu.h)(0x65AD91D9)
+F (.\menu\menu.c)(0x65AE1BBE)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\menu.o --omf_browse .\menu.crf --depend .\menu.d)
+I (menu\./menu.h)(0x65ADA42B)
 I (menu\./../game/quoridor.h)(0x65AD905E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x602585EE)
 I (menu\../GLCD/GLCD.h)(0x65810AF5)
@@ -216,4 +216,4 @@ I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\c
 I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h)(0x626FAD4E)
 I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h)(0x626FAD4E)
 I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include\system_LPC17xx.h)(0x58493F92)
-F (.\menu\menu.h)(0x65AD91D9)()
+F (.\menu\menu.h)(0x65ADA42B)()

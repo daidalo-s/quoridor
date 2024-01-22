@@ -21,18 +21,18 @@ void menu_manager(move_type move)
     // at this point we are or in the GAME_MODE_SELECT or in another submenu
     if (game_menu.menu_window == GAME_MODE_SELECT)
     {
-        // reagiamo agli input in un certo modo
         update_game_mode_menu(move);
+        return;
     }
     if (game_menu.menu_window == SINGLE_BOARD)
     {
-        // reagiamo agli input in altro modo
         update_single_board_menu(move);
+        return;
     }
     if (game_menu.menu_window == MULTI_BOARD)
     {
-        // reagiamo agli input in un altro modo ancora
         update_two_board_menu(move);
+        return;
     }
 }
 
@@ -109,17 +109,23 @@ void update_single_board_menu(move_type move)
 {
     if (move == ROTATION)
     {
+        // human-npc
         if (game_menu.option_num == 1)
         {
+            // qui dobbiamo inizializzare per giocare contro un umano come sempre fatto
+            LCD_Clear(Black);
+            game_start(&game);
             return;
         }
         if (game_menu.option_num == 2)
         {
+            // qui dobbiamo inizializzare per giocare contro il bot
             return;
         }
         if (game_menu.option_num == 3)
         {
             show_game_mode_menu();
+            return;
         }
     }
     if (move == DOWN)
@@ -170,17 +176,21 @@ void update_two_board_menu(move_type move)
 {
     if (move == ROTATION)
     {
+        // human-npc
         if (game_menu.option_num == 1)
         {
+            // qui dobbiamo far giocare il bot
             return;
         }
         if (game_menu.option_num == 2)
         {
+            // qui dobbiamo giocare noi
             return;
         }
         if (game_menu.option_num == 3)
         {
             show_game_mode_menu();
+            return;
         }
     }
     if (move == DOWN)

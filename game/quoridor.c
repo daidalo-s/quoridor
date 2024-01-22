@@ -21,13 +21,12 @@
 extern game_data game;
 
 /**
- * @brief This function initializes the board with the cell type and the
- * players position and color
+ * @brief This function is responsible of starting the game. It's called
+ * by the INT0 key interrupt
  * @param game
  */
-void game_init(game_data *game)
+void game_start(game_data *game)
 {
-    // Setting all the cells as free
     board_cell_type_init(game);
     // Drawing the game board
     draw_board();
@@ -39,20 +38,7 @@ void game_init(game_data *game)
      * The timer needs to reset and generate ad interrupt upon count, so SRI -> 011 = 3
      */
     init_timer(0, 0, 0, 3, 0x17D7840);
-    // At this point we are in wait mode
-}
-
-/**
- * @brief This function is responsible of starting the game. It's called
- * by the INT0 key interrupt
- * @param game
- */
-void game_start(game_data *game)
-{
-
-    // If the game is already running we don't have to do anything
-    if (game->game_status != WAIT_MODE)
-        return;
+    game->game_status = WAIT_MODE;
     draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
     draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
     // 0 since the time is not over
