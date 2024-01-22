@@ -27,19 +27,15 @@ Project File Date:  01/22/2024
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Target 1'
-compiling quoridor.c...
+compiling player.c...
 game\./player.h(16): warning:  #1-D: last line of file ends without a newline
   #endif
-game\./walls.h(34): warning:  #1-D: last line of file ends without a newline
-  #endif
-game\../magda/magda.h(24): warning:  #1-D: last line of file ends without a newline
-  #endif
-game\quoridor.c(214): warning:  #111-D: statement is unreachable
-      return;
-game\quoridor.c: 4 warnings, 0 errors
+game\player.c(53): warning:  #177-D: variable "destination"  was declared but never referenced
+      matrix_point destination;
+game\player.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=34238 RO-data=5550 RW-data=68 ZI-data=6260  
-".\sample.axf" - 0 Error(s), 4 Warning(s).
+Program Size: Code=34926 RO-data=5550 RW-data=68 ZI-data=6260  
+".\sample.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -62,7 +58,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.6.0
-Build Time Elapsed:  00:00:03
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>
