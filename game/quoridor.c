@@ -311,7 +311,23 @@ void move_dispatcher(move_type direction, game_data *game)
     {
         if (game->input_mode == PLAYER_MOVEMENT)
         {
-            if (direction == UP)
+            if (direction == DIAG_UP_RIGHT)
+            {
+                move_player(DIAG_UP_RIGHT, game, game->player_turn);
+            }
+            else if (direction == DIAG_UP_LEFT)
+            {
+                move_player(DIAG_UP_LEFT, game, game->player_turn);
+            }
+            else if (direction == DIAG_DOWN_RIGHT)
+            {
+                move_player(DIAG_DOWN_RIGHT, game, game->player_turn);
+            }
+            else if (direction == DIAG_DOWN_LEFT)
+            {
+                move_player(DIAG_DOWN_LEFT, game, game->player_turn);
+            }
+            else if (direction == UP)
             {
                 move_player(UP, game, game->player_turn);
             }

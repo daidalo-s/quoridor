@@ -38,6 +38,7 @@ volatile int down_2 = 0;
 void RIT_IRQHandler(void)
 {
 	static int j_select = 0, j_left = 0, j_right = 0, j_down = 0, j_up = 0;
+	static int j_up_left = 0, j_up_right = 0, j_down_left = 0, j_down_right = 0;
 
 	/*Gestione Joystick Polling*/
 	if ((LPC_GPIO1->FIOPIN & (1 << 25)) == 0)
@@ -59,6 +60,78 @@ void RIT_IRQHandler(void)
 	else
 		j_select = 0;
 
+	/***************************** DIAGONALS ***********************************/
+	// j_down_left
+	if ((LPC_GPIO1->FIOPIN & (1 << 26)) == 0 && (LPC_GPIO1->FIOPIN & (1 << 27)) == 0)
+	{ // joystick down
+		j_down_left++;
+		switch (j_down_left)
+		{
+		case 1:
+			// qua dentro quello che vuoi fare
+			// If we end up here the game is in progress and we have a move
+			move_dispatcher(DIAG_DOWN_LEFT, &game);
+			break;
+		default:
+			break;
+		}
+	}
+	else
+		j_down_left = 0;
+
+	// j_down_right
+	if ((LPC_GPIO1->FIOPIN & (1 << 26)) == 0 && (LPC_GPIO1->FIOPIN & (1 << 28)) == 0)
+	{ // joystick down
+		j_down_right++;
+		switch (j_down_right)
+		{
+		case 1:
+			// qua dentro quello che vuoi fare
+			// If we end up here the game is in progress and we have a move
+			move_dispatcher(DIAG_DOWN_RIGHT, &game);
+			break;
+		default:
+			break;
+		}
+	}
+	else
+		j_down_right = 0;
+
+	// j_up_left
+	if ((LPC_GPIO1->FIOPIN & (1 << 29)) == 0 && (LPC_GPIO1->FIOPIN & (1 << 27)) == 0)
+	{
+		j_up_left++;
+		switch (j_up_left)
+		{
+		case 1:
+			// If we end up here the game is in progress and we have a move
+			move_dispatcher(DIAG_UP_LEFT, &game);
+			break;
+		default:
+			break;
+		}
+	}
+	else
+		j_up_left = 0;
+
+	// j_up_right
+	if ((LPC_GPIO1->FIOPIN & (1 << 29)) == 0 && (LPC_GPIO1->FIOPIN & (1 << 28)) == 0)
+	{
+		j_up_right++;
+		switch (j_up_right)
+		{
+		case 1:
+			// If we end up here the game is in progress and we have a move
+			move_dispatcher(DIAG_UP_RIGHT, &game);
+			break;
+		default:
+			break;
+		}
+	}
+	else
+		j_up_right = 0;
+	/***************************** NORMAL_MOVES ********************************/
+
 	if ((LPC_GPIO1->FIOPIN & (1 << 26)) == 0)
 	{ // joystick down
 		j_down++;
@@ -66,10 +139,6 @@ void RIT_IRQHandler(void)
 		{
 		case 1:
 			// qua dentro quello che vuoi fare
-			if (game.game_status == WAIT_MODE)
-				break;
-			if (game.game_status == OVER)
-				break;
 			// If we end up here the game is in progress and we have a move
 			move_dispatcher(DOWN, &game);
 			break;
@@ -87,10 +156,6 @@ void RIT_IRQHandler(void)
 		{
 		case 1:
 			// qua dentro quello che vuoi fare
-			if (game.game_status == WAIT_MODE)
-				break;
-			if (game.game_status == OVER)
-				break;
 			// If we end up here the game is in progress and we have a move
 			move_dispatcher(LEFT, &game);
 			break;
@@ -108,10 +173,6 @@ void RIT_IRQHandler(void)
 		{
 		case 1:
 			// qua dentro quello che vuoi fare
-			if (game.game_status == WAIT_MODE)
-				break;
-			if (game.game_status == OVER)
-				break;
 			// If we end up here the game is in progress and we have a move
 			move_dispatcher(RIGHT, &game);
 			break;
@@ -128,10 +189,6 @@ void RIT_IRQHandler(void)
 		switch (j_up)
 		{
 		case 1:
-			if (game.game_status == WAIT_MODE)
-				break;
-			if (game.game_status == OVER)
-				break;
 			// If we end up here the game is in progress and we have a move
 			move_dispatcher(UP, &game);
 			break;
@@ -142,7 +199,7 @@ void RIT_IRQHandler(void)
 	else
 		j_up = 0;
 
-	/*Gestione BUTTONS*/
+	/****************************** BUTTONS ******************************/
 	if (down_0 != 0)
 	{
 		down_0++;

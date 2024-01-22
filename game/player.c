@@ -81,7 +81,18 @@ void find_available_moves(game_data *game)
         {
             // The opponent is facing us, we need to check if we can jump him
             if (!(x - 4 < 0 || game->board[x - 3][y].availability == OCCUPIED))
+            {
                 add_move(game, (matrix_point){x - 4, y});
+            }
+            else
+            {
+                // checking if we can jump him right
+                if (!(y + 2 > 12 || game->board[x - 2][y + 1].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x - 2, y + 2});
+                // checking if we can jump him left
+                if (!(y - 2 < 0 || game->board[x - 2][y - 1].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x - 2, y - 2});
+            }
         }
         else
         {
@@ -97,7 +108,18 @@ void find_available_moves(game_data *game)
         if (game->board[x + 2][y].availability == OCCUPIED)
         {
             if (!(x + 4 > 12 || game->board[x + 3][y].availability == OCCUPIED))
+            {
                 add_move(game, (matrix_point){x + 4, y});
+            }
+            else
+            {
+                // checking if we can jump him right
+                if (!(y + 2 > 12 || game->board[x + 2][y + 1].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x + 2, y + 2});
+                // checking if we can jump him left
+                if (!(y - 2 < 0 || game->board[x + 2][y - 1].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x + 2, y - 2});
+            }
         }
         else
         {
@@ -112,7 +134,18 @@ void find_available_moves(game_data *game)
         if (game->board[x][y - 2].availability == OCCUPIED)
         {
             if (!(y - 4 < 0 || game->board[x][y - 3].availability == OCCUPIED))
+            {
                 add_move(game, (matrix_point){x, y - 4});
+            }
+            else
+            {
+                // checking if we can jump him right -> in this case means up
+                if (!(x - 2 < 0 || game->board[x - 1][y - 2].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x - 2, y - 2});
+                // checking if we can jump him left -> in this case means down
+                if (!(x + 2 > 12 || game->board[x + 1][y - 2].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x + 2, y - 2});
+            }
         }
         else
         {
@@ -126,7 +159,18 @@ void find_available_moves(game_data *game)
         if (game->board[x][y + 2].availability == OCCUPIED)
         {
             if (!(y + 4 > 12 || game->board[x][y + 3].availability == OCCUPIED))
+            {
                 add_move(game, (matrix_point){x, y + 4});
+            }
+            else
+            {
+                // checking if we can jump him right -> in this case means up
+                if (!(x - 2 < 0 || game->board[x - 1][y + 2].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x - 2, y + 2});
+                // checking if we can jump him left -> in this case means down
+                if (!(x + 2 > 12 || game->board[x + 1][y + 2].availability == OCCUPIED))
+                    add_move(game, (matrix_point){x + 2, y + 2});
+            }
         }
         else
         {
@@ -171,14 +215,11 @@ void add_move(game_data *game, matrix_point point)
 void move_player(move_type move, game_data *game, active_player player)
 {
     int x, y;
-    uint8_t old_tmp_x, old_tmp_y;
 
     if (game->player_turn == PLAYER_1)
     {
         x = game->player_1.x_matrix_coordinate;
         y = game->player_1.y_matrix_coordinate;
-        old_tmp_x = game->player_1.tmp_x_matrix_coordinate;
-        old_tmp_y = game->player_1.tmp_y_matrix_coordinate;
         game->player_1.tmp_x_matrix_coordinate = x;
         game->player_1.tmp_y_matrix_coordinate = y;
     }
@@ -186,19 +227,132 @@ void move_player(move_type move, game_data *game, active_player player)
     {
         x = game->player_2.x_matrix_coordinate;
         y = game->player_2.y_matrix_coordinate;
-        old_tmp_x = game->player_2.tmp_x_matrix_coordinate;
-        old_tmp_y = game->player_2.tmp_y_matrix_coordinate;
         game->player_2.tmp_x_matrix_coordinate = x;
         game->player_2.tmp_y_matrix_coordinate = y;
     }
 
     // checking if the move is legal or not
-    if (move == UP)
+    if (move == DIAG_UP_RIGHT)
+    {
+        if (!(x - 2 < 0 || game->board[x - 1][y].availability == OCCUPIED))
+        {
+            // going up is legal
+            if (game->board[x - 2][y].availability == OCCUPIED)
+            {
+                // The opponent is facing us, we need to check if we can jump him
+                if (x - 4 < 0 || game->board[x - 3][y].availability == OCCUPIED)
+                {
+                    // we can't jump him
+                    if (!(y + 2 > 12 || game->board[x - 2][y + 1].availability == OCCUPIED))
+                    {
+                        // we can jump him right
+                        game->player_turn == PLAYER_1 ? (game->player_1.tmp_x_matrix_coordinate = x - 2) : (game->player_2.tmp_x_matrix_coordinate = x - 4);
+                        if (game->player_turn == PLAYER_1)
+                        {
+                            game->player_1.tmp_x_matrix_coordinate = x - 2;
+                            game->player_1.tmp_y_matrix_coordinate = y + 2;
+                        }
+                        else
+                        {
+                            game->player_2.tmp_x_matrix_coordinate = x - 2;
+                            game->player_2.tmp_y_matrix_coordinate = y + 2;
+                        }
+                        // updating the Interface
+                        update_player_token_pos(x - 2, y + 2);
+                    }
+                }
+            }
+        }
+    }
+    else if (move == DIAG_UP_LEFT)
+    {
+        if (!(x - 2 < 0 || game->board[x - 1][y].availability == OCCUPIED))
+        {
+            // going up is legal
+            if (game->board[x - 2][y].availability == OCCUPIED)
+            {
+                // The opponent is facing us, we need to check if we can jump him
+                if (x - 4 < 0 || game->board[x - 3][y].availability == OCCUPIED)
+                {
+                    // we can't jump him
+                    if (!(y + 2 > 12 || game->board[x - 2][y - 1].availability == OCCUPIED))
+                    {
+                        // we can jump him left
+                        if (game->player_turn == PLAYER_1)
+                        {
+                            game->player_1.tmp_x_matrix_coordinate = x - 2;
+                            game->player_1.tmp_y_matrix_coordinate = y - 2;
+                        }
+                        else
+                        {
+                            game->player_2.tmp_x_matrix_coordinate = x - 2;
+                            game->player_2.tmp_y_matrix_coordinate = y - 2;
+                        }
+                        // updating the Interface
+                        update_player_token_pos(x - 2, y - 2);
+                    }
+                }
+            }
+        }
+    }
+    else if (move == DIAG_DOWN_RIGHT)
+    {
+        if (!(x + 2 > 12 || game->board[x + 1][y].availability == OCCUPIED))
+        {
+            // going down is legal
+            if (game->board[x + 2][y].availability == OCCUPIED)
+            {
+                if ((x + 4 > 12 || game->board[x + 3][y].availability == OCCUPIED))
+                {
+                    if (!(y + 2 > 12 || game->board[x + 2][y + 1].availability == OCCUPIED))
+                    {
+                        // we can jump him right
+                        if (game->player_turn == PLAYER_1)
+                        {
+                            game->player_1.tmp_x_matrix_coordinate = x + 2;
+                            game->player_1.tmp_y_matrix_coordinate = y + 2;
+                        }
+                        else
+                        {
+                            game->player_2.tmp_x_matrix_coordinate = x + 2;
+                            game->player_2.tmp_y_matrix_coordinate = y + 2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if (move == DIAG_DOWN_LEFT)
+    {
+        if (!(x + 2 > 12 || game->board[x + 1][y].availability == OCCUPIED))
+        {
+            // going down is legal
+            if (game->board[x + 2][y].availability == OCCUPIED)
+            {
+                if ((x + 4 > 12 || game->board[x + 3][y].availability == OCCUPIED))
+                {
+                    if (!(y - 2 < 0 || game->board[x + 2][y - 1].availability == OCCUPIED))
+                    {
+                        // we can jump him left
+                        if (game->player_turn == PLAYER_1)
+                        {
+                            game->player_1.tmp_x_matrix_coordinate = x + 2;
+                            game->player_1.tmp_y_matrix_coordinate = y - 2;
+                        }
+                        else
+                        {
+                            game->player_2.tmp_x_matrix_coordinate = x + 2;
+                            game->player_2.tmp_y_matrix_coordinate = y - 2;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if (move == UP)
     {
         if (x - 2 < 0 || game->board[x - 1][y].availability == OCCUPIED)
         {
-            // show_available_moves();
-            // update_player_token_pos(game->player_1.tmp_x_matrix_coordinate, game->player_1.tmp_y_matrix_coordinate);
             return;
         }
         // We are not over, we still need to check for the presence of the opponent

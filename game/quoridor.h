@@ -10,7 +10,7 @@
 
 #define ui8 uint8_t
 #define ui16 uint16_t
-#define NUM_MOVES 4
+#define NUM_MOVES 5
 
 typedef enum move_type
 {
@@ -18,7 +18,11 @@ typedef enum move_type
     DOWN,
     LEFT,
     RIGHT,
-    ROTATION
+    ROTATION,
+    DIAG_UP_RIGHT,
+    DIAG_UP_LEFT,
+    DIAG_DOWN_RIGHT,
+    DIAG_DOWN_LEFT
 } move_type;
 
 typedef enum wall_orientation
