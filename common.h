@@ -112,6 +112,7 @@ typedef struct
     // up - down - left - right
     matrix_point possible_moves[NUM_MOVES];
     ui8 num_of_possible_moves;
+    ui8 bot;
 } player;
 
 typedef struct
@@ -144,7 +145,6 @@ typedef struct
 {
     matrix_point matrix_point;
     ui8 length;
-    ui8 success;
 } bfs_node;
 
 typedef struct
@@ -165,7 +165,7 @@ typedef struct
     uint32_t game_tick;
     input_mode input_mode;
     wall current_wall;
-    stack stack;
+    // stack stack;
     uint32_t last_move;
     wall_moves wall_moves;
     text_area_status text_area_status;
@@ -199,5 +199,25 @@ typedef struct
     menu_window menu_window;
     ui8 option_num;
 } menu;
+
+typedef enum
+{
+    PLAYER,
+    WALL
+} type;
+
+typedef struct
+{
+    type type;
+    wall_orientation orientation;
+} type_of_move;
+
+typedef struct
+{
+    type_of_move type_of_move;
+    ui8 x;
+    ui8 y;
+    int score;
+} move;
 
 #endif

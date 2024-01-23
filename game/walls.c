@@ -214,78 +214,9 @@ void cells_not_visited(game_data *game)
 int feasible_path(game_data *game, active_player active_player)
 {
     bfs_node node = bfs(active_player);
-    if (node.success)
+    if (terminal_node(node, active_player))
         return 1;
     return 0;
-    // matrix_point start;
-    // matrix_point v;
-    // matrix_point tmp;
-    // // 1. all cells must be marked as not visited
-    // cells_not_visited(game);
-    // if (active_player == PLAYER_1)
-    // {
-    //     start.x = game->player_1.x_matrix_coordinate;
-    //     start.y = game->player_1.y_matrix_coordinate;
-    // }
-    // else
-    // {
-    //     start.x = game->player_2.x_matrix_coordinate;
-    //     start.y = game->player_2.y_matrix_coordinate;
-    // }
-
-    // push(game, start);
-    // while (game->stack.index != 0)
-    // {
-    //     v = pop(game);
-    //     if (active_player == PLAYER_1)
-    //     {
-    //         if (v.x == 12)
-    //         {
-    //             game->stack.index = 0;
-    //             return 1;
-    //         }
-    //     }
-    //     else
-    //     {
-    //         if (v.x == 0)
-    //         {
-    //             game->stack.index = 0;
-    //             return 1;
-    //         }
-    //     }
-    //     if (game->board[v.x][v.y].cell_status == NOT_VISITED)
-    //     {
-    //         game->board[v.x][v.y].cell_status = VISITED;
-    //         // For all legal moves starting from v
-    //         if (!(v.x - 2 < 0 || game->board[v.x - 1][v.y].availability == OCCUPIED) && game->board[v.x - 2][v.y].cell_status == NOT_VISITED)
-    //         {
-    //             tmp.x = v.x - 2;
-    //             tmp.y = v.y;
-    //             push(game, tmp);
-    //         }
-
-    //         if (!(v.x + 2 > 12 || game->board[v.x + 1][v.y].availability == OCCUPIED) && game->board[v.x + 2][v.y].cell_status == NOT_VISITED)
-    //         {
-    //             tmp.x = v.x + 2;
-    //             tmp.y = v.y;
-    //             push(game, tmp);
-    //         }
-
-    //         if (!(v.y - 2 < 0 || game->board[v.x][v.y - 1].availability == OCCUPIED) && game->board[v.x][v.y - 2].cell_status == NOT_VISITED)
-    //         {
-    //             tmp.x = v.x;
-    //             tmp.y = v.y - 2;
-    //             push(game, tmp);
-    //         }
-
-    //         if (!(v.y + 2 > 12 || game->board[v.x][v.y + 1].availability == OCCUPIED) && game->board[v.x][v.y + 2].cell_status == NOT_VISITED)
-    //         {
-    //             tmp.x = v.x;
-    //             tmp.y = v.y + 2;
-    //             push(game, tmp);
-    //         }
-    //     }
-    // }
 }
 
 bfs_node bfs(active_player player)
@@ -294,7 +225,6 @@ bfs_node bfs(active_player player)
     bfs_node node;
     int x, y, length;
     node.length = 0;
-    node.success = 0;
     game.bfs_data.start = 0;
     game.bfs_data.end = 0;
     cells_not_visited(&game);
@@ -309,15 +239,14 @@ bfs_node bfs(active_player player)
         node.matrix_point.x = game.player_2.x_matrix_coordinate;
         node.matrix_point.y = game.player_2.y_matrix_coordinate;
     }
-	
-		enqueue(node);
-		
+
+    enqueue(node);
+
     while (game.bfs_data.start < game.bfs_data.end)
     {
         node = dequeue();
         if (terminal_node(node, player))
         {
-            node.success = 1;
             return node;
         }
         x = node.matrix_point.x;
@@ -446,6 +375,7 @@ bfs_node dequeue(void)
     bfs_node node;
     node = game.bfs_data.bfs_node_array[game.bfs_data.start];
     game.bfs_data.start++;
+    return node;
 }
 
 ui8 terminal_node(bfs_node node, active_player player)
@@ -476,20 +406,6 @@ void add_bfs_node(ui8 x, ui8 y, int length)
     }
 }
 
-void push(game_data *game, matrix_point vertex)
-{
-    game->stack.stack[game->stack.index] = vertex;
-    game->stack.index++;
-}
-
-matrix_point pop(game_data *game)
-{
-    matrix_point vertex;
-    game->stack.index--;
-    vertex = game->stack.stack[game->stack.index];
-    return vertex;
-}
-
 void place_current_wall(void)
 {
     game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
@@ -507,7 +423,7 @@ void remove_current_wall(void)
 void find_all_possible_walls()
 {
     ui8 i, j;
-    wall current_wall;
+    // wall current_wall;
     game.wall_moves.num_of_moves = 0;
     // prima tutti gli orizzontali
     for (i = 1; i < 12; i += 2)
@@ -517,15 +433,21 @@ void find_all_possible_walls()
             if (game.board[i][j].availability == FREE && game.board[i][j + 1].availability == FREE && game.board[i][j + 2].availability == FREE)
             {
                 // we can add the wall
-                current_wall.top.x = i;
-                current_wall.top.y = j;
-                current_wall.middle.x = i;
-                current_wall.middle.y = j + 1;
-                current_wall.bottom.x = i;
-                current_wall.bottom.y = j + 2;
-                current_wall.wall_orientation = HORIZONTAL;
-                game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = current_wall;
-                game.wall_moves.num_of_moves++;
+                game.current_wall.top.x = i;
+                game.current_wall.top.y = j;
+                game.current_wall.middle.x = i;
+                game.current_wall.middle.y = j + 1;
+                game.current_wall.bottom.x = i;
+                game.current_wall.bottom.y = j + 2;
+                game.current_wall.wall_orientation = HORIZONTAL;
+                place_current_wall();
+                if (feasible_path(&game, game.player_turn))
+                {
+                    game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = game.current_wall;
+                    game.wall_moves.num_of_moves++;
+                }
+
+                remove_current_wall();
             }
         }
     }
@@ -536,15 +458,20 @@ void find_all_possible_walls()
         {
             if (game.board[i][j].availability == FREE && game.board[i + 1][j].availability == FREE && game.board[i + 2][j].availability == FREE)
             {
-                current_wall.top.x = i;
-                current_wall.top.y = j;
-                current_wall.middle.x = i;
-                current_wall.middle.y = j + 1;
-                current_wall.bottom.x = i;
-                current_wall.bottom.y = j + 2;
-                current_wall.wall_orientation = VERTICAL;
-                game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = current_wall;
-                game.wall_moves.num_of_moves++;
+                game.current_wall.top.x = i;
+                game.current_wall.top.y = j;
+                game.current_wall.middle.x = i + 1;
+                game.current_wall.middle.y = j;
+                game.current_wall.bottom.x = i + 2;
+                game.current_wall.bottom.y = j;
+                game.current_wall.wall_orientation = VERTICAL;
+                place_current_wall();
+                if (feasible_path(&game, game.player_turn))
+                {
+                    game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = game.current_wall;
+                    game.wall_moves.num_of_moves++;
+                }
+                remove_current_wall();
             }
         }
     }
