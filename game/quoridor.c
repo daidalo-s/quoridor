@@ -304,8 +304,8 @@ void p2_bot_turn(game_data *game)
     game->player_2.bot = 1;
     reset_timer(0);
     enable_timer(0);
-    move = minimax(2);
-
+    move = minimax(1);
+		//move = minimax_alfa_beta(2, INT32_MIN, INT32_MAX);
     if (move.type_of_move.type == PLAYER)
     {
         // player_movement

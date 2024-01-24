@@ -19,5 +19,9 @@ ui8 minimax_game_over(void);
 int MIN(ui8);
 int MAX(ui8);
 move minimax(ui8);
+
+move minimax_alfa_beta(ui8, int, int);
+int MIN_alfa_beta(ui8, int, int);
+int MAX_alfa_beta(ui8, int, int);
 int state_eval(void);
 #endif

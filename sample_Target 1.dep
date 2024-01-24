@@ -151,7 +151,7 @@ I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\m
 I (C:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include\system_LPC17xx.h)(0x58493F92)
 I (timer\timer.h)(0x659DBE88)
 F (.\timer\timer.h)(0x659DBE88)()
-F (.\game\quoridor.c)(0x65B10AC2)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\quoridor.o --omf_browse .\quoridor.crf --depend .\quoridor.d)
+F (.\game\quoridor.c)(0x65B1246B)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\quoridor.o --omf_browse .\quoridor.crf --depend .\quoridor.d)
 I (game\quoridor.h)(0x65B0F9C3)
 I (game\../common.h)(0x65AFF36C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x602585EE)
@@ -167,7 +167,7 @@ I (game\../graphics/graphics.h)(0x65AEE4B6)
 I (game\../GLCD/GLCD.h)(0x65810AF5)
 I (game\./player.h)(0x65AEE4C2)
 I (game\./walls.h)(0x65AEE4E3)
-I (game\../magda/magda.h)(0x65B0ED45)
+I (game\../magda/magda.h)(0x65B10EBD)
 I (game\../menu/menu.h)(0x65AEE4D0)
 F (.\game\quoridor.h)(0x65B0F9C3)()
 F (.\game\player.c)(0x65AEC75E)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\player.o --omf_browse .\player.crf --depend .\player.d)
@@ -202,14 +202,14 @@ I (graphics\../images/the_pirate.c)(0x65A3AF52)
 F (.\graphics\graphics.h)(0x65AEE4B6)()
 F (.\images\disco_dance.c)(0x65A3AF46)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\disco_dance.o --omf_browse .\disco_dance.crf --depend .\disco_dance.d)
 F (.\images\the_pirate.c)(0x65A3AF52)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\the_pirate.o --omf_browse .\the_pirate.crf --depend .\the_pirate.d)
-F (.\magda\magda.c)(0x65B0ED73)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\magda.o --omf_browse .\magda.crf --depend .\magda.d)
+F (.\magda\magda.c)(0x65B12BFD)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\magda.o --omf_browse .\magda.crf --depend .\magda.d)
 I (magda\../game/quoridor.h)(0x65B0F9C3)
 I (magda\../game/../common.h)(0x65AFF36C)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x602585EE)
 I (magda\../game/player.h)(0x65AEE4C2)
 I (magda\../game/walls.h)(0x65AEE4E3)
-I (magda\./magda.h)(0x65B0ED45)
-F (.\magda\magda.h)(0x65B0ED45)()
+I (magda\./magda.h)(0x65B10EBD)
+F (.\magda\magda.h)(0x65B10EBD)()
 F (.\menu\menu.c)(0x65AE1CE1)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork -I.\RTE\_Target_1-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include-IC:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include-D__UVISION_VERSION="536" -D_RTE_ -DLPC175x_6x -D_RTE_-o .\menu.o --omf_browse .\menu.crf --depend .\menu.d)
 I (menu\./menu.h)(0x65AEE4D0)
 I (menu\./../game/quoridor.h)(0x65B0F9C3)

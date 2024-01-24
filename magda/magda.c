@@ -349,15 +349,309 @@ int state_eval(void)
     if (game.player_1.bot)
     {
         node1 = bfs(PLAYER_1);
+        // node1.length += 1;
         node2 = bfs(PLAYER_2);
+        if (node2.length == 1)
+        {
+            // he's really close to the win
+            return INT32_MIN;
+        }
+        else
+        {
+            node2.length -= 1;
+        }
     }
     else
     {
         // è il player_2
         node1 = bfs(PLAYER_2);
         node2 = bfs(PLAYER_1);
+        // node2.length += 1;
+        if (node2.length == 1)
+        {
+            // he's really close to the win
+            return INT32_MIN;
+        }
+        else
+        {
+            node1.length -= -1;
+        }
     }
     return -(node1.length - node2.length);
+}
+
+move minimax_alfa_beta(ui8 depth, int alpha, int beta)
+{
+    move best_move, move;
+    int i;
+    matrix_point previous_position;
+    wall tmp_wall;
+    player *player;
+    // non so quale sia questa mossa ma so che ha uno score bassissimo
+    best_move.score = INT32_MIN;
+    // ora mi guardo tutte le mosse possibili di movimento
+    // -> prende le coordinate del current_player e calcola a partire da quelle
+    game.player_turn == PLAYER_1 ? (player = &game.player_1) : (player = &game.player_2);
+    find_available_moves(&game);
+    for (i = 0; i < player->num_of_possible_moves; i++)
+    {
+        // do the move m -> ho un matrix point
+        previous_position = (matrix_point){player->x_matrix_coordinate, player->y_matrix_coordinate};
+        minimax_move_player(player, player->possible_moves[i]);
+        move.type_of_move.type = PLAYER;
+        move.x = player->x_matrix_coordinate;
+        move.y = player->y_matrix_coordinate;
+        move.score = MIN_alfa_beta(depth - 1, alpha, beta);
+        if (move.score >= best_move.score)
+        {
+            best_move.score = max(best_move.score, move.score);
+            best_move = move;
+        }
+        alpha = max(alpha, best_move.score);
+        if (beta <= alpha)
+        {
+            minimax_unmove_player(player, previous_position);
+            break;
+        }
+        minimax_unmove_player(player, previous_position);
+    }
+    // ora mi guardo tutte le mosse possibili di posizionamento muri
+    // TODO
+    // ho abbastanza muri
+    if (player->available_walls > 0)
+    {
+        find_all_possible_walls();
+        for (i = 0; i < game.wall_moves.num_of_moves; i++)
+        {
+            // minimax_move_player(player, player->possible_moves[i]);
+            tmp_wall = game.wall_moves.all_possible_walls[i];
+            minimax_place_wall(game.wall_moves.all_possible_walls[i]);
+            move.type_of_move.type = WALL;
+            move.x = game.wall_moves.all_possible_walls[i].middle.x;
+            move.y = game.wall_moves.all_possible_walls[i].middle.y;
+            move.type_of_move.orientation = game.wall_moves.all_possible_walls[i].wall_orientation;
+            move.score = MIN_alfa_beta(depth - 1, alpha, beta);
+            if (move.score >= best_move.score)
+            {
+                best_move.score = max(best_move.score, move.score);
+                best_move = move;
+            }
+            alpha = max(alpha, best_move.score);
+            if (beta <= alpha)
+            {
+                minimax_unplace_wall(tmp_wall);
+                break;
+            }
+            minimax_unplace_wall(tmp_wall);
+        }
+    }
+    return best_move;
+}
+
+int MIN_alfa_beta(ui8 depth, int alpha, int beta)
+{
+    move best_move, move;
+    matrix_point previous_position;
+    wall tmp_wall;
+    player *player;
+    int i;
+    game.player_turn == PLAYER_1 ? (player = &game.player_1) : (player = &game.player_2);
+    // se il game è finito devo ritornare eval_ending
+    if (minimax_game_over())
+    {
+        // return EVAL_ENDING -> + inf se ha vinto il bot, - inf se perdo
+        if (game.player_1.bot)
+        {
+            // il player_1 è un bot, ha vinto?
+            if (game.player_1.x_matrix_coordinate == 12)
+            {
+                return INT32_MAX;
+            }
+            else
+            {
+                // ha vinto l'opponent
+                return INT32_MIN;
+            }
+        }
+        else
+        {
+            // il player_2 è il bot
+            if (game.player_2.x_matrix_coordinate == 0)
+            {
+                return INT32_MAX;
+            }
+            else
+            {
+                return INT32_MIN;
+            }
+        }
+    }
+    else if (depth == 0)
+    {
+        return state_eval();
+    }
+    else
+    {
+        best_move.score = INT32_MAX;
+        // ora mi guardo tutte le mosse possibili di movimento
+        // -> prende le coordinate del current_player e calcola a partire da quelle
+        find_available_moves(&game);
+        for (i = 0; i < player->num_of_possible_moves; i++)
+        {
+            // do the move m -> ho un matrix point
+            previous_position = (matrix_point){player->x_matrix_coordinate, player->y_matrix_coordinate};
+            minimax_move_player(player, player->possible_moves[i]);
+            move.type_of_move.type = PLAYER;
+            move.x = player->x_matrix_coordinate;
+            move.y = player->y_matrix_coordinate;
+            move.score = MAX_alfa_beta(depth - 1, alpha, beta);
+            best_move.score = min(best_move.score, move.score);
+            beta = min(beta, best_move.score);
+            if (beta <= alpha)
+            {
+                minimax_unmove_player(player, previous_position);
+                break;
+            }
+            // if (move.score < best_move.score)
+            // {
+            //     best_move = move;
+            // }
+            minimax_unmove_player(player, previous_position);
+        }
+        // TODO
+        // ho abbastanza muri
+        if (player->available_walls > 0)
+        {
+            find_all_possible_walls();
+            for (i = 0; i < game.wall_moves.num_of_moves; i++)
+            {
+                // do the move m -> ho un matrix point
+                // minimax_move_player(player, player->possible_moves[i]);
+                tmp_wall = game.wall_moves.all_possible_walls[i];
+                minimax_place_wall(game.wall_moves.all_possible_walls[i]);
+                move.type_of_move.type = WALL;
+                move.x = game.wall_moves.all_possible_walls[i].middle.x;
+                move.y = game.wall_moves.all_possible_walls[i].middle.y;
+                move.score = MAX_alfa_beta(depth - 1, alpha, beta);
+                best_move.score = min(best_move.score, move.score);
+                beta = min(beta, best_move.score);
+                if (beta <= alpha)
+                {
+                    minimax_unplace_wall(tmp_wall);
+                    break;
+                }
+                // if (move.score < best_move.score)
+                // {
+                //     best_move = move;
+                // }
+                minimax_unplace_wall(tmp_wall);
+            }
+        }
+    }
+    return best_move.score;
+}
+
+int MAX_alfa_beta(ui8 depth, int alpha, int beta)
+{
+    move best_move, move;
+    matrix_point previous_position;
+    wall tmp_wall;
+    player *player;
+    int i;
+    game.player_turn == PLAYER_1 ? (player = &game.player_1) : (player = &game.player_2);
+    // se il game è finito devo ritornare eval_ending
+    if (minimax_game_over())
+    {
+        // return EVAL_ENDING -> + inf se ha vinto il bot, - inf se perdo
+        if (game.player_1.bot)
+        {
+            // il player_1 è un bot, ha vinto?
+            if (game.player_1.x_matrix_coordinate == 12)
+            {
+                return INT32_MAX;
+            }
+            else
+            {
+                // ha vinto l'opponent
+                return INT32_MIN;
+            }
+        }
+        else
+        {
+            // il player_2 è il bot
+            if (game.player_2.x_matrix_coordinate == 0)
+            {
+                return INT32_MAX;
+            }
+            else
+            {
+                return INT32_MIN;
+            }
+        }
+    }
+    else if (depth == 0)
+    {
+        return state_eval();
+    }
+    else
+    {
+        best_move.score = INT32_MIN;
+        // ora mi guardo tutte le mosse possibili di movimento
+        // -> prende le coordinate del current_player e calcola a partire da quelle
+        find_available_moves(&game);
+        for (i = 0; i < player->num_of_possible_moves; i++)
+        {
+            // do the move m -> ho un matrix point
+            previous_position = (matrix_point){player->x_matrix_coordinate, player->y_matrix_coordinate};
+            minimax_move_player(player, player->possible_moves[i]);
+            move.type_of_move.type = PLAYER;
+            move.x = player->x_matrix_coordinate;
+            move.y = player->y_matrix_coordinate;
+            move.score = MIN_alfa_beta(depth - 1, alpha, beta);
+            best_move.score = max(best_move.score, move.score);
+            alpha = max(alpha, best_move.score);
+            if (beta <= alpha)
+            {
+                minimax_unmove_player(player, previous_position);
+                break;
+            }
+            // if (move.score < best_move.score)
+            // {
+            //     best_move = move;
+            // }
+            minimax_unmove_player(player, previous_position);
+        }
+        // TODO
+        //       ho abbastanza muri if (player->available_walls > 0)
+        {
+            find_all_possible_walls();
+            for (i = 0; i < game.wall_moves.num_of_moves; i++)
+            {
+                // do the move m -> ho un matrix point
+                // minimax_move_player(player, player->possible_moves[i]);
+                tmp_wall = game.wall_moves.all_possible_walls[i];
+                minimax_place_wall(game.wall_moves.all_possible_walls[i]);
+                move.type_of_move.type = WALL;
+                move.x = game.wall_moves.all_possible_walls[i].middle.x;
+                move.y = game.wall_moves.all_possible_walls[i].middle.y;
+                move.type_of_move.orientation = game.wall_moves.all_possible_walls[i].wall_orientation;
+                move.score = MIN_alfa_beta(depth - 1, alpha, beta);
+                best_move.score = max(best_move.score, move.score);
+                alpha = max(alpha, best_move.score);
+                if (beta <= alpha)
+                {
+                    minimax_unplace_wall(tmp_wall);
+                    break;
+                }
+                // if (move.score < best_move.score)
+                // {
+                //     best_move = move;
+                // }
+                minimax_unplace_wall(tmp_wall);
+            }
+        }
+    }
+    return best_move.score;
 }
 
 /**
