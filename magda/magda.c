@@ -64,8 +64,8 @@ move minimax(ui8 depth)
     }
     // ora mi guardo tutte le mosse possibili di posizionamento muri
     // TODO
-    //ho abbastanza muri 
-		if (player->available_walls > 0)
+    // ho abbastanza muri
+    if (player->available_walls > 0)
     {
         find_all_possible_walls();
         for (i = 0; i < game.wall_moves.num_of_moves; i++)
@@ -242,7 +242,7 @@ int MAX(ui8 depth)
             minimax_unmove_player(player, previous_position);
         }
         // TODO
- //       ho abbastanza muri if (player->available_walls > 0)
+        //       ho abbastanza muri if (player->available_walls > 0)
         {
             find_all_possible_walls();
             for (i = 0; i < game.wall_moves.num_of_moves; i++)
@@ -255,7 +255,7 @@ int MAX(ui8 depth)
                 move.x = game.wall_moves.all_possible_walls[i].middle.x;
                 move.y = game.wall_moves.all_possible_walls[i].middle.y;
                 move.type_of_move.orientation = game.wall_moves.all_possible_walls[i].wall_orientation;
-                move.score = MAX(depth - 1);
+                move.score = MIN(depth - 1);
                 if (move.score < best_move.score)
                 {
                     best_move = move;

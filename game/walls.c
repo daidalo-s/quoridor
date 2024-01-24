@@ -441,7 +441,7 @@ void find_all_possible_walls()
                 game.current_wall.bottom.y = j + 2;
                 game.current_wall.wall_orientation = HORIZONTAL;
                 place_current_wall();
-                if (feasible_path(&game, game.player_turn))
+                if (feasible_path(&game, PLAYER_1) && feasible_path(&game, PLAYER_2))
                 {
                     game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = game.current_wall;
                     game.wall_moves.num_of_moves++;
@@ -466,7 +466,7 @@ void find_all_possible_walls()
                 game.current_wall.bottom.y = j;
                 game.current_wall.wall_orientation = VERTICAL;
                 place_current_wall();
-                if (feasible_path(&game, game.player_turn))
+                if (feasible_path(&game, PLAYER_1) && feasible_path(&game, PLAYER_2))
                 {
                     game.wall_moves.all_possible_walls[game.wall_moves.num_of_moves] = game.current_wall;
                     game.wall_moves.num_of_moves++;

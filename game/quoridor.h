@@ -31,4 +31,5 @@ void reset_p2_token(void);
 void wall_mode_enter(void);
 void wall_mode_exit(void);
 void p1_bot_turn(game_data *);
+void p2_bot_turn(game_data *);
 #endif

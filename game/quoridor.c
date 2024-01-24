@@ -108,8 +108,8 @@ void turn_manager(game_data *game, ui8 time_over)
         game->game_status = RUNNING;
         enable_timer(0);
         // The game starts with p1 playing
-        // p1_turn(game);
-        p1_bot_turn(game);
+        p1_turn(game);
+        // p1_bot_turn(game);
     }
     else if (game->game_status == RUNNING)
     {
@@ -127,7 +127,8 @@ void turn_manager(game_data *game, ui8 time_over)
                 {
                     // player_1 stuff
                     reset_p1_token();
-                    p2_turn(game);
+                    // p2_turn(game);
+                    p2_bot_turn(game);
                     return;
                 }
                 else
@@ -144,7 +145,8 @@ void turn_manager(game_data *game, ui8 time_over)
                 delete_current_wall();
                 if (game->player_turn == PLAYER_1)
                 {
-                    p2_turn(game);
+                    // p2_turn(game);
+                    p2_bot_turn(game);
                     return;
                 }
                 else
@@ -167,13 +169,14 @@ void turn_manager(game_data *game, ui8 time_over)
                     if (game->player_turn == PLAYER_1)
                     {
                         draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
-                        p2_turn(game);
+                        // p2_turn(game);
+                        p2_bot_turn(game);
                     }
                     else
                     {
                         draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
-                        // p1_turn(game);
-                        p1_bot_turn(game);
+                        p1_turn(game);
+                        // p1_bot_turn(game);
                     }
                 }
             }
@@ -185,12 +188,13 @@ void turn_manager(game_data *game, ui8 time_over)
                     // we can swap turn
                     if (game->player_turn == PLAYER_1)
                     {
-                        p2_turn(game);
+                        // p2_turn(game);
+                        p2_bot_turn(game);
                     }
                     else
                     {
-                        // p1_turn(game);
-                        p1_bot_turn(game);
+                        p1_turn(game);
+                        // p1_bot_turn(game);
                     }
                 }
             }
@@ -242,7 +246,7 @@ void p1_bot_turn(game_data *game)
     game->player_1.bot = 1;
     reset_timer(0);
     enable_timer(0);
-    move = minimax(2);
+    move = minimax(1);
 
     if (move.type_of_move.type == PLAYER)
     {
@@ -288,6 +292,64 @@ void p1_bot_turn(game_data *game)
         }
     }
     p2_turn(game);
+    return;
+}
+
+void p2_bot_turn(game_data *game)
+{
+    move move;
+    game->input_mode = PLAYER_MOVEMENT;
+    game->player_turn = PLAYER_2;
+    game->game_tick = 20;
+    game->player_2.bot = 1;
+    reset_timer(0);
+    enable_timer(0);
+    move = minimax(2);
+
+    if (move.type_of_move.type == PLAYER)
+    {
+        // player_movement
+        delete_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate);
+        game->player_2.tmp_x_matrix_coordinate = move.x;
+        game->player_2.tmp_y_matrix_coordinate = move.y;
+        confirm_player_move(game);
+        draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+    }
+    else
+    {
+        // wall placement
+        if (move.type_of_move.orientation == VERTICAL)
+        {
+            // muro verticale
+            game->current_wall.top.x = move.x - 1;
+            game->current_wall.top.y = move.y;
+            game->current_wall.middle.x = move.x;
+            game->current_wall.middle.y = move.y;
+            game->current_wall.bottom.x = move.x + 1;
+            game->current_wall.bottom.y = move.y;
+            game->current_wall.wall_orientation = VERTICAL;
+            place_current_wall();
+            draw_current_wall();
+            game->player_2.available_walls--;
+            p1_walls_update(game->player_2.available_walls);
+        }
+        else
+        {
+            // muro orizzontale
+            game->current_wall.top.x = move.x;
+            game->current_wall.top.y = move.y - 1;
+            game->current_wall.middle.x = move.x;
+            game->current_wall.middle.y = move.y;
+            game->current_wall.bottom.x = move.x;
+            game->current_wall.bottom.y = move.y + 1;
+            game->current_wall.wall_orientation = HORIZONTAL;
+            place_current_wall();
+            draw_current_wall();
+            game->player_2.available_walls--;
+            p1_walls_update(game->player_2.available_walls);
+        }
+    }
+    p1_turn(game);
     return;
 }
 
