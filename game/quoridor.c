@@ -21,8 +21,8 @@
 extern game_data game;
 
 /**
- * @brief This function is responsible of starting the game. It's called
- * by the INT0 key interrupt
+ * @brief This function is responsible of starting the game.
+ * If mode = 1 then player_1 will be controlled by the bot
  * @param game
  */
 void game_start(game_data *game)
@@ -38,7 +38,6 @@ void game_start(game_data *game)
      * The timer needs to reset and generate ad interrupt upon count, so SRI -> 011 = 3
      */
     init_timer(0, 0, 0, 3, 0x17D7840);
-    game->game_status = WAIT_MODE;
     draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
     draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
     // 0 since the time is not over
@@ -97,6 +96,7 @@ void board_cell_type_init(game_data *game)
 
 /**
  * @brief In here we manage the turns.
+ * PLAYER_1 always starts first.
  * @param game -> the game instance
  * @param time_over -> a flag, 0 if it's a move, 1 if the time is over
  */
@@ -105,105 +105,190 @@ void turn_manager(game_data *game, ui8 time_over)
     ui8 success;
     if (game->game_status == WAIT_MODE)
     {
+        // we need to start the game
         game->game_status = RUNNING;
         enable_timer(0);
         // The game starts with p1 playing
-        p1_turn(game);
-        // p1_bot_turn(game);
+        if (game->game_mode == SINGLE_HUMAN_VS_HUMAN)
+        {
+            game->game_status = RUNNING;
+            game->bot_manager.bot_mode_enabled = 0;
+            enable_timer(0);
+            p1_turn(game);
+        }
+        else if (game->game_mode == SINGLE_HUMAN_VS_NPC)
+        {
+            game->game_status = RUNNING;
+            game->bot_manager.bot_mode_enabled = 0;
+            game->bot_manager.player = PLAYER_1;
+            enable_timer(0);
+            p1_bot_turn(game);
+        }
+        else if (game->game_mode == MULTI_HUMAN)
+        {
+            // TODO
+        }
+        else
+        {
+            // TODO
+        }
     }
     else if (game->game_status == RUNNING)
     {
-        // we need to swap turns
-        // if (game->text_area_status == FULL)
-        //     clear_text_area();
-
+        // The time run out
         if (time_over)
         {
-            // here we must reset the state, we don't have a confirmation
             if (game->input_mode == PLAYER_MOVEMENT)
             {
-                // the player was trying to move itself
-                if (game->player_turn == PLAYER_1)
+                // the current player was trying to move itself
+                if (game->game_mode == SINGLE_HUMAN_VS_HUMAN)
                 {
-                    // player_1 stuff
-                    reset_p1_token();
-                    // p2_turn(game);
-                    p2_bot_turn(game);
-                    return;
+                    if (game->player_turn == PLAYER_1)
+                    {
+                        reset_p1_token();
+                        p2_turn(game);
+                    }
+                    else
+                    {
+                        reset_p2_token();
+                        p1_turn(game);
+                    }
+                }
+                else if (game->game_mode == SINGLE_HUMAN_VS_NPC)
+                {
+                    reset_p2_token();
+                    p1_bot_turn(game);
+                }
+                else if (game->game_mode == MULTI_HUMAN)
+                {
+                    // TODO
                 }
                 else
                 {
-                    // player_2 stuff
-                    reset_p2_token();
-                    p1_turn(game);
-                    return;
+                    // TODO
                 }
             }
             else
             {
                 // the player was trying to place a wall
-                delete_current_wall();
-                if (game->player_turn == PLAYER_1)
+                if (game->game_mode == SINGLE_HUMAN_VS_HUMAN)
                 {
-                    // p2_turn(game);
-                    p2_bot_turn(game);
-                    return;
+                    if (game->player_turn == PLAYER_1)
+                    {
+                        delete_current_wall();
+                        p2_turn(game);
+                    }
+                    else
+                    {
+                        delete_current_wall();
+                        p1_turn(game);
+                    }
+                }
+                else if (game->game_mode == SINGLE_HUMAN_VS_NPC)
+                {
+                    // player_1 is the npc but it's impossible his time run out
+                    // TODO: it's impossible to get here, in the NPC we trust
+                    // -> if we arrive here the player_2 didn't place the wall in time
+                    delete_current_wall();
+                    p1_bot_turn(game);
+                }
+                else if (game->game_mode == MULTI_HUMAN)
+                {
+                    // TODO
                 }
                 else
                 {
-                    p1_turn(game);
-                    return;
+                    // TODO
                 }
             }
         }
         else
         {
-            // we consolidate the move
+            // There is the go for the move
             if (game->input_mode == PLAYER_MOVEMENT)
             {
-                // the player moved itself
-                confirm_player_move(game);
-                if (game->game_status != OVER)
+                if (game->game_mode == SINGLE_HUMAN_VS_HUMAN)
                 {
-                    delete_available_moves();
+                    confirm_player_move(game);
+                    if (game->game_status != OVER)
+                    {
+                        delete_available_moves();
+                        if (game->player_turn == PLAYER_1)
+                        {
+                            draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                            p2_turn(game);
+                        }
+                        else
+                        {
+                            draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                            p1_turn(game);
+                        }
+                    }
+                }
+                else if (game->game_mode == SINGLE_HUMAN_VS_NPC)
+                {
+                    // player_1 is the npc but it's impossible his time run out
                     if (game->player_turn == PLAYER_1)
                     {
-                        draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
-                        // p2_turn(game);
-                        p2_bot_turn(game);
+                        // il bot ha appena finito
+                        p2_turn(game);
                     }
                     else
                     {
-                        draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
-                        p1_turn(game);
-                        // p1_bot_turn(game);
+                        // p2 ha confermato una mossa
+                        confirm_player_move(game);
+                        if (game->game_status != OVER)
+                        {
+                            delete_available_moves();
+                            draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+                            p1_bot_turn(game);
+                        }
                     }
+                }
+                else if (game->game_mode == MULTI_HUMAN)
+                {
+                    // TODO
+                }
+                else
+                {
+                    // TODO
                 }
             }
             else
             {
-                success = confirm_wall_placement();
-                if (success)
+                // this code is common to both of them
+                if (game->game_mode == SINGLE_HUMAN_VS_HUMAN)
                 {
-                    // we can swap turn
-                    if (game->player_turn == PLAYER_1)
+                    success = confirm_wall_placement();
+                    if (success)
                     {
-                        // p2_turn(game);
-                        p2_bot_turn(game);
+                        if (game->player_turn == PLAYER_1)
+                        {
+                            p2_turn(game);
+                        }
+                        else
+                        {
+                            p1_turn(game);
+                        }
                     }
-                    else
-                    {
-                        p1_turn(game);
-                        // p1_bot_turn(game);
-                    }
+                }
+                else if (game->game_mode == SINGLE_HUMAN_VS_NPC)
+                {
+                    // il bot non deve chiedere il permesso a nessuno, arrivo qui solo se sono player_2
+                    success = confirm_wall_placement();
+                    if (success)
+                        p1_bot_turn(game);
+                }
+                else if (game->game_mode == MULTI_HUMAN)
+                {
+                    // TODO
+                }
+                else
+                {
+                    // TODO
                 }
             }
         }
-        return;
-    }
-    else
-    {
-        // the game is in progress we shouldn't be here
         return;
     }
 }
@@ -244,8 +329,7 @@ void p1_bot_turn(game_data *game)
     game->player_turn = PLAYER_1;
     game->game_tick = 20;
     game->player_1.bot = 1;
-    reset_timer(0);
-    enable_timer(0);
+    ticks_counter_update(20);
     move = minimax(1);
 
     if (move.type_of_move.type == PLAYER)
@@ -291,7 +375,8 @@ void p1_bot_turn(game_data *game)
             p1_walls_update(game->player_1.available_walls);
         }
     }
-    p2_turn(game);
+    game->input_mode = PLAYER_MOVEMENT;
+    turn_manager(game, 0);
     return;
 }
 
@@ -302,10 +387,9 @@ void p2_bot_turn(game_data *game)
     game->player_turn = PLAYER_2;
     game->game_tick = 20;
     game->player_2.bot = 1;
-    reset_timer(0);
-    enable_timer(0);
+    ticks_counter_update(20);
     move = minimax(1);
-		//move = minimax_alfa_beta(2, INT32_MIN, INT32_MAX);
+    // move = minimax_alfa_beta(2, INT32_MIN, INT32_MAX);
     if (move.type_of_move.type == PLAYER)
     {
         // player_movement
@@ -331,7 +415,7 @@ void p2_bot_turn(game_data *game)
             place_current_wall();
             draw_current_wall();
             game->player_2.available_walls--;
-            p1_walls_update(game->player_2.available_walls);
+            p2_walls_update(game->player_2.available_walls);
         }
         else
         {
@@ -346,10 +430,11 @@ void p2_bot_turn(game_data *game)
             place_current_wall();
             draw_current_wall();
             game->player_2.available_walls--;
-            p1_walls_update(game->player_2.available_walls);
+            p2_walls_update(game->player_2.available_walls);
         }
     }
-    p1_turn(game);
+    game->input_mode = PLAYER_MOVEMENT;
+    turn_manager(game, 0);
     return;
 }
 

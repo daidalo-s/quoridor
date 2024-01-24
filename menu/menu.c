@@ -114,12 +114,16 @@ void update_single_board_menu(move_type move)
         {
             // qui dobbiamo inizializzare per giocare contro un umano come sempre fatto
             LCD_Clear(Black);
+            game.game_mode = SINGLE_HUMAN_VS_HUMAN;
             game_start(&game);
             return;
         }
         if (game_menu.option_num == 2)
         {
             // qui dobbiamo inizializzare per giocare contro il bot
+            LCD_Clear(Black);
+            game.game_mode = SINGLE_HUMAN_VS_NPC;
+            game_start(&game);
             return;
         }
         if (game_menu.option_num == 3)
@@ -180,11 +184,13 @@ void update_two_board_menu(move_type move)
         if (game_menu.option_num == 1)
         {
             // qui dobbiamo far giocare il bot
+            GUI_Text(0, 0, (uint8_t *)"Ready soon...", White, Black);
             return;
         }
         if (game_menu.option_num == 2)
         {
             // qui dobbiamo giocare noi
+            GUI_Text(0, 0, (uint8_t *)"Ready soon...", White, Black);
             return;
         }
         if (game_menu.option_num == 3)

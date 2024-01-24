@@ -156,6 +156,20 @@ typedef struct
 
 typedef struct
 {
+    ui8 bot_mode_enabled;
+    active_player player;
+} bot_manager;
+
+typedef enum
+{
+    SINGLE_HUMAN_VS_HUMAN,
+    SINGLE_HUMAN_VS_NPC,
+    MULTI_HUMAN,
+    MULTI_NPC
+} game_modes;
+
+typedef struct
+{
     /* data */
     game_cell board[13][13];
     player player_1;
@@ -170,6 +184,8 @@ typedef struct
     wall_moves wall_moves;
     text_area_status text_area_status;
     bfs_data bfs_data;
+    game_modes game_mode;
+    bot_manager bot_manager;
 } game_data;
 
 typedef struct
