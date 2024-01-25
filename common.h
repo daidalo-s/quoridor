@@ -79,7 +79,8 @@ typedef enum
 typedef enum
 {
     WALL_MODE,
-    PLAYER_MOVEMENT
+    PLAYER_MOVEMENT,
+    PLAYER_REMOTE
 } input_mode;
 
 typedef enum

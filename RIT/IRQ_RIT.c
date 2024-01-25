@@ -18,6 +18,7 @@
 #include "../GLCD/GLCD.h"
 #include "../game/walls.h"
 #include "../game/player.h"
+#include "../menu/menu.h"
 
 extern game_data game;
 uint8_t select = 1;

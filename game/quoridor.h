@@ -36,5 +36,4 @@ void decode_last_move(void);
 void p1_remote_turn(void);
 void p2_remote_turn(void);
 void craft_dummy_move(void);
-void show_remote_move(void);
 #endif

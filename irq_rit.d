@@ -16,3 +16,4 @@
 .\irq_rit.o: RIT\../GLCD/GLCD.h
 .\irq_rit.o: RIT\../game/walls.h
 .\irq_rit.o: RIT\../game/player.h
+.\irq_rit.o: RIT\../menu/menu.h

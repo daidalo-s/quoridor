@@ -29,14 +29,6 @@ extern game_data game;
 extern menu game_menu;
 extern can_move received_move;
 
-static int puntiRicevuti1 = 0;
-static int puntiInviati1 = 0;
-
-static int puntiRicevuti2 = 0;
-static int puntiInviati2 = 0;
-
-uint16_t val_RxCoordX = 0; /* Locals used for display */
-uint16_t val_RxCoordY = 0;
 uint32_t data;
 char str[2];
 /*----------------------------------------------------------------------------
@@ -54,19 +46,6 @@ void CAN_IRQHandler(void)
 		CAN_rdMsg(1, &CAN_RxMsg); /* Read the message */
 		LPC_CAN1->CMR = (1 << 2); /* Release receive buffer */
 
-		// val_RxCoordX = (CAN_RxMsg.data[0] << 8);
-		// val_RxCoordX = val_RxCoordX | CAN_RxMsg.data[1];
-
-		// val_RxCoordY = (CAN_RxMsg.data[2] << 8);
-		// val_RxCoordY = val_RxCoordY | CAN_RxMsg.data[3];
-
-		// display.x = val_RxCoordX;
-		// display.y = val_RxCoordY - 140;
-		// TP_DrawPoint_Magnifier(&display);
-
-		// puntiRicevuti1++;
-		// Abbiamo ricevuto un messaggio
-		// GUI_Text(0, 0, (uint8_t *)"DIOCAN", White, Black);
 		// Ok qui dobbiamo fare decode del messaggio
 		data = *(uint32_t *)CAN_RxMsg.data;
 		received_move.player_id = data >> 24;
@@ -97,7 +76,6 @@ void CAN_IRQHandler(void)
 			else
 			{
 				// we are the master, it's the response, we can start
-				// GUI_Text(0, 0, (uint8_t *)"sono il master", White, Black);
 				LCD_Clear(Black);
 				game_start(&game);
 			}

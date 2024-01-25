@@ -50,7 +50,7 @@ void find_available_moves(game_data *game)
     // we need to find all available moves given the cell
     ui8 x, y;
     int i;
-    matrix_point destination;
+    //matrix_point destination;
     if (game->player_turn == PLAYER_1)
     {
         x = game->player_1.x_matrix_coordinate;
@@ -223,12 +223,17 @@ void move_player(move_type move, game_data *game, active_player player)
         game->player_1.tmp_x_matrix_coordinate = x;
         game->player_1.tmp_y_matrix_coordinate = y;
     }
-    else
+    else if (game->player_turn == PLAYER_2)
     {
         x = game->player_2.x_matrix_coordinate;
         y = game->player_2.y_matrix_coordinate;
         game->player_2.tmp_x_matrix_coordinate = x;
         game->player_2.tmp_y_matrix_coordinate = y;
+    }
+    else
+    {
+        // all the remote things
+        return;
     }
 
     // checking if the move is legal or not

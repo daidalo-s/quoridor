@@ -17,3 +17,4 @@
 .\sample.o: game/../common.h
 .\sample.o: GLCD/GLCD.h
 .\sample.o: menu/menu.h
+.\sample.o: CAN/CAN.h

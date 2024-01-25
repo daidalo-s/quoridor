@@ -28,7 +28,6 @@ extern game_data game;
 ******************************************************************************/
 void TIMER0_IRQHandler(void)
 {
-	int select = 0;
 	// clear interrupt flag
 	LPC_TIM0->IR = 1;
 	// Decrementing the game_tick counter

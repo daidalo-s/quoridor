@@ -16,3 +16,4 @@
 .\quoridor.o: game\./walls.h
 .\quoridor.o: game\../magda/magda.h
 .\quoridor.o: game\../menu/menu.h
+.\quoridor.o: game\../CAN/can_manager.h

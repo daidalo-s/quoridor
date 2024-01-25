@@ -126,9 +126,6 @@ void turn_manager(game_data *game, ui8 time_over)
         }
         else if (game->game_mode == MULTI_HUMAN)
         {
-            /**
-             * Se arrivo qua so che devo giocare come umano. Ma chi sono?
-             */
             // are we player_1?
             if (game->multi_board_master)
             {
@@ -170,40 +167,40 @@ void turn_manager(game_data *game, ui8 time_over)
                     if (game->player_turn == PLAYER_1)
                     {
                         reset_p1_token();
-                        save_last_move(game);
+                        // save_last_move(game);
                         p2_turn(game);
                     }
                     else
                     {
                         reset_p2_token();
-                        save_last_move(game);
+                        // save_last_move(game);
                         p1_turn(game);
                     }
                 }
                 else if (game->game_mode == SINGLE_HUMAN_VS_NPC)
                 {
                     reset_p2_token();
-                    save_last_move(game);
+                    // save_last_move(game);
                     p1_bot_turn(game);
                 }
                 else if (game->game_mode == MULTI_HUMAN)
                 {
-                    // qui io gioco come umano e l'altro stronzo non lo so
+                    // qui io gioco come umano e l'altro non lo so
                     // o sono il master e quindi anche player_1 oppure sono player 2
                     if (game->multi_board_master)
                     {
                         // so che io sono player_1
                         if (game->player_turn == PLAYER_1)
                         {
-                            send_dummy_move();
                             reset_p1_token();
+                            craft_dummy_move();
+                            send_last_move();
                             p2_remote_turn();
                         }
                         else
                         {
-                            // era il turno del bastardo che non ha mandato niente
+                            // era il turno del del remote che non ha mandato niente
                             disable_timer(0);
-                            // TODO non lo so rick
                             // devo solamente aspettare la sua move, speriamo arrivi
                         }
                     }
@@ -212,23 +209,25 @@ void turn_manager(game_data *game, ui8 time_over)
                         // io non sono il master -> sono player_2
                         if (game->player_turn == PLAYER_2)
                         {
-                            // minchia era il mio turno e non ho fatot niente
-                            send_dummy_move();
+                            // era il mio turno e non ho fatot niente
                             reset_p2_token();
+                            craft_dummy_move();
+                            send_last_move();
                             p1_remote_turn();
                         }
                         else
                         {
-                            // era il turno del bastardo ma non mi ha ancora mandato nulla
+                            // era il turno del remote ma non mi ha ancora mandato nulla
                             disable_timer(0);
-                            // TODO non lo so rick
+                            // prima o poi arriverà la sua mossa
                         }
                     }
                 }
                 else
                 {
-                    // TODO
-                    // siamo con due board ma io sono un bot, non arriverò mai qua
+                    // I know i'm a bot, i don't loose the time, it must be a problem of the other player,
+                    // we simply disable the timer waiting for a message
+                    disable_timer(0);
                 }
             }
             else
@@ -239,13 +238,13 @@ void turn_manager(game_data *game, ui8 time_over)
                     if (game->player_turn == PLAYER_1)
                     {
                         delete_current_wall();
-                        save_last_move(game);
+                        // save_last_move(game);
                         p2_turn(game);
                     }
                     else
                     {
                         delete_current_wall();
-                        save_last_move(game);
+                        // save_last_move(game);
                         p1_turn(game);
                     }
                 }
@@ -255,23 +254,37 @@ void turn_manager(game_data *game, ui8 time_over)
                     // TODO: it's impossible to get here, in the NPC we trust
                     // -> if we arrive here the player_2 didn't place the wall in time
                     delete_current_wall();
-                    save_last_move(game);
+                    // save_last_move(game);
                     p1_bot_turn(game);
                 }
                 else if (game->game_mode == MULTI_HUMAN)
                 {
-                    // TODO
-                    // the current player confirmed a mvoe
+                    // io sto giocando da human ma il tempo per mettere un muro è scaduto
+                    // devo gestirlo
+                    if (game->multi_board_master)
+                    {
+                        // sono player_1 e sono umano
+                        delete_current_wall();
+                        craft_dummy_move();
+                        send_last_move();
+                        p2_remote_turn();
+                    }
+                    else
+                    {
+                        // sono player_2 e sono umano
+                        delete_current_wall();
+                        craft_dummy_move();
+                        send_last_move();
+                        p1_remote_turn();
+                    }
                 }
-                else
-                {
-                    // TODO
-                }
+                // il caso in cui io sono un NPC non mi interessa, non sarò mai in wall mode quindi
+                // semplicemente quando arriva il timeout viene gestito dal player_movement
             }
         }
         else
         {
-            // There is a go for the move
+            // In questo ramo abbiamo una mossa valida
             if (game->input_mode == PLAYER_MOVEMENT)
             {
                 if (game->game_mode == SINGLE_HUMAN_VS_HUMAN)
@@ -283,13 +296,13 @@ void turn_manager(game_data *game, ui8 time_over)
                         if (game->player_turn == PLAYER_1)
                         {
                             draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
-                            save_last_move(game);
+                            // save_last_move(game);
                             p2_turn(game);
                         }
                         else
                         {
                             draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
-                            save_last_move(game);
+                            // save_last_move(game);
                             p1_turn(game);
                         }
                     }
@@ -306,7 +319,7 @@ void turn_manager(game_data *game, ui8 time_over)
                     {
                         // p2 ha confermato una mossa
                         confirm_player_move(game);
-                        save_last_move(game);
+                        // save_last_move(game);
                         if (game->game_status != OVER)
                         {
                             delete_available_moves();
@@ -317,7 +330,7 @@ void turn_manager(game_data *game, ui8 time_over)
                 }
                 else if (game->game_mode == MULTI_HUMAN)
                 {
-                    // ci sono due schede, io gioco come umano, ho confermato una mossa o ne è arrivata una
+                    // io so di essere umano e c'è la pressione di select per confermare una mossa -> ma non so chi stia gio
                     if (game->multi_board_master && game->player_turn == PLAYER_1)
                     {
                         // siamo noi che abbiamo confermato una mossa
@@ -327,48 +340,34 @@ void turn_manager(game_data *game, ui8 time_over)
                             delete_available_moves();
                             draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
                             save_last_move(game);
-                            p2_turn(game);
-                            save_last_move(game);
+                            send_last_move();
+                            p2_remote_turn();
                             return;
                         }
                         save_last_move(game);
                         send_last_move();
                         return;
                     }
-                    else if (game->multi_board_master && game->player_turn == PLAYER_2_REMOTE)
-                    {
-                        // se sono master ma il turno è dell'altro bastardo mi deve arrivare una mossa
-                        // e devo cambiare turno
-                        // TODO: cambia turno dentro la show remote move
-                        show_remote_move();
-                    }
                     else if (!game->multi_board_master && game->player_turn == PLAYER_2)
                     {
-                        // io sono player_2 e toccava a me, è una mia mossa
+                        // sono lo slave è il mio turno, devo confermare
                         confirm_player_move(game);
                         if (game->game_status != OVER)
                         {
                             delete_available_moves();
-                            draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
+                            draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
                             save_last_move(game);
-                            p2_turn(game);
-                            save_last_move(game);
+                            send_last_move();
+                            p1_remote_turn();
                             return;
                         }
                         save_last_move(game);
                         send_last_move();
                         return;
                     }
-                    else if (!game->multi_board_master && game->player_turn == PLAYER_1_REMOTE)
-                    {
-                        // TODO: cambia turno dentro la show remote move
-                        show_remote_move();
-                    }
                 }
-                else
-                {
-                    // TODO
-                }
+                // non esiste il caso del bot -> io sono un bot e non premo select
+                // se il gioco è al turno del player remoto a me fregacazz è gestito dalla decode, non preme select
             }
             else
             {
@@ -404,7 +403,31 @@ void turn_manager(game_data *game, ui8 time_over)
                 else if (game->game_mode == MULTI_HUMAN)
                 {
                     // io sono umano, toccava a me ed è una conferma del muro
+                    if (game->multi_board_master && game->player_turn == PLAYER_1)
+                    {
+                        // sono il master e il muro è mio
+                        success = confirm_wall_placement();
+                        if (success)
+                        {
+                            save_last_move(game);
+                            send_last_move();
+                            p2_remote_turn();
+                        }
+                    }
+                    else if (!game->multi_board_master && game->player_turn == PLAYER_2)
+                    {
+                        // sono lo slave e il muro è mio
+                        success = confirm_wall_placement();
+                        if (success)
+                        {
+                            save_last_move(game);
+                            send_last_move();
+                            p1_remote_turn();
+                        }
+                    }
                 }
+                // esiste il caso del bot?
+                // no
             }
         }
         return;
@@ -437,7 +460,7 @@ void p2_turn(game_data *game)
 
 void p1_remote_turn(void)
 {
-    // game.input_mode = PLAYER_MOVEMENT;
+    game.input_mode = PLAYER_REMOTE;
     game.player_turn = PLAYER_1_REMOTE;
     game.game_tick = 20;
     reset_timer(0);
@@ -446,7 +469,7 @@ void p1_remote_turn(void)
 
 void p2_remote_turn(void)
 {
-    // game.input_mode = PLAYER_MOVEMENT;
+    game.input_mode = PLAYER_REMOTE;
     game.player_turn = PLAYER_2_REMOTE;
     game.game_tick = 20;
     reset_timer(0);
@@ -844,24 +867,50 @@ void decode_last_move()
     }
     // now we can call the turn manager -> fuck the turn manager, we handle it
     // if we are here we received a move via CAN -> it must be an opponent move
-    // TODO: be sure it can only be an opponent move
-    // TODO: what if it's a dummy move?
-    // se è una dummy è easy, mi prendo il turno e fine
     if (game.multi_board_master)
     {
+        // se è una dummy è easy, mi prendo il turno e fine
+        if (received_move.game_mode == 0 && received_move.orientation == 1)
+        {
+            // è una dummy_move
+            // sto facendo il decode di una mossa del player_2 -> deve diventare turno player_1
+            if (game.game_mode == MULTI_HUMAN)
+            {
+                p1_turn(&game);
+                return;
+            }
+            else if (game.game_mode == MULTI_NPC)
+            {
+                p1_bot_turn(&game);
+                return;
+            }
+        }
+
         // we are the master -> the move is for player_2
         if (received_move.game_mode == 0)
         {
             // player_movement del player_2
             // i'm 100% sure he didn't move
-            delete_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate);
-            game->player_2.x_matrix_coordinate = received_move.x;
-            game->player_2.y_matrix_coordinate = received_move.y;
-            draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
+            delete_player_token(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate);
+            game.player_2.x_matrix_coordinate = received_move.x;
+            game.player_2.y_matrix_coordinate = received_move.y;
+            draw_player_token(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate, PLAYER_2);
 
-            if (game->player_2.x_matrix_coordinate == 0)
+            if (game.player_2.x_matrix_coordinate == 0)
             {
-                game_over(&game, PLAYER_2);
+                game_over(&game, game.player_2);
+                return;
+            }
+            // sto facendo il decode di una mossa del player_2 -> deve diventare turno mio
+            if (game.game_mode == MULTI_HUMAN)
+            {
+                p1_turn(&game);
+                return;
+            }
+            else if (game.game_mode == MULTI_NPC)
+            {
+                p1_bot_turn(&game);
+                return;
             }
         }
         else
@@ -870,16 +919,150 @@ void decode_last_move()
             if (received_move.orientation == 0)
             {
                 // muro verticale
+                game.current_wall.middle.x = received_move.x;
+                game.current_wall.middle.y = received_move.y;
+                game.current_wall.top.x = game.current_wall.middle.x - 1;
+                game.current_wall.top.y = game.current_wall.middle.y;
+                game.current_wall.bottom.x = game.current_wall.middle.x + 1;
+                game.current_wall.bottom.y = game.current_wall.middle.y;
+                draw_current_wall();
+                game.player_2.available_walls--;
+                p2_walls_update(game.player_2.available_walls);
+                // sto facendo il decode di una mossa del player_2 -> deve diventare turno mio
+                if (game.game_mode == MULTI_HUMAN)
+                {
+                    p1_turn(&game);
+                    return;
+                }
+                else if (game.game_mode == MULTI_NPC)
+                {
+                    p1_bot_turn(&game);
+                    return;
+                }
             }
             else
             {
                 // muro orizzontale
+                game.current_wall.middle.x = received_move.x;
+                game.current_wall.middle.y = received_move.y;
+                game.current_wall.top.x = game.current_wall.middle.x;
+                game.current_wall.top.y = game.current_wall.middle.y - 1;
+                game.current_wall.bottom.x = game.current_wall.middle.x;
+                game.current_wall.bottom.y = game.current_wall.middle.y + 1;
+                draw_current_wall();
+                game.player_2.available_walls--;
+                p2_walls_update(game.player_2.available_walls);
+                // sto facendo il decode di una mossa del player_2 -> deve diventare turno mio
+                if (game.game_mode == MULTI_HUMAN)
+                {
+                    p1_turn(&game);
+                    return;
+                }
+                else if (game.game_mode == MULTI_NPC)
+                {
+                    p1_bot_turn(&game);
+                    return;
+                }
             }
         }
     }
     else
     {
+        // se è una dummy è easy, mi prendo il turno e fine
+        if (received_move.game_mode == 0 && received_move.orientation == 1)
+        {
+            // è una dummy_move
+            // sto facendo il decode di una mossa del player_1 -> deve diventare turno player_2
+            if (game.game_mode == MULTI_HUMAN)
+            {
+                p2_turn(&game);
+                return;
+            }
+            else if (game.game_mode == MULTI_NPC)
+            {
+                p2_bot_turn(&game);
+                return;
+            }
+        }
         // sono lo slave -> è una move per player_1
+        if (received_move.game_mode == 0)
+        {
+            // player_movement del player_1
+            // i'm 100% sure he didn't move
+            delete_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate);
+            game.player_1.x_matrix_coordinate = received_move.x;
+            game.player_1.y_matrix_coordinate = received_move.y;
+            draw_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_1);
+
+            if (game.player_1.x_matrix_coordinate == 12)
+            {
+                game_over(&game, game.player_1);
+                return;
+            }
+            // sto facendo il decode di una mossa del player_1 -> deve diventare turno mio
+            if (game.game_mode == MULTI_HUMAN)
+            {
+                p2_turn(&game);
+                return;
+            }
+            else if (game.game_mode == MULTI_NPC)
+            {
+                p2_bot_turn(&game);
+                return;
+            }
+        }
+        else
+        {
+            // it's a wall placement so we need to understand the orientation and than we have the middle
+            if (received_move.orientation == 0)
+            {
+                // muro verticale
+                game.current_wall.middle.x = received_move.x;
+                game.current_wall.middle.y = received_move.y;
+                game.current_wall.top.x = game.current_wall.middle.x - 1;
+                game.current_wall.top.y = game.current_wall.middle.y;
+                game.current_wall.bottom.x = game.current_wall.middle.x + 1;
+                game.current_wall.bottom.y = game.current_wall.middle.y;
+                draw_current_wall();
+                game.player_1.available_walls--;
+                p1_walls_update(game.player_1.available_walls);
+                // sto facendo il decode di una mossa del player_1 -> deve diventare turno mio
+                if (game.game_mode == MULTI_HUMAN)
+                {
+                    p2_turn(&game);
+                    return;
+                }
+                else if (game.game_mode == MULTI_NPC)
+                {
+                    p2_bot_turn(&game);
+                    return;
+                }
+            }
+            else
+            {
+                // muro orizzontale
+                game.current_wall.middle.x = received_move.x;
+                game.current_wall.middle.y = received_move.y;
+                game.current_wall.top.x = game.current_wall.middle.x;
+                game.current_wall.top.y = game.current_wall.middle.y - 1;
+                game.current_wall.bottom.x = game.current_wall.middle.x;
+                game.current_wall.bottom.y = game.current_wall.middle.y + 1;
+                draw_current_wall();
+                game.player_1.available_walls--;
+                p1_walls_update(game.player_1.available_walls);
+                // sto facendo il decode di una mossa del player_1 -> deve diventare turno mio
+                if (game.game_mode == MULTI_HUMAN)
+                {
+                    p2_turn(&game);
+                    return;
+                }
+                else if (game.game_mode == MULTI_NPC)
+                {
+                    p2_bot_turn(&game);
+                    return;
+                }
+            }
+        }
     }
 }
 
@@ -887,18 +1070,12 @@ void craft_dummy_move(void)
 {
     ui8 tmp;
     // player id
-    game->last_move = 0;
-    tmp = game->player_turn;
-    game->player_turn == PLAYER_1 ? (tmp = 0) : (tmp = 1);
-    game->last_move |= tmp << 24;
+    game.last_move = 0;
+    tmp = game.player_turn;
+    game.player_turn == PLAYER_1 ? (tmp = 0) : (tmp = 1);
+    game.last_move |= tmp << 24;
     tmp = 0x01;
-    game->last_move |= tmp << 16;
+    game.last_move |= tmp << 16;
     tmp = 0x0000;
-    game->last_move |= tmp;
-    // send_last_move();
-}
-
-void show_remote_move(void)
-{
-    // dobbiamo mostrare a schermo la mossa remota e cambiare turno
+    game.last_move |= tmp;
 }

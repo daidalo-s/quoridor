@@ -22,6 +22,7 @@
 #include "game/quoridor.h"
 #include "GLCD/GLCD.h"
 #include "menu/menu.h"
+#include "CAN/CAN.h"
 
 #ifdef SIMULATOR
 extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
