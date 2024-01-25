@@ -11,3 +11,5 @@
 .\menu.o: C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\cmsis_armcc.h
 .\menu.o: C:\Users\Lorenzo\AppData\Local\Arm\Packs\ARM\CMSIS\5.9.0\CMSIS\Core\Include\mpu_armv7.h
 .\menu.o: C:\Users\Lorenzo\AppData\Local\Arm\Packs\Keil\LPC1700_DFP\2.7.1\Device\Include\system_LPC17xx.h
+.\menu.o: menu\../CAN/CAN.h
+.\menu.o: menu\../CAN/can_manager.h

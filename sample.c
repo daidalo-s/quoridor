@@ -29,6 +29,7 @@ extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emul
 int down;
 game_data game;
 menu game_menu;
+can_move received_move;
 /*----------------------------------------------------------------------------
   Main Program
  *----------------------------------------------------------------------------*/
@@ -38,6 +39,7 @@ int main(void)
 
 	/*GEstione BUTTONs */
 	BUTTON_init();
+	CAN_Init();
 
 	/*Gestione RIT 50 msec       */
 	init_RIT(0x004C4B40); /*100.000.000[Mhz]*0.05[sec]=5.000.000 = 0x004C4B40*/

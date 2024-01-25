@@ -32,4 +32,9 @@ void wall_mode_enter(void);
 void wall_mode_exit(void);
 void p1_bot_turn(game_data *);
 void p2_bot_turn(game_data *);
+void decode_last_move(void);
+void p1_remote_turn(void);
+void p2_remote_turn(void);
+void craft_dummy_move(void);
+void show_remote_move(void);
 #endif

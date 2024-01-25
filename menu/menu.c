@@ -1,5 +1,7 @@
 #include "./menu.h"
 #include "../GLCD/GLCD.h"
+#include "../CAN/CAN.h"
+#include "../CAN/can_manager.h"
 
 extern menu game_menu;
 extern game_data game;
@@ -41,6 +43,8 @@ void show_int0_message(void)
     LCD_Clear(Black);
     game.game_status = MENU_MODE;
     game_menu.menu_window = MENU_INT0;
+    game.game_mode = DEFAULT;
+    game.multi_board_master = 0;
     GUI_Text(X_INT0_MESSAGE_LINE_1, Y_INT0_MESSAGE_LINE_1, (ui8 *)"Press INT0 to start", White, Black);
     GUI_Text(X_INT0_MESSAGE_LINE_2, Y_INT0_MESSAGE_LINE_2, (ui8 *)"a game", White, Black);
 }
@@ -68,6 +72,7 @@ void update_game_mode_menu(move_type move)
         }
         if (game_menu.option_num == 2)
         {
+            game.multi_board_master = 1;
             show_two_board_menu();
             return;
         }
@@ -169,6 +174,12 @@ void show_two_board_menu(void)
     LCD_Clear(Black);
     game_menu.menu_window = MULTI_BOARD;
     game_menu.option_num = 1;
+    // if we are the first to reach this point we need to send the ack
+    if (game.multi_board_master == 0)
+    {
+        // sono lo slave, mi ci hanno portato qua
+        GUI_Text(0, 0, (uint8_t *)"sono lo slave", White, Black);
+    }
     GUI_Text(STB_X_TEXT_AREA_LINE_1, STB_Y_TEXT_AREA_LINE_1, (ui8 *)"Two-boards: select", White, Black);
     GUI_Text(STB_X_TEXT_AREA_LINE_2, STB_Y_TEXT_AREA_LINE_2, (ui8 *)"your player", White, Black);
     GUI_Text(STB_X_FIRST_SELECTION, STB_Y_FIRST_SELECTION, (ui8 *)"Human", Black, White);
@@ -183,14 +194,47 @@ void update_two_board_menu(move_type move)
         // human-npc
         if (game_menu.option_num == 1)
         {
+            // Quando entro qua devo capire se sono il master o lo slave
+            if (game.multi_board_master)
+            {
+                // sono il master
+                game.game_mode = MULTI_HUMAN;
+                send_ack();
+                GUI_Text(0, 0, (uint8_t *)"Waiting for a connection..", White, Black);
+            }
+            else
+            {
+                // sono lo slave
+                game.game_mode = MULTI_HUMAN;
+                send_ack();
+                LCD_Clear(Black);
+                game_start(&game);
+            }
             // qui dobbiamo far giocare il bot
-            GUI_Text(0, 0, (uint8_t *)"Ready soon...", White, Black);
+            // GUI_Text(0, 0, (uint8_t *)"Ready soon...", White, Black);
             return;
         }
         if (game_menu.option_num == 2)
         {
+            // Quando entro qua devo capire se sono il master o lo slave
+            if (game.multi_board_master)
+            {
+                // sono il master
+                game.game_mode = MULTI_NPC;
+                send_ack();
+                GUI_Text(0, 0, (uint8_t *)"Waiting for a connection..", White, Black);
+            }
+            else
+            {
+                // sono lo slave
+                game.game_mode = MULTI_NPC;
+                send_ack();
+                // devo startare il game, sono player_2
+                LCD_Clear(Black);
+                game_start(&game);
+            }
             // qui dobbiamo giocare noi
-            GUI_Text(0, 0, (uint8_t *)"Ready soon...", White, Black);
+            // GUI_Text(0, 0, (uint8_t *)"Ready soon...", White, Black);
             return;
         }
         if (game_menu.option_num == 3)

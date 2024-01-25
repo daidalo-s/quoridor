@@ -54,7 +54,9 @@ typedef enum
 typedef enum
 {
     PLAYER_1,
-    PLAYER_2
+    PLAYER_2,
+    PLAYER_1_REMOTE,
+    PLAYER_2_REMOTE
 } active_player;
 
 typedef enum
@@ -113,6 +115,8 @@ typedef struct
     matrix_point possible_moves[NUM_MOVES];
     ui8 num_of_possible_moves;
     ui8 bot;
+    // 1 if master, 2 if slave, 0 if none
+    ui8 master_slave;
 } player;
 
 typedef struct
@@ -165,7 +169,8 @@ typedef enum
     SINGLE_HUMAN_VS_HUMAN,
     SINGLE_HUMAN_VS_NPC,
     MULTI_HUMAN,
-    MULTI_NPC
+    MULTI_NPC,
+    DEFAULT
 } game_modes;
 
 typedef struct
@@ -186,6 +191,7 @@ typedef struct
     bfs_data bfs_data;
     game_modes game_mode;
     bot_manager bot_manager;
+    ui8 multi_board_master;
 } game_data;
 
 typedef struct
@@ -235,5 +241,14 @@ typedef struct
     ui8 y;
     int score;
 } move;
+
+typedef struct
+{
+    ui8 player_id;
+    ui8 game_mode;
+    ui8 orientation;
+    ui8 x;
+    ui8 y;
+} can_move;
 
 #endif
