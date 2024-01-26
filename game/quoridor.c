@@ -195,13 +195,13 @@ void turn_manager(game_data *game, ui8 time_over)
                             reset_p1_token();
                             craft_dummy_move();
                             send_last_move();
-                            p2_remote_turn();
+                            // p2_remote_turn(); -> lo gestisco nella decode
                         }
                         else
                         {
                             // era il turno del del remote che non ha mandato niente
                             disable_timer(0);
-                            // devo solamente aspettare la sua move, speriamo arrivi
+                            // devo solamente aspettare la sua move, speriamo arrivi -> viene gestito nel decode
                         }
                     }
                     else
@@ -213,13 +213,13 @@ void turn_manager(game_data *game, ui8 time_over)
                             reset_p2_token();
                             craft_dummy_move();
                             send_last_move();
-                            p1_remote_turn();
+                            // p1_remote_turn(); -> lo gestisco nella decode
                         }
                         else
                         {
                             // era il turno del remote ma non mi ha ancora mandato nulla
                             disable_timer(0);
-                            // prima o poi arriverà la sua mossa
+                            // prima o poi arriverà la sua mossa -> tutto viene gestito nel decode
                         }
                     }
                 }
@@ -267,7 +267,7 @@ void turn_manager(game_data *game, ui8 time_over)
                         delete_current_wall();
                         craft_dummy_move();
                         send_last_move();
-                        p2_remote_turn();
+                        // p2_remote_turn();
                     }
                     else
                     {
@@ -275,7 +275,7 @@ void turn_manager(game_data *game, ui8 time_over)
                         delete_current_wall();
                         craft_dummy_move();
                         send_last_move();
-                        p1_remote_turn();
+                        // p1_remote_turn();
                     }
                 }
                 // il caso in cui io sono un NPC non mi interessa, non sarò mai in wall mode quindi
@@ -367,7 +367,7 @@ void turn_manager(game_data *game, ui8 time_over)
                     }
                 }
                 // non esiste il caso del bot -> io sono un bot e non premo select
-                // se il gioco è al turno del player remoto a me fregacazz è gestito dalla decode, non preme select
+                // se il gioco è al turno del player remoto a me non interessa è gestito dalla decode, non preme select
             }
             else
             {
@@ -498,6 +498,7 @@ void p1_bot_turn(game_data *game)
         game->player_1.tmp_y_matrix_coordinate = move.y;
         confirm_player_move(game);
         save_last_move(game);
+        send_last_move();
         draw_player_token(game->player_1.x_matrix_coordinate, game->player_1.y_matrix_coordinate, PLAYER_1);
     }
     else
@@ -506,6 +507,7 @@ void p1_bot_turn(game_data *game)
         if (move.type_of_move.orientation == VERTICAL)
         {
             // muro verticale
+            game->input_mode = WALL_MODE;
             game->current_wall.top.x = move.x - 1;
             game->current_wall.top.y = move.y;
             game->current_wall.middle.x = move.x;
@@ -515,6 +517,7 @@ void p1_bot_turn(game_data *game)
             game->current_wall.wall_orientation = VERTICAL;
             place_current_wall();
             save_last_move(game);
+            send_last_move();
             draw_current_wall();
             game->player_1.available_walls--;
             p1_walls_update(game->player_1.available_walls);
@@ -522,6 +525,7 @@ void p1_bot_turn(game_data *game)
         else
         {
             // muro orizzontale
+            game->input_mode = WALL_MODE;
             game->current_wall.top.x = move.x;
             game->current_wall.top.y = move.y - 1;
             game->current_wall.middle.x = move.x;
@@ -531,12 +535,18 @@ void p1_bot_turn(game_data *game)
             game->current_wall.wall_orientation = HORIZONTAL;
             place_current_wall();
             save_last_move(game);
+            send_last_move();
             draw_current_wall();
             game->player_1.available_walls--;
             p1_walls_update(game->player_1.available_walls);
         }
     }
     game->input_mode = PLAYER_MOVEMENT;
+    if (game->game_mode == MULTI_NPC)
+    {
+        p2_remote_turn();
+        return;
+    }
     turn_manager(game, 0);
     return;
 }
@@ -549,7 +559,7 @@ void p2_bot_turn(game_data *game)
     game->game_tick = 20;
     game->player_2.bot = 1;
     ticks_counter_update(20);
-    move = minimax(1);
+    move = minimax(2);
     // move = minimax_alfa_beta(2, INT32_MIN, INT32_MAX);
     if (move.type_of_move.type == PLAYER)
     {
@@ -558,6 +568,8 @@ void p2_bot_turn(game_data *game)
         game->player_2.tmp_x_matrix_coordinate = move.x;
         game->player_2.tmp_y_matrix_coordinate = move.y;
         confirm_player_move(game);
+        save_last_move(game);
+        send_last_move();
         draw_player_token(game->player_2.x_matrix_coordinate, game->player_2.y_matrix_coordinate, PLAYER_2);
     }
     else
@@ -566,6 +578,7 @@ void p2_bot_turn(game_data *game)
         if (move.type_of_move.orientation == VERTICAL)
         {
             // muro verticale
+            game->input_mode = WALL_MODE;
             game->current_wall.top.x = move.x - 1;
             game->current_wall.top.y = move.y;
             game->current_wall.middle.x = move.x;
@@ -575,6 +588,7 @@ void p2_bot_turn(game_data *game)
             game->current_wall.wall_orientation = VERTICAL;
             place_current_wall();
             save_last_move(game);
+            send_last_move();
             draw_current_wall();
             game->player_2.available_walls--;
             p2_walls_update(game->player_2.available_walls);
@@ -582,6 +596,7 @@ void p2_bot_turn(game_data *game)
         else
         {
             // muro orizzontale
+            game->input_mode = WALL_MODE;
             game->current_wall.top.x = move.x;
             game->current_wall.top.y = move.y - 1;
             game->current_wall.middle.x = move.x;
@@ -591,12 +606,18 @@ void p2_bot_turn(game_data *game)
             game->current_wall.wall_orientation = HORIZONTAL;
             place_current_wall();
             save_last_move(game);
+            send_last_move();
             draw_current_wall();
             game->player_2.available_walls--;
             p2_walls_update(game->player_2.available_walls);
         }
     }
     game->input_mode = PLAYER_MOVEMENT;
+    if (game->game_mode == MULTI_NPC)
+    {
+        p1_remote_turn();
+        return;
+    }
     turn_manager(game, 0);
     return;
 }
@@ -832,25 +853,25 @@ void save_last_move(game_data *game)
         // x e y del player
         if (game->player_turn == PLAYER_1)
         {
-            tmp = game->player_1.y_matrix_coordinate;
+            tmp = game->player_1.x_matrix_coordinate >> 1;
             game->last_move |= tmp << 8;
-            tmp = game->player_1.x_matrix_coordinate;
+            tmp = game->player_1.y_matrix_coordinate >> 1;
             game->last_move |= tmp;
         }
         else
         {
-            tmp = game->player_2.y_matrix_coordinate;
+            tmp = game->player_2.x_matrix_coordinate >> 1;
             game->last_move |= tmp << 8;
-            tmp = game->player_2.x_matrix_coordinate;
+            tmp = game->player_2.y_matrix_coordinate >> 1;
             game->last_move |= tmp;
         }
     }
     else
     {
         // x e y della middle del wall
-        tmp = game->current_wall.middle.y;
+        tmp = game->current_wall.middle.x >> 1;
         game->last_move |= tmp << 8;
-        tmp = game->current_wall.middle.x;
+        tmp = game->current_wall.middle.y >> 1;
         game->last_move |= tmp;
     }
 }
@@ -865,9 +886,23 @@ void decode_last_move()
         received_move.y += 1;
         received_move.x += 1;
     }
-    // now we can call the turn manager -> fuck the turn manager, we handle it
+
+    if (game.multi_board_master && game.player_turn == PLAYER_1)
+    {
+        // sto leggendo una mia mossa -> usciamo
+        p2_remote_turn();
+        return;
+    }
+
+    if (!game.multi_board_master && game.player_turn == PLAYER_2)
+    {
+        // sto leggendo una mia mossa -> usciamo
+        p1_remote_turn();
+        return;
+    }
+
     // if we are here we received a move via CAN -> it must be an opponent move
-    if (game.multi_board_master)
+    if (game.multi_board_master && game.player_turn == PLAYER_2_REMOTE)
     {
         // se è una dummy è easy, mi prendo il turno e fine
         if (received_move.game_mode == 0 && received_move.orientation == 1)
@@ -892,9 +927,11 @@ void decode_last_move()
             // player_movement del player_2
             // i'm 100% sure he didn't move
             delete_player_token(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate);
+            game.board[game.player_2.x_matrix_coordinate][game.player_2.y_matrix_coordinate].availability = FREE;
             game.player_2.x_matrix_coordinate = received_move.x;
             game.player_2.y_matrix_coordinate = received_move.y;
             draw_player_token(game.player_2.x_matrix_coordinate, game.player_2.y_matrix_coordinate, PLAYER_2);
+            game.board[game.player_2.x_matrix_coordinate][game.player_2.y_matrix_coordinate].availability = OCCUPIED;
 
             if (game.player_2.x_matrix_coordinate == 0)
             {
@@ -925,7 +962,11 @@ void decode_last_move()
                 game.current_wall.top.y = game.current_wall.middle.y;
                 game.current_wall.bottom.x = game.current_wall.middle.x + 1;
                 game.current_wall.bottom.y = game.current_wall.middle.y;
+                game.current_wall.wall_orientation = VERTICAL;
                 draw_current_wall();
+                game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+                game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+                game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
                 game.player_2.available_walls--;
                 p2_walls_update(game.player_2.available_walls);
                 // sto facendo il decode di una mossa del player_2 -> deve diventare turno mio
@@ -949,7 +990,11 @@ void decode_last_move()
                 game.current_wall.top.y = game.current_wall.middle.y - 1;
                 game.current_wall.bottom.x = game.current_wall.middle.x;
                 game.current_wall.bottom.y = game.current_wall.middle.y + 1;
+                game.current_wall.wall_orientation = HORIZONTAL;
                 draw_current_wall();
+                game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+                game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+                game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
                 game.player_2.available_walls--;
                 p2_walls_update(game.player_2.available_walls);
                 // sto facendo il decode di una mossa del player_2 -> deve diventare turno mio
@@ -966,7 +1011,7 @@ void decode_last_move()
             }
         }
     }
-    else
+    else if (!game.multi_board_master && game.player_turn == PLAYER_1_REMOTE)
     {
         // se è una dummy è easy, mi prendo il turno e fine
         if (received_move.game_mode == 0 && received_move.orientation == 1)
@@ -990,9 +1035,11 @@ void decode_last_move()
             // player_movement del player_1
             // i'm 100% sure he didn't move
             delete_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate);
+            game.board[game.player_1.x_matrix_coordinate][game.player_1.y_matrix_coordinate].availability = FREE;
             game.player_1.x_matrix_coordinate = received_move.x;
             game.player_1.y_matrix_coordinate = received_move.y;
             draw_player_token(game.player_1.x_matrix_coordinate, game.player_1.y_matrix_coordinate, PLAYER_1);
+            game.board[game.player_1.x_matrix_coordinate][game.player_1.y_matrix_coordinate].availability = OCCUPIED;
 
             if (game.player_1.x_matrix_coordinate == 12)
             {
@@ -1023,7 +1070,11 @@ void decode_last_move()
                 game.current_wall.top.y = game.current_wall.middle.y;
                 game.current_wall.bottom.x = game.current_wall.middle.x + 1;
                 game.current_wall.bottom.y = game.current_wall.middle.y;
+                game.current_wall.wall_orientation = VERTICAL;
                 draw_current_wall();
+                game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+                game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+                game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
                 game.player_1.available_walls--;
                 p1_walls_update(game.player_1.available_walls);
                 // sto facendo il decode di una mossa del player_1 -> deve diventare turno mio
@@ -1047,7 +1098,11 @@ void decode_last_move()
                 game.current_wall.top.y = game.current_wall.middle.y - 1;
                 game.current_wall.bottom.x = game.current_wall.middle.x;
                 game.current_wall.bottom.y = game.current_wall.middle.y + 1;
+                game.current_wall.wall_orientation = HORIZONTAL;
                 draw_current_wall();
+                game.board[game.current_wall.top.x][game.current_wall.top.y].availability = OCCUPIED;
+                game.board[game.current_wall.middle.x][game.current_wall.middle.y].availability = OCCUPIED;
+                game.board[game.current_wall.bottom.x][game.current_wall.bottom.y].availability = OCCUPIED;
                 game.player_1.available_walls--;
                 p1_walls_update(game.player_1.available_walls);
                 // sto facendo il decode di una mossa del player_1 -> deve diventare turno mio

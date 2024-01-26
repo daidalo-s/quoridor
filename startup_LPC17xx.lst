@@ -192,7 +192,7 @@ NLY
   122 00000000                 EXPORT           Reset_Handler             [WEAK
 ]
   123 00000000                 IMPORT           __main
-  124 00000000 4808    x       LDR              R0, =__main
+  124 00000000 4808            LDR              R0, =__main
 
 
 
@@ -1023,15 +1023,7 @@ Symbol: __user_initial_stackheap
    Uses
       At line 266 in file startup_LPC17xx.s
 Comment: __user_initial_stackheap used once
-x 00000000
-
-Symbol: x
-   Definitions
-      At line 124 in file startup_LPC17xx.s
-   Uses
-      None
-Comment: x unused
-49 symbols
+48 symbols
 
 
 
@@ -1080,4 +1072,4 @@ Symbol: __use_two_region_memory
       None
 Comment: __use_two_region_memory unused
 2 symbols
-403 symbols in table
+402 symbols in table

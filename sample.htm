@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\sample.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\sample.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Thu Jan 25 23:09:35 2024
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060960: Last Updated: Fri Jan 26 12:09:54 2024
 <BR><P>
 <H3>Maximum Stack Usage =        352 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -428,7 +428,9 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_wrMsg
 </UL>
-<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
+<BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p2_bot_turn
+<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_bot_turn
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 </UL>
 
 <P><STRONG><a name="[f0]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
@@ -654,10 +656,12 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;reset_timer
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;enable_timer
 </UL>
-<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_last_move
+<LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p2_bot_turn
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 </UL>
 
-<P><STRONG><a name="[77]"></a>save_last_move</STRONG> (Thumb, 218 bytes, Stack size 0 bytes, quoridor.o(.text))
+<P><STRONG><a name="[77]"></a>save_last_move</STRONG> (Thumb, 230 bytes, Stack size 0 bytes, quoridor.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[8a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p2_bot_turn
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_bot_turn
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
@@ -669,7 +673,9 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[6d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;reset_timer
 <LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;enable_timer
 </UL>
-<BR>[Called By]<UL><LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
+<BR>[Called By]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;decode_last_move
+<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_bot_turn
+<LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 </UL>
 
 <P><STRONG><a name="[70]"></a>game_over</STRONG> (Thumb, 48 bytes, Stack size 32 bytes, quoridor.o(.text))
@@ -695,18 +701,20 @@ Global Symbols
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 </UL>
 
-<P><STRONG><a name="[74]"></a>p1_bot_turn</STRONG> (Thumb, 350 bytes, Stack size 24 bytes, quoridor.o(.text))
+<P><STRONG><a name="[74]"></a>p1_bot_turn</STRONG> (Thumb, 396 bytes, Stack size 24 bytes, quoridor.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
  + In Cycle
 <LI>Call Chain = p1_bot_turn &rArr;  turn_manager (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;place_current_wall
+<BR>[Calls]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send_last_move
+<LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;place_current_wall
 <LI><a href="#[7b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_walls_update
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;minimax
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;draw_player_token
 <LI><a href="#[7a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;draw_current_wall
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delete_player_token
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;confirm_player_move
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p2_remote_turn
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;save_last_move
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ticks_counter_update
@@ -715,7 +723,7 @@ Global Symbols
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 </UL>
 
-<P><STRONG><a name="[7c]"></a>p1_turn</STRONG> (Thumb, 52 bytes, Stack size 8 bytes, quoridor.o(.text))
+<P><STRONG><a name="[7c]"></a>p1_turn</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, quoridor.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = p1_turn &rArr; show_available_moves &rArr; draw_available_move &rArr; LCD_SetPoint &rArr; LCD_SetCursor
 </UL>
 <BR>[Calls]<UL><LI><a href="#[7e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_available_moves
@@ -765,7 +773,7 @@ Global Symbols
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 </UL>
 
-<P><STRONG><a name="[68]"></a>turn_manager</STRONG> (Thumb, 890 bytes, Stack size 16 bytes, quoridor.o(.text))
+<P><STRONG><a name="[68]"></a>turn_manager</STRONG> (Thumb, 872 bytes, Stack size 16 bytes, quoridor.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 288 + Unknown Stack Size
 <LI>Call Chain = turn_manager &rArr; p1_bot_turn &rArr;  turn_manager (Cycle)
 </UL>
@@ -816,11 +824,12 @@ Global Symbols
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;update_two_board_menu
 </UL>
 
-<P><STRONG><a name="[8a]"></a>p2_bot_turn</STRONG> (Thumb, 342 bytes, Stack size 24 bytes, quoridor.o(.text))
+<P><STRONG><a name="[8a]"></a>p2_bot_turn</STRONG> (Thumb, 388 bytes, Stack size 24 bytes, quoridor.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 312 + Unknown Stack Size
 <LI>Call Chain = p2_bot_turn &rArr; turn_manager &rArr; p1_bot_turn &rArr;  turn_manager (Cycle)
 </UL>
-<BR>[Calls]<UL><LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;place_current_wall
+<BR>[Calls]<UL><LI><a href="#[51]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;send_last_move
+<LI><a href="#[79]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;place_current_wall
 <LI><a href="#[8b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p2_walls_update
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;minimax
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;draw_player_token
@@ -828,6 +837,7 @@ Global Symbols
 <LI><a href="#[76]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;delete_player_token
 <LI><a href="#[73]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;confirm_player_move
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;save_last_move
+<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_remote_turn
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;turn_manager
 <LI><a href="#[67]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ticks_counter_update
 </UL>
@@ -894,7 +904,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[2a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;RIT_IRQHandler
 </UL>
 
-<P><STRONG><a name="[92]"></a>decode_last_move</STRONG> (Thumb, 1026 bytes, Stack size 32 bytes, quoridor.o(.text))
+<P><STRONG><a name="[92]"></a>decode_last_move</STRONG> (Thumb, 1670 bytes, Stack size 32 bytes, quoridor.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 344 + Unknown Stack Size
 <LI>Call Chain = decode_last_move &rArr; p2_bot_turn &rArr; turn_manager &rArr; p1_bot_turn &rArr;  turn_manager (Cycle)
 </UL>
@@ -908,6 +918,8 @@ Global Symbols
 <LI><a href="#[7c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_turn
 <LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_bot_turn
 <LI><a href="#[70]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;game_over
+<LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p2_remote_turn
+<LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;p1_remote_turn
 <LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_IRQHandler

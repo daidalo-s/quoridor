@@ -57,10 +57,10 @@ void CAN_IRQHandler(void)
 		received_move.orientation = (data >> 16) & 0xF;
 		// sprintf(str, "%d", orientation);
 		// GUI_Text(0, 48, (uint8_t *)str, White, Black);
-		received_move.y = (data >> 8) & 0xFF;
+		received_move.x = (data >> 8) & 0xFF;
 		// sprintf(str, "%d", y);
 		// GUI_Text(0, 64, (uint8_t *)str, White, Black);
-		received_move.x = data & 0xFF;
+		received_move.y = data & 0xFF;
 		// sprintf(str, "%d", x);
 		// GUI_Text(0, 80, (uint8_t *)str, White, Black);
 		if (received_move.player_id == 0xFF)
@@ -71,7 +71,7 @@ void CAN_IRQHandler(void)
 			{
 				// we are the slave
 				show_two_board_menu();
-				GUI_Text(0, 32, (uint8_t *)"Connessione stabilita [slave]", White, Black);
+				GUI_Text(0, 0, (uint8_t *)"Connection established [slave]", White, Black);
 			}
 			else
 			{
