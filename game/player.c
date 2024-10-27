@@ -30,7 +30,7 @@ void init_players(game_data *game)
     game->player_2.tmp_y_matrix_coordinate = 6;
     game->player_2.available_walls = 8;
     game->player_2.num_of_possible_moves = 0;
-    // Dobbiamo aggiornare la board
+    // Updating the board
     game->board[0][6].availability = OCCUPIED;
     game->board[12][6].availability = OCCUPIED;
     // We also need to initialize the tick number

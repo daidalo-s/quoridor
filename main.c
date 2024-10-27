@@ -25,7 +25,7 @@
 #include "CAN/CAN.h"
 
 #ifdef SIMULATOR
-extern uint8_t ScaleFlag; // <- ScaleFlag needs to visible in order for the emulator to find the symbol (can be placed also inside system_LPC17xx.h but since it is RO, it needs more work)
+extern uint8_t ScaleFlag;
 #endif
 int down;
 game_data game;
@@ -38,15 +38,15 @@ int main(void)
 {
 	SystemInit(); /* System Initialization (i.e., PLL)  */
 
-	/*GEstione BUTTONs */
+	/*BUTTONs handling */
 	BUTTON_init();
 	CAN_Init();
 
-	/*Gestione RIT 50 msec       */
+	/*Setting the RIT to 50 msec       */
 	init_RIT(0x004C4B40); /*100.000.000[Mhz]*0.05[sec]=5.000.000 = 0x004C4B40*/
 	enable_RIT();
 
-	/*Gestione JOYSTICK*/
+	/*JOYSTICK handling*/
 	joystick_init();
 
 	LCD_Initialization();
@@ -58,7 +58,6 @@ int main(void)
 
 	while (1)
 	{ /* Loop forever                       */
-
 		__ASM("wfi");
 	}
 }

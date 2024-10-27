@@ -1,14 +1,3 @@
-/**
- * @file magda.c
- * @author your name (you@domain.com)
- * @brief
- * @version 0.1
- * @date 2024-01-19
- *
- * @copyright Copyright (c) 2024
- *
- */
-
 #include "../game/quoridor.h"
 #include "../game/player.h"
 #include "../game/walls.h"
@@ -63,8 +52,6 @@ move minimax(ui8 depth)
         minimax_unmove_player(player, previous_position);
     }
     // ora mi guardo tutte le mosse possibili di posizionamento muri
-    // TODO
-    // ho abbastanza muri
     if (player->available_walls > 0)
     {
         find_all_possible_walls();
@@ -151,7 +138,6 @@ int MIN(ui8 depth)
             }
             minimax_unmove_player(player, previous_position);
         }
-        // TODO
         // ho abbastanza muri
         if (player->available_walls > 0)
         {
@@ -241,8 +227,7 @@ int MAX(ui8 depth)
             }
             minimax_unmove_player(player, previous_position);
         }
-        // TODO
-        //       ho abbastanza muri if (player->available_walls > 0)
+        // ho abbastanza muri if (player->available_walls > 0)
         {
             find_all_possible_walls();
             for (i = 0; i < game.wall_moves.num_of_moves; i++)
@@ -416,7 +401,6 @@ move minimax_alfa_beta(ui8 depth, int alpha, int beta)
         minimax_unmove_player(player, previous_position);
     }
     // ora mi guardo tutte le mosse possibili di posizionamento muri
-    // TODO
     // ho abbastanza muri
     if (player->available_walls > 0)
     {
@@ -518,7 +502,6 @@ int MIN_alfa_beta(ui8 depth, int alpha, int beta)
             // }
             minimax_unmove_player(player, previous_position);
         }
-        // TODO
         // ho abbastanza muri
         if (player->available_walls > 0)
         {
@@ -621,7 +604,6 @@ int MAX_alfa_beta(ui8 depth, int alpha, int beta)
             // }
             minimax_unmove_player(player, previous_position);
         }
-        // TODO
         //       ho abbastanza muri if (player->available_walls > 0)
         {
             find_all_possible_walls();
@@ -655,6 +637,7 @@ int MAX_alfa_beta(ui8 depth, int alpha, int beta)
 }
 
 /**
+VERSION WITHOUT ALFA-BETA pruning
 function minimax(node, depth, maximizingPlayer) is
     if depth = 0 or node is a terminal node then
         return the heuristic value of node

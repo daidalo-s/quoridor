@@ -1,13 +1,3 @@
-/**
- * @file quoridor.c
- * @author your name (you@domain.com)
- * @brief inside this file there is all the game logic
- * @version 0.1
- * @date 2024-01-10
- *
- * @copyright Copyright (c) 2024
- *
- */
 #include "quoridor.h"
 #include "../timer/timer.h"
 #include "lpc17xx.h"
